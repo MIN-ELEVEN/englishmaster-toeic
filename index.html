@@ -1060,39 +1060,31 @@
        ---------------------------------------------------- */
     // Hàm gửi request lên cloud với cơ chế thử lại và giải quyết chặn CORS
     async function cloudFetchGet(userKey) {
-      // Thử cụm kvdb.io trước (REST key-value đơn giản không chặn bất kỳ mạng nào)
+      // 1. Thử qua KVDB chính thức
       try {
-        const res = await fetch(`https://kvdb.io/4y9qfA6pMhTq1vK3zY9VbC/${userKey}`, {
+        const res = await fetch(`https://kvdb.io/4y9qfA6pMhTq1vK3zY9VbC/${userKey}?t=${Date.now()}`, {
           method: 'GET',
           cache: 'no-store'
         });
         if (res.ok) {
-          const data = await res.json();
-          return data;
+          const text = await res.text();
+          if (text) {
+            return JSON.parse(text);
+          }
         }
       } catch (err) {
-        console.warn("Cluster 1 unavailable, trying backup cluster...", err);
+        console.warn("KVDB cluster busy, checking secondary source...", err);
       }
 
-      // Cụm phụ fallback qua JSON storage
+      // 2. Thử kho lưu trữ đám mây thay thế
       try {
-        const binRes = await fetch(`https://api.jsonbin.io/v3/b/${userKey}`, {
-          method: 'GET',
-          headers: {
-            'X-Bin-Meta': 'false'
-          }
-        });
-        if (binRes.ok) {
-          return await binRes.json();
-        }
-      } catch (e) {
-        console.warn("Cluster 2 fallback bypassed:", e);
-      }
+        const altRes = await fetch(`https://api.counterapi.dev/v1/englishmaster_${userKey}/read`, { cache: 'no-store' });
+      } catch (e) {}
 
-      // Kiểm tra trong bộ nhớ đệm nếu người dùng từng đăng ký ở máy này
+      // 3. Kiểm tra trong bộ nhớ đệm nội bộ
       const localBackup = localStorage.getItem(`cloud_shadow_${userKey}`);
       if (localBackup) {
-        return JSON.parse(localBackup);
+        try { return JSON.parse(localBackup); } catch (e) {}
       }
 
       return null;
@@ -1127,17 +1119,29 @@
       try {
         // 1. Tải bản ghi mới nhất từ Máy chủ
         const serverRecord = await cloudFetchGet(userDbKey);
-        if (serverRecord && Array.isArray(serverRecord.learnedIds)) {
-          const serverLearnedSet = new Set(serverRecord.learnedIds);
+        
+        if (serverRecord) {
+          // Cập nhật họ tên chuẩn từ server nếu máy này chưa có
+          if (serverRecord.fullname && (!currentUser.fullname || currentUser.fullname === currentUser.email.split('@')[0])) {
+            currentUser.fullname = serverRecord.fullname;
+            localStorage.setItem('englishmaster_logged_user', JSON.stringify(currentUser));
+            document.getElementById('header-user-name').textContent = currentUser.fullname;
+          }
+
           let hasChanges = false;
 
-          vocabulary.forEach(item => {
-            if (serverLearnedSet.has(item.id) && !item.learned) {
-              item.learned = true;
-              hasChanges = true;
-            }
-          });
+          // Hợp nhất danh sách từ đã thuộc (Union giữa Local và Server)
+          if (Array.isArray(serverRecord.learnedIds)) {
+            const serverLearnedSet = new Set(serverRecord.learnedIds);
+            vocabulary.forEach(item => {
+              if (serverLearnedSet.has(item.id) && !item.learned) {
+                item.learned = true;
+                hasChanges = true;
+              }
+            });
+          }
 
+          // Hợp nhất từ tự tạo
           if (Array.isArray(serverRecord.customWords)) {
             serverRecord.customWords.forEach(cw => {
               if (!vocabulary.some(v => v.id === cw.id)) {
@@ -1155,24 +1159,24 @@
           }
         }
 
-        // 2. Cập nhật dữ liệu mới nhất lên Máy chủ
+        // 2. Gửi ngược lại toàn bộ tiến độ đã hợp nhất lên Máy chủ
         const learnedList = vocabulary.filter(v => v.learned).map(v => v.id);
         const customList = vocabulary.filter(v => v.category === 'custom');
 
         const payloadToSave = {
           email: currentUser.email,
-          fullname: currentUser.fullname,
-          passwordHash: currentUser.passwordHash || btoa("123456"),
+          fullname: currentUser.fullname || (serverRecord ? serverRecord.fullname : currentUser.email.split('@')[0]),
+          passwordHash: currentUser.passwordHash || (serverRecord ? serverRecord.passwordHash : btoa("123456")),
           learnedIds: learnedList,
           customWords: customList,
-          lastActive: new Date().toISOString()
+          updatedAt: new Date().toISOString()
         };
 
         await cloudFetchPut(userDbKey, payloadToSave);
 
         updateCloudIndicator('online');
         if (isManual) {
-          showToast("Đã đồng bộ máy chủ cơ sở dữ liệu thành công!", "fa-database");
+          showToast(`Đã đồng bộ! Đã thuộc ${learnedList.length}/1000 từ.`, "fa-database");
         }
       } catch (err) {
         console.warn("Lỗi kết nối cơ sở dữ liệu:", err);
@@ -1194,7 +1198,7 @@
       if (status === 'syncing') {
         dot.className = "w-2 h-2 rounded-full bg-amber-500 animate-ping";
         text.textContent = "Đang đồng bộ DB...";
-        icon.className = "fa-solid fa-database fa-spin text-xs";
+        icon.className = "fa-solid fa-arrows-rotate fa-spin text-xs";
       } else if (status === 'online') {
         dot.className = "w-2 h-2 rounded-full bg-emerald-500";
         text.textContent = "Database Đã Kết Nối";
@@ -1223,6 +1227,27 @@
           showAuthError("Vui lòng nhập họ và tên của bạn.");
           setAuthLoading(false);
           return;
+        }
+
+        // KIỂM TRA NGHIÊM NGẶT: Mỗi email chỉ được đăng ký 1 tài khoản duy nhất
+        try {
+          const existingCloudUser = await cloudFetchGet(userDbKey);
+          const existingLocalPass = localStorage.getItem(`englishmaster_pass_${userDbKey}`);
+
+          if (existingCloudUser || existingLocalPass) {
+            showAuthError("Email này đã được đăng ký tài khoản trước đó! Vui lòng chuyển sang tab 'Đã có Email' để đăng nhập.");
+            setAuthLoading(false);
+            
+            // Tự động chuyển người dùng sang tab Đã có Email sau 1.5 giây
+            setTimeout(() => {
+              switchAuthTab('login');
+              document.getElementById('auth-email').value = email;
+              document.getElementById('auth-password').focus();
+            }, 1200);
+            return;
+          }
+        } catch (checkErr) {
+          console.warn("Kiểm tra email trùng lặp:", checkErr);
         }
 
         currentUser = {
@@ -1266,20 +1291,13 @@
         try {
           // Thử lấy dữ liệu từ máy chủ đám mây
           let serverUser = await cloudFetchGet(userDbKey);
-
-          // Nếu chưa tìm thấy trên cloud, kiểm tra xem người dùng có đăng nhập với mật khẩu lưu trước đó
           const localPass = localStorage.getItem(`englishmaster_pass_${userDbKey}`);
-          
+
+          // Nếu không tồn tại tài khoản cả trên Cloud lẫn Local
           if (!serverUser && !localPass) {
-            // Tự động tạo phiên đồng bộ mới nếu người dùng nhập thông tin đăng nhập hợp lệ
-            serverUser = {
-              email: email,
-              fullname: email.split('@')[0],
-              passwordHash: btoa(password),
-              learnedIds: [],
-              customWords: []
-            };
-            await cloudFetchPut(userDbKey, serverUser);
+            showAuthError("Email này chưa được đăng ký tài khoản. Vui lòng chọn tab 'Đăng ký Email' để tạo tài khoản mới.");
+            setAuthLoading(false);
+            return;
           }
 
           if (serverUser && serverUser.passwordHash && serverUser.passwordHash !== btoa(password)) {
@@ -1328,17 +1346,8 @@
           confetti({ particleCount: 60, spread: 60, origin: { y: 0.6 } });
         } catch (e) {
           console.error("Lỗi đăng nhập database:", e);
-          // Trường hợp mạng lag, vẫn cho phép đăng nhập offline an toàn nếu mật khẩu trùng khớp
-          currentUser = {
-            email: email,
-            fullname: email.split('@')[0],
-            passwordHash: btoa(password),
-            loggedInAt: new Date().toISOString()
-          };
-          localStorage.setItem('englishmaster_logged_user', JSON.stringify(currentUser));
-          checkAuthStatus();
+          showAuthError("Không thể kết nối máy chủ để xác thực. Vui lòng thử lại sau.");
           setAuthLoading(false);
-          showToast("Đăng nhập thành công chế độ đệm!", "fa-circle-check");
         }
       }
     }
