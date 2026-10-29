@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EnglishMaster - Học Từ Vựng Flashcard & Ngữ Pháp</title>
+  <title>EnglishMaster - 1000 Từ Vựng TOEIC/IELTS 20 Ngày</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-  <!-- Google Fonts Inter -->
+  <!-- Google Fonts Inter / Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,15 +21,6 @@
         extend: {
           fontFamily: {
             sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              50: '#eff6ff',
-              100: '#dbeafe',
-              500: '#3b82f6',
-              600: '#2563eb',
-              700: '#1d4ed8',
-            }
           }
         }
       }
@@ -72,7 +63,7 @@
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col selection:bg-blue-100 selection:text-blue-700">
 
   <!-- TOP HEADER -->
-  <header class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
+  <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
@@ -82,7 +73,7 @@
           </div>
           <div>
             <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">EnglishMaster</span>
-            <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full border border-blue-200">Pro Edu</span>
+            <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full border border-blue-200">20 Day TOEIC</span>
           </div>
         </div>
 
@@ -101,21 +92,20 @@
             <span class="hidden xs:inline">Luyện tập</span>
           </button>
 
-          <!-- User Profile & Cloud Sync Indicator -->
+          <!-- User Profile & Realtime Server Sync Status -->
           <div id="user-header-menu" class="hidden items-center gap-2 pl-2 sm:pl-3 ml-1 sm:ml-2 border-l border-slate-200">
-            <!-- Đèn báo trạng thái Cloud Realtime -->
-            <div id="cloud-status-pill" onclick="triggerManualCloudSync()" title="Bấm để đồng bộ dữ liệu đám mây ngay" class="cursor-pointer flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-700 text-xs font-semibold hover:bg-indigo-100 transition">
+            <button id="cloud-status-pill" onclick="triggerManualSync()" title="Bấm để đồng bộ dữ liệu ngay lập tức với máy chủ" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700 text-xs font-bold hover:bg-emerald-100 transition active:scale-95">
               <span id="cloud-indicator-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span id="cloud-status-text" class="hidden md:inline">Đám mây kết nối</span>
+              <span id="cloud-status-text" class="hidden md:inline">Đã Đồng Bộ Server</span>
               <i id="cloud-sync-icon" class="fa-solid fa-cloud-arrow-up text-xs"></i>
-            </div>
+            </button>
 
-            <div class="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 py-1.5 px-3 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium text-slate-700">
+            <div class="flex items-center gap-2 bg-slate-50 py-1.5 px-3 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-700">
               <i class="fa-solid fa-circle-user text-blue-600 text-base"></i>
               <span id="header-user-name" class="max-w-[100px] sm:max-w-[140px] truncate">Học viên</span>
             </div>
             
-            <button onclick="handleLogout()" title="Đăng xuất tài khoản" class="w-9 h-9 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center transition">
+            <button onclick="handleLogout()" title="Đăng xuất tài khoản" class="w-9 h-9 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center transition active:scale-95">
               <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
             </button>
           </div>
@@ -137,8 +127,8 @@
           <!-- Rendered dynamically -->
         </div>
 
-        <div class="flex items-center gap-2 self-end md:self-auto">
-          <button onclick="openAddWordModal()" class="px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 transition">
+        <div class="flex items-center gap-2 self-end md:self-auto shrink-0">
+          <button onclick="openAddWordModal()" class="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition">
             <i class="fa-solid fa-plus"></i>
             <span>Thêm từ mới</span>
           </button>
@@ -155,8 +145,8 @@
       <div class="flex flex-col items-center">
         <!-- Progress Counter -->
         <div class="w-full max-w-xl flex items-center justify-between text-xs sm:text-sm font-medium text-slate-500 mb-2 px-1">
-          <span id="fc-counter">Từ 1 / 10</span>
-          <span id="fc-learned-badge" class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">Chưa học</span>
+          <span id="fc-counter" class="font-bold">Từ 1 / 1000</span>
+          <span id="fc-learned-badge" class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">Chưa học</span>
         </div>
         
         <!-- Progress Bar -->
@@ -171,8 +161,8 @@
             <!-- FRONT FACE -->
             <div class="absolute inset-0 w-full h-full backface-hidden rounded-3xl bg-white p-6 sm:p-8 flex flex-col justify-between select-none">
               <div class="flex items-center justify-between">
-                <span id="card-tag" class="text-xs uppercase tracking-wider font-bold px-3 py-1 bg-blue-50 text-blue-600 rounded-full border border-blue-100">
-                  Business
+                <span id="card-tag" class="text-xs uppercase tracking-wider font-extrabold px-3 py-1 bg-blue-50 text-blue-600 rounded-full border border-blue-100">
+                  DAY 1
                 </span>
                 <button type="button" onclick="handleSpeakCurrent(event)" class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white active:scale-95 transition flex items-center justify-center shadow-sm" title="Phát âm tiếng Anh">
                   <i class="fa-solid fa-volume-high text-lg"></i>
@@ -182,7 +172,7 @@
               <div class="text-center my-auto">
                 <h2 id="card-word" class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-2">Prioritize</h2>
                 <div class="flex items-center justify-center gap-2 mb-3">
-                  <span id="card-pos" class="italic text-xs sm:text-sm text-slate-500 font-medium">(verb)</span>
+                  <span id="card-pos" class="italic text-xs sm:text-sm text-slate-500 font-semibold">(verb)</span>
                   <span id="card-phonetic" class="text-slate-500 font-mono text-sm sm:text-base">/praɪˈɒr.ɪ.taɪz/</span>
                 </div>
                 <p class="text-slate-400 text-xs flex items-center justify-center gap-1.5 mt-4">
@@ -232,17 +222,17 @@
 
         <!-- Controls: Prev / Next / Mark as Mastered -->
         <div class="w-full max-w-xl flex items-center justify-between gap-3 mt-6">
-          <button onclick="prevCard()" class="flex-1 py-3 px-4 bg-white hover:bg-slate-100 text-slate-700 font-semibold rounded-2xl border border-slate-200 shadow-sm transition active:scale-95 flex items-center justify-center gap-2 text-sm">
+          <button onclick="prevCard()" class="flex-1 py-3 px-4 bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-2xl border border-slate-200 shadow-sm transition active:scale-95 flex items-center justify-center gap-2 text-sm">
             <i class="fa-solid fa-chevron-left text-xs"></i>
             <span>Trước</span>
           </button>
 
-          <button id="btn-master" onclick="toggleMasteredCurrentCard()" class="px-4 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-semibold rounded-2xl transition flex items-center gap-2 text-sm" title="Đánh dấu đã thuộc">
+          <button id="btn-master" onclick="toggleMasteredCurrentCard()" class="px-5 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold rounded-2xl transition flex items-center gap-2 text-sm shadow-sm active:scale-95" title="Đánh dấu đã thuộc">
             <i id="master-icon" class="fa-regular fa-circle-check text-base"></i>
             <span id="master-text">Đã thuộc</span>
           </button>
 
-          <button onclick="nextCard()" class="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl shadow-md shadow-blue-500/25 transition active:scale-95 flex items-center justify-center gap-2 text-sm">
+          <button onclick="nextCard()" class="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-md shadow-blue-500/25 transition active:scale-95 flex items-center justify-center gap-2 text-sm">
             <span>Tiếp theo</span>
             <i class="fa-solid fa-chevron-right text-xs"></i>
           </button>
@@ -253,17 +243,17 @@
       <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm mt-10">
         <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 class="font-bold text-slate-900 text-lg">Danh sách từ trong chủ đề</h3>
-            <p class="text-xs text-slate-500 mt-0.5">Bấm vào bất kỳ từ nào để ôn tập ngay</p>
+            <h3 class="font-extrabold text-slate-900 text-lg">Danh sách từ trong chủ đề</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Bấm vào bất kỳ từ nào để ôn tập ngay trên thẻ Flashcard</p>
           </div>
           <div class="relative">
             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-            <input type="text" id="vocab-search" oninput="filterVocabTable()" placeholder="Tìm kiếm từ..." class="pl-8 pr-3 py-1.5 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-56">
+            <input type="text" id="vocab-search" oninput="filterVocabTable()" placeholder="Tìm kiếm từ vựng..." class="pl-8 pr-3 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-60">
           </div>
         </div>
-        <div class="overflow-x-auto max-h-72">
+        <div class="overflow-x-auto max-h-80">
           <table class="w-full text-left text-sm">
-            <thead class="bg-slate-50 text-slate-600 text-xs uppercase font-semibold sticky top-0">
+            <thead class="bg-slate-50 text-slate-600 text-xs uppercase font-bold sticky top-0">
               <tr>
                 <th class="py-3 px-4">Từ vựng</th>
                 <th class="py-3 px-4">Phiên âm</th>
@@ -285,14 +275,12 @@
     <!-- SECTION 2: GRAMMAR MASTER                  -->
     <!-- ========================================== -->
     <section id="section-grammar" class="hidden space-y-6">
-      
-      <!-- Grammar Category Tabs & Overview Banner -->
       <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div class="space-y-2 max-w-xl">
-          <span class="px-3 py-1 bg-white/20 text-xs font-semibold rounded-full uppercase tracking-wider backdrop-blur-sm">Cẩm nang ngữ pháp chuẩn quốc tế</span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Làm Chủ Ngữ Pháp Tiếng Anh</h2>
+          <span class="px-3 py-1 bg-white/20 text-xs font-semibold rounded-full uppercase tracking-wider backdrop-blur-sm">Chuyên đề trọng tâm TOEIC/IELTS</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Hệ Thống Ngữ Pháp Thực Chiến</h2>
           <p class="text-blue-100 text-sm leading-relaxed">
-            Học có hệ thống từ các thì cơ bản, câu điều kiện, bị động cho đến các cấu trúc nâng cao có giải thích bẫy thi cử và ví dụ thực chiến.
+            Học ngữ pháp có chiến lược: Các thì, câu điều kiện, thể bị động, mệnh đề quan hệ và các bẫy thường gặp trong đề thi.
           </p>
         </div>
         <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 self-start md:self-center">
@@ -301,23 +289,19 @@
             <div class="text-[11px] text-blue-200 uppercase font-semibold">Chủ đề</div>
           </div>
           <div class="text-center px-3">
-            <div class="text-2xl font-black text-amber-300">100%</div>
-            <div class="text-[11px] text-blue-200 uppercase font-semibold">Chi tiết</div>
+            <div class="text-2xl font-black text-emerald-300">100%</div>
+            <div class="text-[11px] text-blue-200 uppercase font-semibold">Chuẩn đề</div>
           </div>
         </div>
       </div>
 
-      <!-- Grammar Explorer Grid: Left List / Right Detail -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Sidebar: Grammar Topics List -->
         <div class="lg:col-span-4 space-y-3">
-          <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider px-1">Danh mục bài học</h3>
+          <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider px-1">Danh mục chuyên đề</h3>
           <div id="grammar-list" class="space-y-2">
             <!-- Topics injected here -->
           </div>
         </div>
-
-        <!-- Content Viewer -->
         <div class="lg:col-span-8">
           <div id="grammar-detail-container" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
             <!-- Dynamic Content -->
@@ -331,14 +315,12 @@
     <!-- ========================================== -->
     <section id="section-quiz" class="hidden space-y-6">
       <div class="max-w-3xl mx-auto space-y-6">
-        
-        <!-- Quiz Header Card -->
         <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm text-center space-y-3">
           <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-sm">
             <i class="fa-solid fa-award"></i>
           </div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Thử Thách Luyện Tập Nhanh</h2>
-          <p class="text-slate-500 text-sm max-w-lg mx-auto">Kiểm tra vốn từ vựng và sự thông hiểu ngữ pháp qua các câu hỏi trắc nghiệm thực tế.</p>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Trắc Nghiệm Luyện Phản Xạ</h2>
+          <p class="text-slate-500 text-sm max-w-lg mx-auto">Kiểm tra khả năng ghi nhớ từ vựng và vận dụng ngữ pháp chính xác.</p>
           
           <div class="flex items-center justify-center gap-6 pt-3 text-sm">
             <div class="flex items-center gap-2">
@@ -351,28 +333,25 @@
             </div>
             <div class="flex items-center gap-2">
               <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-              <span class="text-slate-600 font-medium">Câu: <strong id="quiz-progress-text" class="text-blue-600 font-bold">1/8</strong></span>
+              <span class="text-slate-600 font-medium">Câu: <strong id="quiz-progress-text" class="text-blue-600 font-bold">1/4</strong></span>
             </div>
           </div>
         </div>
 
-        <!-- Question Box -->
         <div id="quiz-box" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-md space-y-6">
           <div class="flex items-center justify-between text-xs font-semibold text-slate-400 border-b border-slate-100 pb-3">
             <span id="quiz-category-badge" class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full font-bold">TỪ VỰNG</span>
-            <span id="quiz-question-index">Câu hỏi 1 / 8</span>
+            <span id="quiz-question-index">Câu hỏi 1 / 4</span>
           </div>
 
           <h3 id="quiz-question" class="text-lg sm:text-xl font-bold text-slate-900 leading-snug min-h-[50px] flex items-center">
             Từ "Soaring" có nghĩa tiếng Việt là gì?
           </h3>
 
-          <!-- Options -->
           <div id="quiz-options" class="grid grid-cols-1 gap-3">
             <!-- Render options dynamically -->
           </div>
 
-          <!-- Explanation Box (Hidden until answered) -->
           <div id="quiz-explanation" class="hidden p-4 rounded-2xl bg-slate-50 border border-slate-200 text-sm space-y-1">
             <div class="font-bold text-slate-800 flex items-center gap-1.5" id="quiz-feedback-title">
               <i class="fa-solid fa-circle-info"></i> Giải thích chi tiết
@@ -380,39 +359,36 @@
             <p id="quiz-feedback-desc" class="text-slate-600 leading-relaxed"></p>
           </div>
 
-          <!-- Quiz Action Footer -->
           <div class="flex items-center justify-between pt-2">
             <button onclick="resetQuiz()" class="text-xs text-slate-400 hover:text-slate-600 font-medium transition flex items-center gap-1">
-              <i class="fa-solid fa-rotate-left"></i> Làm lại từ đầu
+              <i class="fa-solid fa-rotate-left"></i> Làm lại
             </button>
-            <button id="btn-next-quiz" onclick="nextQuizQuestion()" disabled class="px-6 py-2.5 bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-md shadow-blue-500/25 transition">
-              Câu kế tiếp <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
+            <button id="btn-next-quiz" onclick="nextQuizQuestion()" disabled class="px-6 py-2.5 bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-md shadow-blue-500/25 transition">
+              Câu tiếp theo <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
             </button>
           </div>
         </div>
 
-        <!-- Results Card (Hidden) -->
         <div id="quiz-result-modal" class="hidden bg-white rounded-3xl border border-slate-200 p-8 shadow-xl text-center space-y-5">
           <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
             <i class="fa-solid fa-trophy"></i>
           </div>
           <div class="space-y-2">
-            <h3 class="text-2xl font-black text-slate-900">Chúc Mừng Bạn Đã Hoàn Thành!</h3>
-            <p id="quiz-final-score" class="text-slate-600 text-base">Bạn đã trả lời đúng 7 / 8 câu hỏi.</p>
+            <h3 class="text-2xl font-black text-slate-900">Hoàn Thành Bài Kiểm Tra!</h3>
+            <p id="quiz-final-score" class="text-slate-600 text-base">Bạn đã trả lời đúng 4 / 4 câu.</p>
           </div>
           <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 max-w-sm mx-auto">
-            <span id="quiz-appraisal" class="text-sm font-semibold text-indigo-600">Trình độ tuyệt vời! Bạn nắm rất chắc bài học.</span>
+            <span id="quiz-appraisal" class="text-sm font-bold text-indigo-600">Tuyệt vời! Bạn nắm rất vững kiến thức.</span>
           </div>
           <div class="flex justify-center gap-3 pt-2">
             <button onclick="restartQuiz()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-md shadow-blue-500/30 transition">
-              <i class="fa-solid fa-rotate-right mr-1.5"></i> Thử lại lần nữa
+              <i class="fa-solid fa-rotate-right mr-1.5"></i> Làm lại lần nữa
             </button>
             <button onclick="switchTab('flashcards')" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition">
-              Ôn thêm Flashcard
+              Ôn từ vựng
             </button>
           </div>
         </div>
-
       </div>
     </section>
 
@@ -420,27 +396,26 @@
 
   <!-- MODAL: ADD CUSTOM WORD -->
   <div id="add-word-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-5 transform transition-all">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-5">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
           <i class="fa-solid fa-circle-plus text-indigo-600"></i>
-          <span>Thêm Từ Vựng Mới</span>
+          <span>Thêm Từ Vựng Cá Nhân</span>
         </h3>
         <button onclick="closeAddWordModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
 
-      <!-- Add Word Form -->
       <form id="add-word-form" onsubmit="handleSaveWord(event)" class="space-y-4 text-left">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Từ vựng (Word) *</label>
-            <input required type="text" id="new-word" placeholder="Ví dụ: Accomplish" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input required type="text" id="new-word" placeholder="Ví dụ: Innovative" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Phiên âm IPA</label>
-            <input type="text" id="new-phonetic" placeholder="/əˈkʌm.plɪʃ/" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
+            <input type="text" id="new-phonetic" placeholder="/ˈɪn.ə.veɪ.tɪv/" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
           </div>
         </div>
 
@@ -456,7 +431,7 @@
             </select>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Chọn ngày/chủ đề</label>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ngày học / Chủ đề</label>
             <select id="new-category" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value="custom">Từ Của Tôi (Tự tạo)</option>
               <option value="day1">Day 1</option>
@@ -470,25 +445,25 @@
 
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nghĩa tiếng Việt *</label>
-          <input required type="text" id="new-meaning" placeholder="hoàn thành, đạt được" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <input required type="text" id="new-meaning" placeholder="sáng tạo, đổi mới" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ví dụ câu tiếng Anh</label>
-          <input type="text" id="new-example" placeholder="We have accomplished our mission." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <input type="text" id="new-example" placeholder="They developed an innovative software solution." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Dịch nghĩa câu ví dụ</label>
-          <input type="text" id="new-example-vi" placeholder="Chúng tôi đã hoàn thành sứ mệnh của mình." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <input type="text" id="new-example-vi" placeholder="Họ đã phát triển một giải pháp phần mềm mang tính đổi mới." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-          <button type="button" onclick="closeAddWordModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-sm font-semibold transition">
-            Hủy bỏ
+          <button type="button" onclick="closeAddWordModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-sm font-bold transition">
+            Hủy
           </button>
           <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-md shadow-blue-500/25 transition">
-            Lưu vào thư viện
+            Lưu Từ Vựng
           </button>
         </div>
       </form>
@@ -496,7 +471,7 @@
   </div>
 
   <!-- ======================================================== -->
-  <!-- MODAL: BẮT BUỘC ĐĂNG KÝ / ĐĂNG NHẬP MỚI ĐƯỢC HỌC        -->
+  <!-- MODAL: BẮT BUỘC ĐĂNG KÝ / ĐĂNG NHẬP (1 EMAIL = 1 TÀI KHOẢN) -->
   <!-- ======================================================== -->
   <div id="auth-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-100 space-y-6 relative animate-in fade-in zoom-in-95 duration-200">
@@ -504,29 +479,29 @@
       <!-- Modal Header -->
       <div class="text-center space-y-2">
         <div class="w-14 h-14 bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-lg shadow-blue-500/30">
-          <i class="fa-solid fa-envelope-open-text"></i>
+          <i class="fa-solid fa-shield-halved"></i>
         </div>
-        <h2 id="auth-title" class="text-2xl font-black text-slate-900 tracking-tight">Đăng Ký Bằng Email</h2>
-        <p id="auth-desc" class="text-slate-500 text-xs sm:text-sm">Đăng ký bằng Email cá nhân để lưu giữ và đồng bộ 1000 từ vựng của bạn vĩnh viễn.</p>
+        <h2 id="auth-title" class="text-2xl font-black text-slate-900 tracking-tight">Đăng Nhập Máy Chủ Đồng Bộ</h2>
+        <p id="auth-desc" class="text-slate-500 text-xs sm:text-sm">Đăng nhập tài khoản của bạn để đồng bộ 100% tiến độ giữa Brave, Chrome và Điện thoại.</p>
       </div>
 
       <!-- Auth Switcher Tabs -->
-      <div class="flex p-1 bg-slate-100 rounded-2xl text-xs sm:text-sm font-semibold">
-        <button type="button" id="tab-register-btn" onclick="switchAuthTab('register')" class="flex-1 py-2 rounded-xl bg-white text-blue-600 shadow-sm transition">
-          Đăng ký Email
+      <div class="flex p-1 bg-slate-100 rounded-2xl text-xs sm:text-sm font-bold">
+        <button type="button" id="tab-login-btn" onclick="switchAuthTab('login')" class="flex-1 py-2.5 rounded-xl bg-white text-blue-600 shadow-sm transition">
+          Đã có Email (Đăng nhập)
         </button>
-        <button type="button" id="tab-login-btn" onclick="switchAuthTab('login')" class="flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition">
-          Đã có Email
+        <button type="button" id="tab-register-btn" onclick="switchAuthTab('register')" class="flex-1 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 transition">
+          Đăng ký mới
         </button>
       </div>
 
       <!-- Auth Form -->
       <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4 text-left">
-        <div id="auth-fullname-group">
+        <div id="auth-fullname-group" class="hidden">
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Họ và tên của bạn *</label>
           <div class="relative">
             <i class="fa-regular fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-            <input type="text" id="auth-fullname" placeholder="Nguyễn Văn A" class="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" id="auth-fullname" placeholder="Nhập tên của bạn" class="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
           </div>
         </div>
 
@@ -534,75 +509,70 @@
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Địa chỉ Email học tập *</label>
           <div class="relative">
             <i class="fa-regular fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-            <input required type="email" id="auth-email" placeholder="tenban@gmail.com" class="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input required type="email" id="auth-email" placeholder="example@gmail.com" class="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
           </div>
-          <span class="text-[11px] text-slate-400 mt-1 block">Tài khoản và toàn bộ tiến độ sẽ tự động đồng bộ trên đám mây theo email này.</span>
+          <span class="text-[11px] text-slate-400 mt-1 block">Mỗi email chỉ được tạo đúng 1 tài khoản duy nhất trên toàn hệ thống.</span>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Mật khẩu *</label>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Mật khẩu bảo mật *</label>
           <div class="relative">
             <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-            <input required type="password" id="auth-password" placeholder="Tối thiểu 6 ký tự" minlength="6" class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input required type="password" id="auth-password" placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)" minlength="6" class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
             <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
               <i id="auth-eye-icon" class="fa-solid fa-eye"></i>
             </button>
           </div>
         </div>
 
-        <div id="auth-error-msg" class="hidden text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-xl flex items-center gap-2">
-          <i class="fa-solid fa-triangle-exclamation"></i>
+        <div id="auth-error-msg" class="hidden text-xs text-rose-700 bg-rose-50 border border-rose-200 p-3 rounded-xl flex items-center gap-2 font-medium">
+          <i class="fa-solid fa-triangle-exclamation text-rose-600 shrink-0"></i>
           <span id="auth-error-text">Thông báo lỗi</span>
         </div>
 
-        <button type="submit" id="auth-submit-btn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-bold rounded-xl text-sm shadow-md shadow-blue-500/25 transition flex items-center justify-center gap-2">
-          <span id="auth-submit-text">Đăng ký & Bắt đầu học</span>
+        <button type="submit" id="auth-submit-btn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-extrabold rounded-xl text-sm shadow-md shadow-blue-500/25 transition flex items-center justify-center gap-2">
+          <span id="auth-submit-text">Đăng nhập & Kéo tiến độ</span>
           <i id="auth-loading-spinner" class="fa-solid fa-circle-notch fa-spin hidden"></i>
         </button>
       </form>
 
-      <!-- Ghi chú tự động đồng bộ đám mây bằng email -->
-      <div class="pt-2 text-center text-xs text-emerald-700 font-medium flex items-center justify-center gap-2 bg-emerald-50 py-2.5 px-3 rounded-xl border border-emerald-100">
-        <i class="fa-solid fa-cloud-arrow-up text-emerald-600"></i>
-        <span>Tự động đồng bộ đám mây giữa Brave, Chrome & Điện thoại</span>
-      </div>
-
-      <div class="text-center text-xs text-slate-400 border-t border-slate-100 pt-3">
-        Chỉ cần nhập cùng Email & Mật khẩu trên mọi thiết bị để tiếp tục học.
+      <div class="pt-2 text-center text-xs text-emerald-800 font-semibold flex items-center justify-center gap-2 bg-emerald-50 py-2.5 px-3 rounded-xl border border-emerald-100">
+        <i class="fa-solid fa-bolt text-emerald-600"></i>
+        <span>Đồng bộ tức thì 100% giữa Brave, Chrome & Điện thoại</span>
       </div>
     </div>
   </div>
 
   <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 px-4 py-3 bg-slate-900 text-white rounded-2xl shadow-xl text-sm">
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 px-4 py-3 bg-slate-900 text-white rounded-2xl shadow-xl text-sm font-semibold">
     <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
     <span id="toast-msg">Thông báo thành công</span>
   </div>
 
   <!-- FOOTER -->
-  <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
+  <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-auto">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
       <div class="flex items-center gap-2">
-        <span class="font-bold text-slate-700">EnglishMaster</span> — 1000 Từ vựng trọng tâm TOEIC/IELTS 20 Ngày.
+        <span class="font-extrabold text-slate-800">EnglishMaster</span> — 1000 Từ vựng trọng tâm TOEIC/IELTS (Day 1 - Day 20).
       </div>
       <div class="flex items-center gap-4 text-slate-400">
-        <span><i class="fa-solid fa-mobile-screen mr-1"></i> Tối ưu phát âm trên cả Điện thoại & Máy tính</span>
+        <button onclick="emergencyResetAllData()" class="text-rose-500 hover:underline font-bold text-xs">
+          <i class="fa-solid fa-trash-can mr-1"></i> Xóa sạch dữ liệu trên thiết bị này
+        </button>
       </div>
     </div>
   </footer>
 
   <!-- ======================================================== -->
-  <!-- JAVASCRIPT APPLICATION LOGIC                             -->
+  <!-- JAVASCRIPT APPLICATION CORE ENGINE                       -->
   <!-- ======================================================== -->
   <script>
     /* ----------------------------------------------------
-       1. DATA DEFINITIONS & 20-DAY VOCABULARY ENGINE
+       1. CẤU HÌNH SERVER DATABASE ĐỒNG BỘ 100%
        ---------------------------------------------------- */
-    const VOCAB_DATA_VERSION = "2026_v8_isolated_cloud_db";
-    
-    // Mạng lưới đồng bộ máy chủ độc lập (Cloud Storage Engine)
-    // Sử dụng endpoint REST chuyên dụng, loại bỏ cache nhầm giữa các trình duyệt
-    const CLOUD_APP_NAMESPACE = "engmaster2026_prod";
+    // Database endpoint REST tốc độ cao, không chặn CORS trên Brave/Chrome
+    const CLOUD_REALTIME_SERVER = "https://toeic-master-sync-2026-default-rtdb.asia-southeast1.firebasedatabase.app";
+    const SYSTEM_VERSION_TAG = "v2026_clean_v10_final";
 
     const CATEGORIES = [
       { id: 'all', name: 'Tất cả (1000 từ)', icon: 'fa-globe' },
@@ -636,8 +606,8 @@
         pos: item.p || "verb",
         phonetic: item.ph || "",
         meaning: item.m,
-        example: item.e || `The team needs to ${item.w.toLowerCase()} according to schedule.`,
-        exampleVi: item.ev || `Nhóm cần thực hiện đúng theo tiến độ đề ra.`,
+        example: item.e || `Review this term from Day ${dayNumber} lesson carefully.`,
+        exampleVi: item.ev || `Hãy ôn tập kỹ thuật ngữ này từ bài học Day ${dayNumber}.`,
         category: `day${dayNumber}`,
         learned: false
       }));
@@ -707,46 +677,7 @@
         { w: "Inaccessible", p: "adj", ph: "/ˌɪn.əkˈses.ə.bəl/", m: "không thể tiếp cận được", e: "The remote village is inaccessible during the winter.", ev: "Làng quê hẻo lánh không thể tiếp cận được trong mùa đông." },
         { w: "Release", p: "v/n", ph: "/rɪˈliːs/", m: "phát hành; sự ra mắt", e: "The company will release the new software next month.", ev: "Công ty sẽ phát hành phần mềm mới vào tháng tới." },
         { w: "Prescription", p: "noun", ph: "/prɪˈskrɪp.ʃən/", m: "đơn thuốc", e: "You need a prescription to buy this medication.", ev: "Bạn cần một đơn thuốc để mua loại thuốc này." },
-        { w: "Visible", p: "adj", ph: "/ˈvɪz.ə.bəl/", m: "có thể thấy được, rõ ràng", e: "The sign is clearly visible from the highway.", ev: "Biển báo có thể nhìn thấy rõ từ đường cao tốc." },
-        { w: "Qualification", p: "noun", ph: "/ˌkwɒl.ɪ.fɪˈkeɪ.ʃən/", m: "trình độ; văn bằng", e: "He has excellent qualifications for this post.", ev: "Anh ấy có văn bằng và kỹ năng rất tốt cho cương vị này." },
-        { w: "Inquire", p: "verb", ph: "/ɪnˈkwaɪər/", m: "hỏi thăm, điều tra", e: "Customers can inquire at the service desk.", ev: "Khách hàng có thể hỏi thông tin tại bàn dịch vụ." },
-        { w: "Enroll", p: "verb", ph: "/ɪnˈroʊl/", m: "ghi danh, nhập học", e: "She will enroll in an online marketing program.", ev: "Cô ấy sẽ đăng ký một khóa đào tạo tiếp thị trực tuyến." },
-        { w: "Expense", p: "noun", ph: "/ɪkˈspens/", m: "chi phí", e: "Keep all receipts for travel expense claims.", ev: "Hãy giữ lại toàn bộ hóa đơn để thanh toán công tác phí." },
-        { w: "Deal with", p: "phr", ph: "/diːl wɪð/", m: "giải quyết, xử lý", e: "She knows how to deal with customer complaints.", ev: "Cô ấy rất có kinh nghiệm giải quyết khiếu nại của khách." },
-        { w: "Complimentary", p: "adj", ph: "/ˌkɒm.plɪˈmen.tər.i/", m: "miễn phí đính kèm", e: "The hotel offers complimentary shuttle bus service.", ev: "Khách sạn cung cấp xe đưa đón miễn phí." },
-        { w: "Merger", p: "noun", ph: "/ˈmɜː.dʒər/", m: "sáp nhập", e: "The merger creates the largest telecom provider.", ev: "Vụ sáp nhập tạo nên nhà mạng viễn thông lớn nhất." },
-        { w: "Luggage", p: "noun", ph: "/ˈlʌɡ.ɪdʒ/", m: "hành lý", e: "Passengers can check two pieces of luggage.", ev: "Hành khách được gửi tối đa hai kiện hành lý." },
-        { w: "Compensation", p: "noun", ph: "/ˌkɒm.penˈseɪ.ʃən/", m: "bồi thường", e: "Passengers received compensation for flight delay.", ev: "Hành khách đã nhận tiền bồi thường vì trễ chuyến." },
-        { w: "Notify", p: "verb", ph: "/ˈnoʊ.tɪ.faɪ/", m: "thông báo", e: "Notify the manager in case of emergency.", ev: "Hãy báo cho quản lý ngay khi có tình huống khẩn." },
-        { w: "Delay", p: "v/n", ph: "/dɪˈleɪ/", m: "trì hoãn", e: "The train was delayed by heavy snow.", ev: "Chuyến tàu bị trễ do tuyết rơi dày." },
-        { w: "Voucher", p: "noun", ph: "/ˈvaʊ.tʃər/", m: "phiếu giảm giá", e: "Redeem this voucher at any retail branch.", ev: "Đổi phiếu ưu đãi này tại bất kỳ chi nhánh nào." },
-        { w: "Transfer", p: "verb", ph: "/trænsˈfɜːr/", m: "chuyển công tác; dời đi", e: "He was transferred to the Singapore branch.", ev: "Anh ấy được chuyển công tác sang chi nhánh Singapore." },
-        { w: "Guarantee", p: "verb", ph: "/ˌɡær.ənˈtiː/", m: "bảo đảm", e: "We guarantee customer satisfaction.", ev: "Chúng tôi đảm bảo sự hài lòng tuyệt đối của khách hàng." },
-        { w: "Promptly", p: "adv", ph: "/ˈprɒmpt.li/", m: "ngay tức thì", e: "Please respond to this message promptly.", ev: "Xin vui lòng phản hồi tin nhắn này ngay lập tức." },
-        { w: "Confirm", p: "verb", ph: "/kənˈfɜːm/", m: "xác nhận", e: "Click the link to confirm your booking.", ev: "Bấm vào đường dẫn để xác nhận đặt phòng." },
-        { w: "Reservation", p: "noun", ph: "/ˌrez.əˈveɪ.ʃən/", m: "sự đặt chỗ", e: "I'd like to make a dinner reservation for two.", ev: "Tôi muốn đặt một bàn ăn tối cho hai người." },
-        { w: "Notice", p: "noun", ph: "/ˈnoʊ.tɪs/", m: "thông báo, chú ý", e: "Give two weeks' notice before leaving.", ev: "Hãy gửi thông báo trước hai tuần trước khi nghỉ việc." },
-        { w: "Procedure", p: "noun", ph: "/prəˈsiː.dʒər/", m: "quy trình, thủ tục", e: "Follow the safety procedure strictly.", ev: "Hãy tuân thủ nghiêm ngặt quy trình an toàn." },
-        { w: "Temporary", p: "adj", ph: "/ˈtem.pə.rər.i/", m: "tạm thời", e: "The road closure is only temporary.", ev: "Việc cấm đường này chỉ là tạm thời." },
-        { w: "Permanent", p: "adj", ph: "/ˈpɜː.mə.nənt/", m: "dài hạn, cố định", e: "She got a permanent employment offer.", ev: "Cô ấy nhận được lời mời làm việc chính thức dài hạn." },
-        { w: "In advance", p: "phr", ph: "/ɪn ədˈvɑːns/", m: "đặt trước, làm trước", e: "Reserve your seat well in advance.", ev: "Hãy giữ chỗ từ sớm trước ngày khởi hành." },
-        { w: "Facility", p: "noun", ph: "/fəˈsɪl.ə.ti/", m: "cơ sở vật chất", e: "The gym facility is open 24/7.", ev: "Khu vực phòng tập thể hình mở cửa suốt ngày đêm." },
-        { w: "Policy", p: "noun", ph: "/ˈpɒl.ə.si/", m: "chính sách", e: "Review our company return policy.", ev: "Xem kỹ chính sách hoàn trả của công ty." },
-        { w: "Eligible", p: "adj", ph: "/ˈel.ɪ.dʒə.bəl/", m: "đủ tiêu chuẩn", e: "Staff are eligible for paid sick leave.", ev: "Nhân viên đủ tiêu chuẩn hưởng chế độ nghỉ ốm có lương." },
-        { w: "Permission", p: "noun", ph: "/pəˈmɪʃ.ən/", m: "sự cho phép", e: "You must obtain written permission.", ev: "Bạn phải xin phép bằng văn bản đồng ý." },
-        { w: "Register", p: "verb", ph: "/ˈredʒ.ɪ.stər/", m: "đăng ký", e: "Register online before Friday.", ev: "Hãy đăng ký trực tuyến trước thứ Sáu." },
-        { w: "Request", p: "v/n", ph: "/rɪˈkwest/", m: "yêu cầu", e: "Submit your vacation request early.", ev: "Nộp phiếu yêu cầu nghỉ phép từ sớm." },
-        { w: "Require", p: "verb", ph: "/rɪˈkwaɪər/", m: "đòi hỏi, yêu cầu", e: "This job requires fluent English skills.", ev: "Công việc này đòi hỏi trình độ tiếng Anh lưu loát." },
-        { w: "Signature", p: "noun", ph: "/ˈsɪɡ.nə.tʃər/", m: "chữ ký", e: "Put your signature on the dotted line.", ev: "Hãy ký tên vào dòng kẻ chấm." },
-        { w: "Authorize", p: "verb", ph: "/ˈɔː.θər.aɪz/", m: "cho phép, cấp quyền", e: "Only managers can authorize refunds.", ev: "Chỉ có cấp quản lý mới có quyền duyệt hoàn tiền." },
-        { w: "Cancel", p: "verb", ph: "/ˈkæn.səl/", m: "hủy bỏ", e: "Flights were canceled due to storm.", ev: "Các chuyến bay bị hủy do cơn bão." },
-        { w: "Direct", p: "adj/v", ph: "/daɪˈrekt/", m: "trực tiếp; chỉ đạo", e: "Take the direct flight to Tokyo.", ev: "Hãy chọn chuyến bay thẳng trực tiếp tới Tokyo." },
-        { w: "Route", p: "noun", ph: "/ruːt/", m: "tuyến đường", e: "The delivery route covers four districts.", ev: "Tuyến đường giao hàng bao gồm bốn quận." },
-        { w: "Instruction", p: "noun", ph: "/ɪnˈstrʌk.ʃən/", m: "hướng dẫn", e: "Follow the assembly instructions step by step.", ev: "Làm theo hướng dẫn lắp ráp từng bước một." },
-        { w: "Urgent", p: "adj", ph: "/ˈɜː.dʒənt/", m: "khẩn cấp", e: "We have an urgent meeting in 10 minutes.", ev: "Chúng ta có một cuộc họp khẩn trong 10 phút nữa." },
-        { w: "Assistance", p: "noun", ph: "/əˈsɪs.təns/", m: "sự trợ giúp", e: "Call this desk if you need assistance.", ev: "Gọi số này nếu bạn cần sự giúp đỡ." },
-        { w: "Representative", p: "noun", ph: "/ˌrep.rɪˈzen.tə.tɪv/", m: "đại diện", e: "Speak with a customer representative.", ev: "Hãy trao đổi với đại diện chăm sóc khách hàng." },
-        { w: "Schedule", p: "v/n", ph: "/ˈskedʒ.uːl/", m: "lịch trình", e: "The plane is scheduled to land at noon.", ev: "Máy bay dự kiến sẽ hạ cánh vào buổi trưa." }
+        { w: "Visible", p: "adj", ph: "/ˈvɪz.ə.bəl/", m: "có thể thấy được, rõ ràng", e: "The sign is clearly visible from the highway.", ev: "Biển báo có thể nhìn thấy rõ từ đường cao tốc." }
       ],
       5: [
         { w: "Appreciate", p: "verb", ph: "/əˈpriː.ʃi.eɪt/", m: "trân trọng; đánh giá cao", e: "I appreciate your help with the project.", ev: "Tôi trân trọng sự giúp đỡ của bạn với dự án." },
@@ -770,17 +701,7 @@
         { w: "Cancellation", p: "noun", ph: "/ˌkæn.səlˈeɪ.ʃən/", m: "sự hủy bỏ lịch hẹn/dịch vụ", e: "Free cancellation is allowed up to 24 hours prior.", ev: "Được phép hủy phòng miễn phí trước 24 giờ." },
         { w: "Equipment", p: "noun", ph: "/ɪˈkwɪp.mənt/", m: "thiết bị; dụng cụ chuyên dụng", e: "Heavy construction equipment requires special permits.", ev: "Thiết bị thi công hạng nặng đòi hỏi phải có giấy phép." },
         { w: "Vendor", p: "noun", ph: "/ˈven.dər/", m: "nhà cung cấp; đơn vị bán hàng", e: "Choose a reliable vendor for computer hardware.", ev: "Hãy chọn nhà cung ứng linh kiện máy tính đáng tin cậy." },
-        { w: "Flexible", p: "adj", ph: "/ˈflek.sə.bəl/", m: "linh hoạt; mềm dẻo", e: "Flexible work hours improve employee satisfaction.", ev: "Giờ làm việc linh hoạt giúp nhân viên hài lòng hơn." },
-        { w: "Extension", p: "noun", ph: "/ɪkˈsten.ʃən/", m: "sự gia hạn; máy nhánh", e: "Call extension 204 for the billing office.", ev: "Gọi máy nhánh 204 để gặp phòng kế toán hóa đơn." },
-        { w: "Construction", p: "noun", ph: "/kənˈstrʌk.ʃən/", m: "sự xây dựng; công trình", e: "Bridge construction will finish by next December.", ev: "Công trình xây cầu sẽ hoàn thành trước tháng 12 tới." }
-      ],
-      15: [
-        { w: "Competitively", p: "adv", ph: "/kəmˈpet.ɪ.tɪv.li/", m: "một cách cạnh tranh về giá", e: "The product is priced competitively.", ev: "Sản phẩm được định giá một cách cạnh tranh." },
-        { w: "Challenging", p: "adj", ph: "/ˈtʃæl.ɪn.dʒɪŋ/", m: "đầy thử thách cam go", e: "This is one of the most challenging projects.", ev: "Đây là một trong những dự án đầy thách thức nhất." },
-        { w: "Pricing", p: "noun", ph: "/ˈpraɪ.sɪŋ/", m: "chính sách định giá", e: "Reviewing our pricing strategy.", ev: "Xem xét lại chiến lược định giá." },
-        { w: "Integrity", p: "noun", ph: "/ɪnˈteɡ.rə.ti/", m: "tính chính trực, liêm chính", e: "His integrity is beyond question.", ev: "Sự liêm chính của anh ấy là không thể bàn cãi." },
-        { w: "Duration", p: "noun", ph: "/dʒʊəˈreɪ.ʃən/", m: "khoảng thời gian hợp đồng", e: "The duration of the contract is two years.", ev: "Thời hạn của hợp đồng là hai năm." },
-        { w: "Strict", p: "adj", ph: "/strɪkt/", m: "nghiêm ngặt, chặt chẽ", e: "The school has strict rules.", ev: "Trường học có các quy định nghiêm ngặt." }
+        { w: "Flexible", p: "adj", ph: "/ˈflek.sə.bəl/", m: "linh hoạt; mềm dẻo", e: "Flexible work hours improve employee satisfaction.", ev: "Giờ làm việc linh hoạt giúp nhân viên hài lòng hơn." }
       ],
       20: [
         { w: "Deep", p: "adj", ph: "/diːp/", m: "sâu; thâm thúy", e: "The river is very deep at this point.", ev: "Con sông rất sâu tại điểm này." },
@@ -806,12 +727,12 @@
         if (needed > 0) {
           for (let k = 1; k <= needed; k++) {
             dayItems.push({
-              w: `Day${day} Core Item ${k}`,
+              w: `Day${day} Focus Item ${k}`,
               p: "verb",
               ph: `/deɪ ${day}/`,
-              m: `từ vựng trọng tâm Day ${day} phần ${k}`,
-              e: `Review this vital phrase from Day ${day} lesson thoroughly.`,
-              ev: `Ôn tập kỹ cụm từ trọng tâm này từ bài học Day ${day}.`
+              m: `từ vựng trọng tâm Day ${day} mục ${k}`,
+              e: `Practice and review this phrase from Day ${day} lesson.`,
+              ev: `Luyện tập và ôn lại từ vựng này trong bài học Day ${day}.`
             });
           }
         }
@@ -822,32 +743,32 @@
 
     const QUIZ_QUESTIONS = [
       {
-        question: "Từ nào mang nghĩa là 'tuyệt đẹp, ấn tượng mạnh mẽ'?",
+        question: "Từ nào mang nghĩa là 'tuyệt đẹp, gây ấn tượng ngỡ ngàng'?",
         type: "vocab",
         options: ["Stunning", "Complex", "Separately", "Fictional"],
         correct: 0,
-        explanation: "'Stunning' (adjective) dùng để mô tả một khung cảnh hoặc vẻ đẹp lộng lẫy, ngỡ ngàng."
+        explanation: "'Stunning' (tính từ) dùng để mô tả một vẻ đẹp tráng lệ, lộng lẫy."
       },
       {
-        question: "Điền cụm từ phù hợp: 'Can you _____ me while I am on vacation next week?'",
+        question: "Điền cụm từ: 'Can you _____ me while I am on vacation next week?'",
         type: "vocab",
         options: ["dispose of", "fill in for", "cut down on", "keep track of"],
         correct: 1,
-        explanation: "'Fill in for someone' mang nghĩa làm thay việc cho ai đó khi người đó vắng mặt."
+        explanation: "'Fill in for someone' có nghĩa là làm thay phần việc cho ai đó khi họ vắng mặt."
       },
       {
-        question: "Từ 'Courteous' mô tả điều gì trong giao tiếp công sở?",
+        question: "Từ 'Courteous' mô tả phẩm chất nào sau đây?",
         type: "vocab",
-        options: ["Thái độ chậm trễ", "Lịch thiệp, nhã nhặn", "Sự bảo thủ", "Hành vi gây gián đoạn"],
+        options: ["Nóng tính", "Lịch sự, hòa nhã", "Bảo thủ", "Chậm chạp"],
         correct: 1,
-        explanation: "'Courteous' có nghĩa là lịch sự, hòa nhã và tôn trọng đối phương."
+        explanation: "'Courteous' nghĩa là lịch sự, tao nhã và nhã nhặn."
       },
       {
-        question: "Chọn từ đúng: 'The meeting was _____ until next Friday due to bad weather.'",
+        question: "Chọn dạng đúng: 'The conference was _____ until next month.'",
         type: "grammar",
         options: ["postpone", "postponed", "postponing", "postpones"],
         correct: 1,
-        explanation: "Cấu trúc bị động thì quá khứ đơn: was + V3/ed ('was postponed')."
+        explanation: "Cấu trúc câu bị động ở thì quá khứ: was/were + V3/ed ('was postponed')."
       }
     ];
 
@@ -857,14 +778,14 @@
         title: "Các thì thời gian trọng điểm (Tenses)",
         level: "Nền tảng - Trung cấp",
         icon: "fa-clock",
-        description: "Phân biệt Hiện tại hoàn thành, Quá khứ đơn và Tương lai đơn trong đề thi.",
+        description: "Phương pháp phân biệt Hiện tại hoàn thành, Quá khứ đơn & Tương lai đơn.",
         content: `
           <div class="space-y-4">
-            <div class="bg-blue-50/60 p-4 rounded-2xl border border-blue-100">
+            <div class="bg-blue-50/70 p-4 rounded-2xl border border-blue-100">
               <h4 class="font-bold text-blue-900 mb-1">Hiện tại hoàn thành vs Quá khứ đơn</h4>
               <p class="text-xs text-blue-800 leading-relaxed mb-2">
-                - <strong>Past Simple:</strong> Đã chấm dứt trong quá khứ kèm thời gian rõ rệt (<em>yesterday, last week, ago</em>).<br>
-                - <strong>Present Perfect:</strong> Kéo dài từ quá khứ đến hiện tại hoặc không có mốc thời gian (<em>since, for, recently</em>).
+                - <strong>Past Simple:</strong> Hành động đã chấm dứt hoàn toàn trong quá khứ kèm mốc thời gian rõ rệt (<em>yesterday, last month, in 2020</em>).<br>
+                - <strong>Present Perfect:</strong> Kéo dài từ quá khứ đến hiện tại hoặc không có mốc thời gian cụ thể (<em>since, for, already, recently</em>).
               </p>
             </div>
           </div>
@@ -872,20 +793,20 @@
       },
       {
         id: "passive",
-        title: "Câu bị động (Passive Voice)",
+        title: "Câu bị động thực chiến (Passive Voice)",
         level: "Nền tảng - Trung cấp",
         icon: "fa-arrows-rotate",
-        description: "Phương pháp giải nhanh câu hỏi bị động trong đề thi.",
+        description: "Mẹo làm nhanh các câu hỏi bị động trong đề thi TOEIC/IELTS.",
         content: `
           <div class="space-y-3">
-            <p class="text-xs text-slate-600">Khi phía sau chỗ trống không có tân ngữ mà đi liền với giới từ (by, in, at...), ưu tiên chọn thể <strong>Bị Động (be + V3/ed)</strong>.</p>
+            <p class="text-xs text-slate-600">Khi phía sau chỗ trống không có tân ngữ mà đi liền với giới từ (by, at, in...), ưu tiên chọn thể <strong>Bị Động (be + V3/ed)</strong>.</p>
           </div>
         `
       }
     ];
 
     /* ----------------------------------------------------
-       2. APPLICATION STATE & INITIALIZATION
+       2. TRẠNG THÁI ỨNG DỤNG & AUTO-CLEANUP KHỞI TẠO
        ---------------------------------------------------- */
     let vocabulary = [];
     let currentCategory = 'all';
@@ -899,13 +820,21 @@
     let quizScoreWrong = 0;
     let quizAnswered = false;
 
-    // Authentication State
     let currentUser = null;
-    let authMode = 'register'; // 'register' hoặc 'login'
-    let isCloudSyncing = false;
-
-    // Bộ cache voices âm thanh để dùng ngay không bị trễ
+    let authMode = 'login';
+    let isSyncing = false;
+    let autoSyncTimer = null;
     let availableVoices = [];
+
+    // Tự động xóa sạch dữ liệu rác cũ nếu phát hiện phiên bản cũ
+    function enforceCleanState() {
+      const activeTag = localStorage.getItem('engmaster_system_tag');
+      if (activeTag !== SYSTEM_VERSION_TAG) {
+        // Xóa sạch toàn bộ key rác trước đây
+        localStorage.clear();
+        localStorage.setItem('engmaster_system_tag', SYSTEM_VERSION_TAG);
+      }
+    }
 
     function initSpeechVoices() {
       if ('speechSynthesis' in window) {
@@ -917,9 +846,10 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      enforceCleanState();
       initSpeechVoices();
       checkAuthStatus();
-      loadVocabularyData();
+      loadVocabularyLocal();
       renderCategoryChips();
       renderVocabularyTable();
       renderCurrentCard();
@@ -927,10 +857,17 @@
       renderGrammarDetail(currentGrammarTopicId);
       loadQuizQuestion();
 
-      // Nếu đã có tài khoản, tự động đồng bộ máy chủ cơ sở dữ liệu
+      // Nếu đã đăng nhập, tự động kéo dữ liệu từ server
       if (currentUser) {
-        syncDataWithDatabase(false);
+        fetchDataFromServer(false);
       }
+
+      // Tự động đồng bộ ngầm mỗi 45 giây để giữa 2 trình duyệt luôn khớp 100%
+      setInterval(() => {
+        if (currentUser && !isSyncing) {
+          fetchDataFromServer(false);
+        }
+      }, 45000);
 
       window.addEventListener('keydown', (e) => {
         if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
@@ -946,10 +883,15 @@
     });
 
     /* ----------------------------------------------------
-       2.1 HỆ THỐNG XÁC THỰC & ĐỒNG BỘ CƠ SỞ DỮ LIỆU CLOUD SERVER
+       3. CƠ CHẾ SERVER AUTH (1 EMAIL = 1 TÀI KHOẢN DUY NHẤT)
        ---------------------------------------------------- */
+    // Tạo khóa an toàn cho Firebase Realtime DB
+    function encodeEmailKey(email) {
+      return email.toLowerCase().trim().replace(/[.#$\[\]\/]/g, '_');
+    }
+
     function checkAuthStatus() {
-      const loggedUserJson = localStorage.getItem('englishmaster_logged_user');
+      const loggedUserJson = localStorage.getItem('engmaster_user');
       const authModal = document.getElementById('auth-modal');
       const headerUserMenu = document.getElementById('user-header-menu');
 
@@ -989,19 +931,19 @@
       hideAuthError();
 
       if (mode === 'register') {
-        titleEl.textContent = "Đăng Ký Bằng Email";
-        descEl.textContent = "Đăng ký để tạo tài khoản trên Máy chủ Cơ sở Dữ liệu & đồng bộ xuyên suốt.";
-        regTab.className = "flex-1 py-2 rounded-xl bg-white text-blue-600 shadow-sm transition";
-        loginTab.className = "flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition";
+        titleEl.textContent = "Đăng Ký Tài Khoản Mới";
+        descEl.textContent = "Tạo tài khoản trên Máy chủ. Mỗi Email chỉ được đăng ký 1 tài khoản duy nhất.";
+        regTab.className = "flex-1 py-2.5 rounded-xl bg-white text-blue-600 shadow-sm transition";
+        loginTab.className = "flex-1 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 transition";
         fullnameGroup.classList.remove('hidden');
         submitText.textContent = "Đăng ký & Bắt đầu học";
       } else {
-        titleEl.textContent = "Đăng Nhập Máy Chủ Cơ Sở Dữ Liệu";
+        titleEl.textContent = "Đăng Nhập Máy Chủ Đồng Bộ";
         descEl.textContent = "Đăng nhập để kéo toàn bộ tiến độ học từ Máy chủ về Brave, Chrome hoặc Điện thoại.";
-        loginTab.className = "flex-1 py-2 rounded-xl bg-white text-blue-600 shadow-sm transition";
-        regTab.className = "flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition";
+        loginTab.className = "flex-1 py-2.5 rounded-xl bg-white text-blue-600 shadow-sm transition";
+        regTab.className = "flex-1 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 transition";
         fullnameGroup.classList.add('hidden');
-        submitText.textContent = "Đăng nhập & Tải dữ liệu từ Máy chủ";
+        submitText.textContent = "Đăng nhập & Kéo tiến độ";
       }
     }
 
@@ -1040,177 +982,36 @@
       }
     }
 
-    // Tạo mã khoá an toàn và hợp lệ cho Database từ email
-    function getDatabaseUserKey(email) {
-      const cleanEmail = email.toLowerCase().trim();
-      let hash = 0;
-      for (let i = 0; i < cleanEmail.length; i++) {
-        hash = ((hash << 5) - hash) + cleanEmail.charCodeAt(i);
-        hash |= 0;
-      }
-      const safePrefix = cleanEmail.replace(/[^a-z0-9]/g, '').slice(0, 10);
-      return `${CLOUD_APP_NAMESPACE}_${safePrefix}_${Math.abs(hash)}`;
-    }
-
     /* ----------------------------------------------------
-       2.2 CƠ CHẾ ĐỒNG BỘ MÁY CHỦ BẢO VỆ CHỐNG LỖI MẠNG (RESILIENT CLOUD ENGINE)
+       4. GIAO TIẾP VỚI MÁY CHỦ DATABASE REST (FIREBASE API)
        ---------------------------------------------------- */
-    // Hàm gửi request lên cloud với cơ chế thử lại và giải quyết chặn CORS
-    async function cloudFetchGet(userKey) {
-      // 1. Thử máy chủ Cloud Blob thời gian thực
+    async function queryServerUser(emailKey) {
       try {
-        const res = await fetch(`https://kvdb.io/4y9qfA6pMhTq1vK3zY9VbC/${userKey}?nocache=${Date.now()}`, {
+        const response = await fetch(`${CLOUD_REALTIME_SERVER}/users/${emailKey}.json?auth=no_auth&nocache=${Date.now()}`, {
           method: 'GET',
           headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
         });
-        if (res.ok) {
-          const text = await res.text();
-          if (text && text.trim().startsWith('{')) {
-            const parsed = JSON.parse(text);
-            if (parsed && parsed.email) {
-              return parsed;
-            }
-          }
+        if (response.ok) {
+          const data = await response.json();
+          return data;
         }
       } catch (err) {
-        console.warn("Máy chủ chính phản hồi chậm, thử máy chủ phụ...", err);
+        console.warn("Lỗi truy vấn Server:", err);
       }
-
-      // 2. Thử kho lưu trữ đám mây thay thế
-      try {
-        const res2 = await fetch(`https://api.restful-api.dev/objects?id=${userKey}`, { cache: 'no-store' });
-        if (res2.ok) {
-          const data = await res2.json();
-          if (data && data.data) return data.data;
-        }
-      } catch (e) {}
-
-      // 3. Kiểm tra trong bộ nhớ đệm nội bộ của user đó
-      const localBackup = localStorage.getItem(`cloud_shadow_${userKey}`);
-      if (localBackup) {
-        try { return JSON.parse(localBackup); } catch (e) {}
-      }
-
       return null;
     }
 
-    async function cloudFetchPut(userKey, payload) {
-      const payloadString = JSON.stringify(payload);
-      localStorage.setItem(`cloud_shadow_${userKey}`, payloadString);
-
-      let success = false;
+    async function saveServerUser(emailKey, userData) {
       try {
-        const res = await fetch(`https://kvdb.io/4y9qfA6pMhTq1vK3zY9VbC/${userKey}`, {
-          method: 'POST',
+        const response = await fetch(`${CLOUD_REALTIME_SERVER}/users/${emailKey}.json`, {
+          method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: payloadString
+          body: JSON.stringify(userData)
         });
-        if (res.ok) success = true;
+        return response.ok;
       } catch (err) {
-        console.warn("Lỗi gửi dữ liệu lên máy chủ:", err);
-      }
-
-      return success;
-    }
-
-    async function syncDataWithDatabase(isManual = false) {
-      if (!currentUser || isCloudSyncing) return;
-      isCloudSyncing = true;
-      updateCloudIndicator('syncing');
-
-      const userDbKey = getDatabaseUserKey(currentUser.email);
-
-      try {
-        // 1. Tải bản ghi mới nhất từ Máy chủ
-        const serverRecord = await cloudFetchGet(userDbKey);
-        
-        if (serverRecord && serverRecord.email === currentUser.email) {
-          // Cập nhật tên hiển thị chính xác theo dữ liệu đăng ký ban đầu
-          if (serverRecord.fullname) {
-            currentUser.fullname = serverRecord.fullname;
-            localStorage.setItem('englishmaster_logged_user', JSON.stringify(currentUser));
-            document.getElementById('header-user-name').textContent = currentUser.fullname;
-          }
-
-          let hasChanges = false;
-
-          // Hợp nhất danh sách từ đã thuộc (Union giữa Local và Server)
-          if (Array.isArray(serverRecord.learnedIds)) {
-            const serverLearnedSet = new Set(serverRecord.learnedIds);
-            vocabulary.forEach(item => {
-              if (serverLearnedSet.has(item.id) && !item.learned) {
-                item.learned = true;
-                hasChanges = true;
-              }
-            });
-          }
-
-          // Hợp nhất từ tự tạo
-          if (Array.isArray(serverRecord.customWords)) {
-            serverRecord.customWords.forEach(cw => {
-              if (!vocabulary.some(v => v.id === cw.id)) {
-                vocabulary.unshift(cw);
-                hasChanges = true;
-              }
-            });
-          }
-
-          if (hasChanges) {
-            saveVocabularyToStorage();
-            renderCategoryChips();
-            renderVocabularyTable();
-            renderCurrentCard();
-          }
-        }
-
-        // 2. Gửi ngược lại toàn bộ tiến độ đã hợp nhất lên Máy chủ
-        const learnedList = vocabulary.filter(v => v.learned).map(v => v.id);
-        const customList = vocabulary.filter(v => v.category === 'custom');
-
-        const payloadToSave = {
-          email: currentUser.email,
-          fullname: currentUser.fullname || currentUser.email.split('@')[0],
-          passwordHash: currentUser.passwordHash || btoa("123456"),
-          learnedIds: learnedList,
-          customWords: customList,
-          updatedAt: new Date().toISOString()
-        };
-
-        await cloudFetchPut(userDbKey, payloadToSave);
-
-        updateCloudIndicator('online');
-        if (isManual) {
-          showToast(`Đã đồng bộ! Đã thuộc ${learnedList.length}/1000 từ.`, "fa-database");
-        }
-      } catch (err) {
-        console.warn("Lỗi kết nối cơ sở dữ liệu:", err);
-        updateCloudIndicator('offline');
-      } finally {
-        isCloudSyncing = false;
-      }
-    }
-
-    function triggerManualCloudSync() {
-      syncDataWithDatabase(true);
-    }
-
-    function updateCloudIndicator(status) {
-      const dot = document.getElementById('cloud-indicator-dot');
-      const text = document.getElementById('cloud-status-text');
-      const icon = document.getElementById('cloud-sync-icon');
-
-      if (status === 'syncing') {
-        dot.className = "w-2 h-2 rounded-full bg-amber-500 animate-ping";
-        text.textContent = "Đang đồng bộ DB...";
-        icon.className = "fa-solid fa-arrows-rotate fa-spin text-xs";
-      } else if (status === 'online') {
-        dot.className = "w-2 h-2 rounded-full bg-emerald-500";
-        text.textContent = "Database Đã Kết Nối";
-        icon.className = "fa-solid fa-database text-xs text-emerald-600";
-      } else {
-        dot.className = "w-2 h-2 rounded-full bg-slate-400";
-        text.textContent = "Lưu Cục Bộ";
-        icon.className = "fa-solid fa-hard-drive text-xs";
+        console.error("Lỗi ghi lên Server:", err);
+        return false;
       }
     }
 
@@ -1221,152 +1022,126 @@
       const email = document.getElementById('auth-email').value.trim().toLowerCase();
       const password = document.getElementById('auth-password').value.trim();
       const fullname = document.getElementById('auth-fullname').value.trim();
+      const emailKey = encodeEmailKey(email);
 
       setAuthLoading(true);
 
-      const userDbKey = getDatabaseUserKey(email);
-
       if (authMode === 'register') {
         if (!fullname) {
-          showAuthError("Vui lòng nhập họ và tên của bạn.");
+          showAuthError("Vui lòng nhập họ tên của bạn.");
           setAuthLoading(false);
           return;
         }
 
-        // KIỂM TRA NGHIÊM NGẶT: Mỗi email chỉ được đăng ký 1 tài khoản duy nhất
-        try {
-          const existingCloudUser = await cloudFetchGet(userDbKey);
-          const existingLocalPass = localStorage.getItem(`englishmaster_pass_${userDbKey}`);
+        // KIỂM TRA DUY NHẤT: Mỗi email chỉ được đăng ký 1 tài khoản duy nhất
+        const existingUser = await queryServerUser(emailKey);
+        if (existingUser && existingUser.email) {
+          showAuthError(`Email "${email}" đã được đăng ký trước đó trên hệ thống! Vui lòng chuyển sang tab Đăng nhập.`);
+          setAuthLoading(false);
+          
+          setTimeout(() => {
+            switchAuthTab('login');
+            document.getElementById('auth-email').value = email;
+            document.getElementById('auth-password').focus();
+          }, 1500);
+          return;
+        }
 
-          if ((existingCloudUser && existingCloudUser.email === email) || existingLocalPass) {
-            showAuthError("Email này đã được đăng ký tài khoản trước đó! Vui lòng chuyển sang tab 'Đã có Email' để đăng nhập.");
-            setAuthLoading(false);
-            
-            // Tự động chuyển người dùng sang tab Đã có Email sau 1.2 giây
-            setTimeout(() => {
-              switchAuthTab('login');
-              document.getElementById('auth-email').value = email;
-              document.getElementById('auth-password').focus();
-            }, 1200);
-            return;
-          }
-        } catch (checkErr) {
-          console.warn("Kiểm tra email trùng lặp:", checkErr);
+        // Tạo tài khoản mới trên Máy chủ
+        const newUserRecord = {
+          email: email,
+          fullname: fullname,
+          passwordHash: btoa(password),
+          learnedIds: [],
+          customWords: [],
+          registeredAt: new Date().toISOString(),
+          lastSyncAt: new Date().toISOString()
+        };
+
+        const success = await saveServerUser(emailKey, newUserRecord);
+        if (!success) {
+          showAuthError("Không thể kết nối máy chủ để đăng ký. Vui lòng kiểm tra lại kết nối mạng.");
+          setAuthLoading(false);
+          return;
         }
 
         currentUser = {
-          email,
-          fullname,
-          passwordHash: btoa(password),
-          registeredAt: new Date().toISOString()
+          email: email,
+          fullname: fullname,
+          passwordHash: btoa(password)
         };
 
-        // Lưu session vào localStorage của trình duyệt hiện tại
-        localStorage.setItem('englishmaster_logged_user', JSON.stringify(currentUser));
-        localStorage.setItem(`englishmaster_pass_${userDbKey}`, password);
+        localStorage.setItem('engmaster_user', JSON.stringify(currentUser));
+        localStorage.setItem(`engmaster_learned_${emailKey}`, JSON.stringify([]));
 
-        // Đẩy tài khoản và dữ liệu trực tiếp lên Máy chủ Database
-        try {
-          const initPayload = {
-            email: currentUser.email,
-            fullname: currentUser.fullname,
-            passwordHash: btoa(password),
-            learnedIds: [],
-            customWords: [],
-            createdAt: new Date().toISOString()
-          };
-
-          await cloudFetchPut(userDbKey, initPayload);
-        } catch (e) {
-          console.warn("Khởi tạo database ngầm:", e);
-        }
-
-        loadVocabularyData();
+        loadVocabularyLocal();
         checkAuthStatus();
         renderCategoryChips();
         renderVocabularyTable();
         renderCurrentCard();
 
         setAuthLoading(false);
-        showToast(`Tạo tài khoản thành công! Chào ${currentUser.fullname}.`, "fa-database");
+        showToast(`Đăng ký thành công! Chào mừng ${fullname}.`, "fa-circle-check");
         confetti({ particleCount: 70, spread: 70, origin: { y: 0.6 } });
+
       } else {
-        // Mode: Đăng nhập từ trình duyệt khác (Brave, Chrome, Safari, Điện thoại...)
-        try {
-          // Thử lấy dữ liệu từ máy chủ đám mây
-          let serverUser = await cloudFetchGet(userDbKey);
-          const localPass = localStorage.getItem(`englishmaster_pass_${userDbKey}`);
+        // ĐĂNG NHẬP: Kéo dữ liệu từ Server về thiết bị (Brave, Chrome hay Điện thoại)
+        const serverUser = await queryServerUser(emailKey);
 
-          // Nếu không tồn tại tài khoản cả trên Cloud lẫn Local
-          if ((!serverUser || serverUser.email !== email) && !localPass) {
-            showAuthError("Email này chưa được đăng ký tài khoản. Vui lòng chọn tab 'Đăng ký Email' để tạo tài khoản mới.");
-            setAuthLoading(false);
-            return;
-          }
-
-          if (serverUser && serverUser.passwordHash && serverUser.passwordHash !== btoa(password)) {
-            showAuthError("Mật khẩu không chính xác. Vui lòng kiểm tra lại.");
-            setAuthLoading(false);
-            return;
-          }
-
-          // Xóa session cũ của trình duyệt để không bị lưu nhầm tên user khác
-          localStorage.removeItem('englishmaster_logged_user');
-
-          currentUser = {
-            email: email,
-            fullname: (serverUser && serverUser.fullname) ? serverUser.fullname : email.split('@')[0],
-            passwordHash: btoa(password),
-            loggedInAt: new Date().toISOString()
-          };
-
-          localStorage.setItem('englishmaster_logged_user', JSON.stringify(currentUser));
-          localStorage.setItem(`englishmaster_pass_${userDbKey}`, password);
-
-          // Nạp lại dữ liệu 1000 từ vựng cho tài khoản này
-          loadVocabularyData();
-
-          // Áp dụng chính xác danh sách từ đã thuộc từ máy chủ về máy mới
-          if (serverUser && Array.isArray(serverUser.learnedIds)) {
-            const learnedSet = new Set(serverUser.learnedIds);
-            vocabulary.forEach(v => {
-              v.learned = learnedSet.has(v.id);
-            });
-          }
-
-          // Áp dụng từ tự tạo từ máy chủ về máy mới
-          if (serverUser && Array.isArray(serverUser.customWords)) {
-            serverUser.customWords.forEach(cw => {
-              if (!vocabulary.some(v => v.id === cw.id)) {
-                vocabulary.unshift(cw);
-              }
-            });
-          }
-
-          saveVocabularyToStorage();
-          checkAuthStatus();
-          renderCategoryChips();
-          renderVocabularyTable();
-          renderCurrentCard();
-          updateCloudIndicator('online');
-
+        if (!serverUser || !serverUser.email) {
+          showAuthError(`Email "${email}" chưa được đăng ký! Vui lòng chọn tab "Đăng ký mới".`);
           setAuthLoading(false);
-          showToast(`Đăng nhập thành công tài khoản ${currentUser.fullname}! Đã đồng bộ tiến độ.`, "fa-database");
-          confetti({ particleCount: 60, spread: 60, origin: { y: 0.6 } });
-        } catch (e) {
-          console.error("Lỗi đăng nhập database:", e);
-          showAuthError("Không thể kết nối máy chủ để xác thực. Vui lòng thử lại sau.");
-          setAuthLoading(false);
+          return;
         }
+
+        if (serverUser.passwordHash !== btoa(password)) {
+          showAuthError("Mật khẩu không chính xác. Vui lòng kiểm tra lại.");
+          setAuthLoading(false);
+          return;
+        }
+
+        currentUser = {
+          email: serverUser.email,
+          fullname: serverUser.fullname,
+          passwordHash: serverUser.passwordHash
+        };
+
+        localStorage.setItem('engmaster_user', JSON.stringify(currentUser));
+
+        // Nạp và đồng bộ danh sách từ đã học từ Server
+        loadVocabularyLocal();
+        if (Array.isArray(serverUser.learnedIds)) {
+          const learnedSet = new Set(serverUser.learnedIds);
+          vocabulary.forEach(v => {
+            v.learned = learnedSet.has(v.id);
+          });
+          localStorage.setItem(`engmaster_learned_${emailKey}`, JSON.stringify(serverUser.learnedIds));
+        }
+
+        // Nạp từ tự tạo từ Server
+        if (Array.isArray(serverUser.customWords)) {
+          serverUser.customWords.forEach(cw => {
+            if (!vocabulary.some(v => v.id === cw.id)) {
+              vocabulary.unshift(cw);
+            }
+          });
+        }
+
+        saveVocabularyLocal();
+        checkAuthStatus();
+        renderCategoryChips();
+        renderVocabularyTable();
+        renderCurrentCard();
+        updateCloudStatus('synced');
+
+        setAuthLoading(false);
+        showToast(`Đăng nhập thành công! Đã đồng bộ 100% dữ liệu với Server.`, "fa-database");
+        confetti({ particleCount: 60, spread: 60, origin: { y: 0.6 } });
       }
     }
 
     function handleLogout() {
-      if (currentUser) {
-        const userDbKey = getDatabaseUserKey(currentUser.email);
-        localStorage.removeItem(`englishmaster_pass_${userDbKey}`);
-      }
-      localStorage.removeItem('englishmaster_logged_user');
+      localStorage.removeItem('engmaster_user');
       currentUser = null;
       document.getElementById('auth-form').reset();
       switchAuthTab('login');
@@ -1375,35 +1150,150 @@
     }
 
     /* ----------------------------------------------------
-       2.3 LOAD & SAVE VOCABULARY THEO USER HIỆN TẠI
+       5. ĐỒNG BỘ TIẾN ĐỘ 100% GIỮA CÁC TRÌNH DUYỆT (SYNC ENGINE)
        ---------------------------------------------------- */
-    function loadVocabularyData() {
-      const userKey = currentUser ? `englishmaster_vocab_u_${currentUser.email}` : 'englishmaster_vocab_guest';
-      const storedVersion = localStorage.getItem('englishmaster_vocab_ver');
-      const stored = localStorage.getItem(userKey);
+    async function pushDataToServer() {
+      if (!currentUser || isSyncing) return;
+      isSyncing = true;
+      updateCloudStatus('syncing');
 
-      if (stored && storedVersion === VOCAB_DATA_VERSION) {
-        try {
-          vocabulary = JSON.parse(stored);
-        } catch (e) {
-          vocabulary = [...DEFAULT_VOCABULARY];
-        }
+      const emailKey = encodeEmailKey(currentUser.email);
+      const learnedList = vocabulary.filter(v => v.learned).map(v => v.id);
+      const customList = vocabulary.filter(v => v.category === 'custom');
+
+      const payload = {
+        email: currentUser.email,
+        fullname: currentUser.fullname,
+        passwordHash: currentUser.passwordHash,
+        learnedIds: learnedList,
+        customWords: customList,
+        lastSyncAt: new Date().toISOString()
+      };
+
+      const success = await saveServerUser(emailKey, payload);
+      isSyncing = false;
+      if (success) {
+        updateCloudStatus('synced');
       } else {
-        vocabulary = [...DEFAULT_VOCABULARY];
-        localStorage.setItem('englishmaster_vocab_ver', VOCAB_DATA_VERSION);
+        updateCloudStatus('error');
       }
-      saveVocabularyToStorage();
     }
 
-    function saveVocabularyToStorage() {
-      const userKey = currentUser ? `englishmaster_vocab_u_${currentUser.email}` : 'englishmaster_vocab_guest';
-      localStorage.setItem(userKey, JSON.stringify(vocabulary));
+    async function fetchDataFromServer(showNotification = false) {
+      if (!currentUser || isSyncing) return;
+      isSyncing = true;
+      updateCloudStatus('syncing');
+
+      const emailKey = encodeEmailKey(currentUser.email);
+      const serverUser = await queryServerUser(emailKey);
+
+      isSyncing = false;
+
+      if (serverUser && serverUser.email === currentUser.email) {
+        let changed = false;
+
+        // Cập nhật tên nếu có thay đổi
+        if (serverUser.fullname && serverUser.fullname !== currentUser.fullname) {
+          currentUser.fullname = serverUser.fullname;
+          localStorage.setItem('engmaster_user', JSON.stringify(currentUser));
+          document.getElementById('header-user-name').textContent = currentUser.fullname;
+        }
+
+        // Cập nhật danh sách từ đã học
+        if (Array.isArray(serverUser.learnedIds)) {
+          const serverSet = new Set(serverUser.learnedIds);
+          vocabulary.forEach(v => {
+            const shouldBeLearned = serverSet.has(v.id);
+            if (v.learned !== shouldBeLearned) {
+              v.learned = shouldBeLearned;
+              changed = true;
+            }
+          });
+          localStorage.setItem(`engmaster_learned_${emailKey}`, JSON.stringify(serverUser.learnedIds));
+        }
+
+        // Cập nhật từ tự tạo
+        if (Array.isArray(serverUser.customWords)) {
+          serverUser.customWords.forEach(cw => {
+            if (!vocabulary.some(v => v.id === cw.id)) {
+              vocabulary.unshift(cw);
+              changed = true;
+            }
+          });
+        }
+
+        if (changed) {
+          saveVocabularyLocal();
+          renderCategoryChips();
+          renderVocabularyTable();
+          renderCurrentCard();
+        }
+
+        updateCloudStatus('synced');
+        if (showNotification) {
+          const count = vocabulary.filter(v => v.learned).length;
+          showToast(`Đã đồng bộ với Server: ${count}/1000 từ đã thuộc!`, "fa-database");
+        }
+      } else {
+        updateCloudStatus('synced');
+      }
+    }
+
+    function triggerManualSync() {
+      fetchDataFromServer(true);
+    }
+
+    function updateCloudStatus(status) {
+      const dot = document.getElementById('cloud-indicator-dot');
+      const text = document.getElementById('cloud-status-text');
+      const icon = document.getElementById('cloud-sync-icon');
+
+      if (status === 'syncing') {
+        dot.className = "w-2 h-2 rounded-full bg-amber-500 animate-ping";
+        text.textContent = "Đang đồng bộ...";
+        icon.className = "fa-solid fa-arrows-rotate fa-spin text-xs";
+      } else if (status === 'synced') {
+        dot.className = "w-2 h-2 rounded-full bg-emerald-500";
+        text.textContent = "Đã Đồng Bộ Server";
+        icon.className = "fa-solid fa-cloud-arrow-up text-xs text-emerald-600";
+      } else {
+        dot.className = "w-2 h-2 rounded-full bg-rose-500";
+        text.textContent = "Thử lại đồng bộ";
+        icon.className = "fa-solid fa-circle-exclamation text-xs text-rose-600";
+      }
     }
 
     /* ----------------------------------------------------
-       3. NÂNG CẤP BỘ PHÁT ÂM CHUẨN (KHÔNG ĐỌC PHIÊN ÂM)
+       6. LOAD / SAVE VOCABULARY LOCAL
        ---------------------------------------------------- */
-    // Hàm loại bỏ ký tự lạ, dấu gạch chéo IPA để điện thoại đọc đúng từ gốc
+    function loadVocabularyLocal() {
+      vocabulary = [...DEFAULT_VOCABULARY];
+
+      if (currentUser) {
+        const emailKey = encodeEmailKey(currentUser.email);
+        const storedLearned = localStorage.getItem(`engmaster_learned_${emailKey}`);
+        if (storedLearned) {
+          try {
+            const learnedSet = new Set(JSON.parse(storedLearned));
+            vocabulary.forEach(v => {
+              v.learned = learnedSet.has(v.id);
+            });
+          } catch (e) {}
+        }
+      }
+    }
+
+    function saveVocabularyLocal() {
+      if (currentUser) {
+        const emailKey = encodeEmailKey(currentUser.email);
+        const learnedList = vocabulary.filter(v => v.learned).map(v => v.id);
+        localStorage.setItem(`engmaster_learned_${emailKey}`, JSON.stringify(learnedList));
+      }
+    }
+
+    /* ----------------------------------------------------
+       7. BỘ PHÁT ÂM TIẾNG ANH CHUẨN (KHÔNG ĐỌC PHIÊN ÂM)
+       ---------------------------------------------------- */
     function sanitizeForSpeech(rawWord) {
       if (!rawWord) return "";
       return String(rawWord)
@@ -1421,14 +1311,13 @@
       const cleanWord = sanitizeForSpeech(wordToSpeak);
       if (!cleanWord) return;
 
-      window.speechSynthesis.cancel(); // Dừng câu đọc dở trước đó
+      window.speechSynthesis.cancel();
 
       const utterance = new SpeechSynthesisUtterance(cleanWord);
       utterance.lang = 'en-US';
-      utterance.rate = 0.88; // Tốc độ vừa phải, rõ khẩu hình
+      utterance.rate = 0.88;
       utterance.pitch = 1.0;
 
-      // Ưu tiên chọn voice tiếng Anh chuẩn cao cấp có sẵn trên máy
       if (availableVoices.length === 0) {
         availableVoices = window.speechSynthesis.getVoices();
       }
@@ -1447,7 +1336,6 @@
       window.speechSynthesis.speak(utterance);
     }
 
-    // Xử lý sự kiện bấm nút loa trên thẻ (ngăn chặn lan truyền gây lật thẻ ngoài ý muốn)
     function handleSpeakCurrent(event) {
       if (event) {
         event.preventDefault();
@@ -1455,8 +1343,7 @@
       }
       const list = getFilteredVocab();
       if (list.length === 0) return;
-      const targetWord = list[currentCardIndex].word;
-      playEnglishSpeech(targetWord);
+      playEnglishSpeech(list[currentCardIndex].word);
     }
 
     function quickSpeak(wordText, event) {
@@ -1468,7 +1355,7 @@
     }
 
     /* ----------------------------------------------------
-       4. NAVIGATION & TABS
+       8. FLASHCARD CONTROLLER
        ---------------------------------------------------- */
     function switchTab(tabName) {
       const sections = ['flashcards', 'grammar', 'quiz'];
@@ -1492,9 +1379,6 @@
       }
     }
 
-    /* ----------------------------------------------------
-       5. FLASHCARD CONTROLLER
-       ---------------------------------------------------- */
     function getFilteredVocab() {
       if (currentCategory === 'all') return vocabulary;
       return vocabulary.filter(item => item.category === currentCategory);
@@ -1509,10 +1393,10 @@
           : vocabulary.filter(v => v.category === cat.id).length;
 
         const activeClasses = "bg-blue-600 text-white font-bold shadow-sm shadow-blue-500/20";
-        const inactiveClasses = "bg-slate-100 text-slate-600 hover:bg-slate-200";
+        const inactiveClasses = "bg-slate-100 text-slate-600 hover:bg-slate-200 font-medium";
 
         return `
-          <button onclick="setCategory('${cat.id}')" class="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 ${isActive ? activeClasses : inactiveClasses}">
+          <button onclick="setCategory('${cat.id}')" class="px-3 py-1.5 rounded-xl text-xs sm:text-sm transition-all flex items-center gap-1.5 ${isActive ? activeClasses : inactiveClasses}">
             <i class="fa-solid ${cat.icon} text-xs"></i>
             <span>${cat.name}</span>
             <span class="text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'}">${count}</span>
@@ -1555,13 +1439,11 @@
 
       const item = list[currentCardIndex];
 
-      // Mặt trước: Chỉ gán từ vựng thuần vào h2
       document.getElementById('card-word').textContent = item.word;
       document.getElementById('card-pos').textContent = `(${item.pos})`;
       document.getElementById('card-phonetic').textContent = item.phonetic || '';
       document.getElementById('card-tag').textContent = item.category.toUpperCase();
 
-      // Mặt sau
       document.getElementById('card-back-word').textContent = item.word;
       document.getElementById('card-back-pos').textContent = `/${item.pos}/`;
       document.getElementById('card-meaning').textContent = item.meaning;
@@ -1582,17 +1464,17 @@
       const text = document.getElementById('master-text');
 
       if (isLearned) {
-        badge.className = "px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold";
+        badge.className = "px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold";
         badge.textContent = "Đã thuộc";
 
-        btn.className = "px-4 py-3 bg-emerald-600 text-white font-semibold rounded-2xl transition flex items-center gap-2 text-sm shadow-sm";
+        btn.className = "px-5 py-3 bg-emerald-600 text-white font-bold rounded-2xl transition flex items-center gap-2 text-sm shadow-md shadow-emerald-600/20 active:scale-95";
         icon.className = "fa-solid fa-circle-check text-base";
         text.textContent = "Đã nhớ";
       } else {
-        badge.className = "px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold";
+        badge.className = "px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold";
         badge.textContent = "Cần ôn tập";
 
-        btn.className = "px-4 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-semibold rounded-2xl transition flex items-center gap-2 text-sm";
+        btn.className = "px-5 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold rounded-2xl transition flex items-center gap-2 text-sm active:scale-95";
         icon.className = "fa-regular fa-circle-check text-base";
         text.textContent = "Đã thuộc";
       }
@@ -1641,7 +1523,7 @@
         autoPlayInterval = null;
         btn.classList.remove('bg-indigo-600', 'text-white');
         btn.classList.add('text-slate-600');
-        showToast("Đã dừng tự động lật thẻ.");
+        showToast("Đã dừng tự động lướt thẻ.");
       } else {
         btn.classList.add('bg-indigo-600', 'text-white');
         btn.classList.remove('text-slate-600');
@@ -1662,29 +1544,23 @@
       const currentItem = list[currentCardIndex];
       currentItem.learned = !currentItem.learned;
       
-      saveVocabularyToStorage();
+      saveVocabularyLocal();
       updateMasterUI(currentItem.learned);
       renderVocabularyTable();
 
-      // Tự động đẩy tiến độ lên máy chủ database trong nền
-      if (currentUser) {
-        syncDataWithDatabase(false);
-      }
+      // Đẩy tiến độ lên máy chủ Server ngay lập tức
+      pushDataToServer();
 
       if (currentItem.learned) {
-        confetti({
-          particleCount: 35,
-          spread: 60,
-          origin: { y: 0.7 }
-        });
-        showToast(`Đã thuộc từ "${currentItem.word}"! (Đã lưu Máy chủ)`, "fa-database");
+        confetti({ particleCount: 35, spread: 60, origin: { y: 0.7 } });
+        showToast(`Đã thuộc từ "${currentItem.word}"! (Đã đồng bộ Server)`, "fa-cloud-arrow-up");
       } else {
-        showToast(`Đã chuyển "${currentItem.word}" vào danh sách cần ôn.`);
+        showToast(`Đã chuyển "${currentItem.word}" về danh sách cần ôn.`);
       }
     }
 
     /* ----------------------------------------------------
-       6. VOCABULARY TABLE & SEARCH
+       9. VOCABULARY TABLE & SEARCH
        ---------------------------------------------------- */
     function renderVocabularyTable(searchQuery = '') {
       const tbody = document.getElementById('vocab-tbody');
@@ -1716,11 +1592,11 @@
           </td>
           <td class="py-3 px-4 font-mono text-xs text-slate-500">${item.phonetic || '-'}</td>
           <td class="py-3 px-4 text-xs">
-            <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium">${item.pos}</span>
+            <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-semibold">${item.pos}</span>
           </td>
           <td class="py-3 px-4 font-medium text-slate-800">${item.meaning}</td>
           <td class="py-3 px-4 text-center">
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${item.learned ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold ${item.learned ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}">
               ${item.learned ? 'Thuộc' : 'Chưa'}
             </span>
           </td>
@@ -1750,7 +1626,8 @@
 
     function deleteWord(id) {
       vocabulary = vocabulary.filter(w => w.id !== id);
-      saveVocabularyToStorage();
+      saveVocabularyLocal();
+      pushDataToServer();
       renderCategoryChips();
       renderVocabularyTable();
       renderCurrentCard();
@@ -1758,7 +1635,7 @@
     }
 
     /* ----------------------------------------------------
-       7. ADD WORD MODAL
+       10. ADD WORD MODAL
        ---------------------------------------------------- */
     function openAddWordModal() {
       document.getElementById('add-word-modal').classList.remove('hidden');
@@ -1794,23 +1671,20 @@
       };
 
       vocabulary.unshift(newEntry);
-      saveVocabularyToStorage();
+      saveVocabularyLocal();
+      pushDataToServer();
 
       renderCategoryChips();
       renderVocabularyTable();
       currentCardIndex = 0;
       renderCurrentCard();
 
-      if (currentUser) {
-        syncDataWithDatabase(false);
-      }
-
       closeAddWordModal();
       showToast(`Đã thêm từ "${word}" thành công!`, "fa-circle-check");
     }
 
     /* ----------------------------------------------------
-       8. GRAMMAR MODULE
+       11. GRAMMAR & QUIZ MODULE
        ---------------------------------------------------- */
     function renderGrammarSidebar() {
       const listEl = document.getElementById('grammar-list');
@@ -1824,8 +1698,8 @@
               <i class="fa-solid ${topic.icon} text-sm"></i>
             </div>
             <div class="space-y-0.5">
-              <div class="text-xs font-semibold ${isActive ? 'text-blue-600' : 'text-slate-500'}">${topic.level}</div>
-              <div class="text-sm font-bold text-slate-900 leading-snug">${topic.title}</div>
+              <div class="text-xs font-bold ${isActive ? 'text-blue-600' : 'text-slate-500'}">${topic.level}</div>
+              <div class="text-sm font-extrabold text-slate-900 leading-snug">${topic.title}</div>
             </div>
           </button>
         `;
@@ -1842,7 +1716,7 @@
       container.innerHTML = `
         <div class="border-b border-slate-100 pb-5">
           <div class="flex items-center gap-2 mb-2">
-            <span class="px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg uppercase tracking-wide">${topic.level}</span>
+            <span class="px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-extrabold rounded-lg uppercase tracking-wide">${topic.level}</span>
           </div>
           <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">${topic.title}</h2>
           <p class="text-slate-500 text-sm mt-1 leading-relaxed">${topic.description}</p>
@@ -1853,7 +1727,7 @@
         </div>
 
         <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="text-xs text-slate-500">
+          <div class="text-xs font-semibold text-slate-500">
             <i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i> Đã hoàn thành lý thuyết bài học này
           </div>
           <button onclick="switchTab('quiz')" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold rounded-xl shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2">
@@ -1864,9 +1738,6 @@
       `;
     }
 
-    /* ----------------------------------------------------
-       9. QUIZ ENGINE
-       ---------------------------------------------------- */
     function loadQuizQuestion() {
       if (quizCurrentIdx >= QUIZ_QUESTIONS.length) {
         showQuizResults();
@@ -1893,7 +1764,7 @@
 
       const optionsContainer = document.getElementById('quiz-options');
       optionsContainer.innerHTML = q.options.map((opt, i) => `
-        <button onclick="handleOptionSelect(${i})" class="quiz-option-btn w-full text-left p-4 rounded-2xl border border-slate-200 hover:border-blue-400 bg-white hover:bg-slate-50 transition-all font-medium text-sm text-slate-800 flex items-center justify-between group">
+        <button onclick="handleOptionSelect(${i})" class="quiz-option-btn w-full text-left p-4 rounded-2xl border border-slate-200 hover:border-blue-400 bg-white hover:bg-slate-50 transition-all font-semibold text-sm text-slate-800 flex items-center justify-between group">
           <div class="flex items-center gap-3">
             <span class="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-blue-100 group-hover:text-blue-700 font-bold text-xs flex items-center justify-center text-slate-600 transition">
               ${String.fromCharCode(65 + i)}
@@ -1915,11 +1786,7 @@
 
       if (isCorrect) {
         quizScoreCorrect++;
-        confetti({
-          particleCount: 50,
-          spread: 60,
-          origin: { y: 0.6 }
-        });
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
       } else {
         quizScoreWrong++;
       }
@@ -1945,7 +1812,7 @@
 
       expBox.classList.remove('hidden');
       if (isCorrect) {
-        expTitle.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i> Chính xác! Tuyệt vời.`;
+        expTitle.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i> Chính xác! Rất tốt.`;
         expTitle.className = "font-bold text-emerald-800 flex items-center gap-1.5";
       } else {
         expTitle.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600"></i> Chưa đúng rồi!`;
@@ -1974,18 +1841,14 @@
       const appraisal = document.getElementById('quiz-appraisal');
       const ratio = quizScoreCorrect / total;
       if (ratio === 1) {
-        appraisal.textContent = "Xuất sắc tuyệt đối! Bạn có tư duy ngôn ngữ và ngữ pháp cực kỳ vững vàng.";
+        appraisal.textContent = "Xuất sắc tuyệt đối! Bạn nắm rất chắc toàn bộ từ vựng & cấu trúc.";
       } else if (ratio >= 0.7) {
-        appraisal.textContent = "Rất tốt! Kiến thức từ vựng và ngữ pháp của bạn khá chắc chắn.";
+        appraisal.textContent = "Rất tốt! Bạn có sự hiểu biết ngữ cảnh rất tốt.";
       } else {
-        appraisal.textContent = "Đừng nản lòng! Hãy ôn lại các thẻ Flashcard và chuyên đề ngữ pháp rồi thử lại nhé.";
+        appraisal.textContent = "Hãy lật lại các thẻ Flashcard và chuyên đề ngữ pháp rồi thử sức lại nhé!";
       }
 
-      confetti({
-        particleCount: 100,
-        spread: 90,
-        origin: { y: 0.5 }
-      });
+      confetti({ particleCount: 100, spread: 90, origin: { y: 0.5 } });
     }
 
     function restartQuiz() {
@@ -2003,8 +1866,14 @@
       showToast("Đã thiết lập lại bài kiểm tra.");
     }
 
+    function emergencyResetAllData() {
+      localStorage.clear();
+      showToast("Đã dọn dẹp toàn bộ dữ liệu trên trình duyệt.");
+      setTimeout(() => window.location.reload(), 1000);
+    }
+
     /* ----------------------------------------------------
-       10. UTILITIES & TOAST
+       12. TOAST NOTIFICATION
        ---------------------------------------------------- */
     let toastTimeout;
     function showToast(msg, iconClass = "fa-circle-check") {
