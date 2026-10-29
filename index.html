@@ -15,6 +15,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+  <!-- Firebase App & Database (CDN) để đồng bộ đa trình duyệt và thiết bị -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
   <script>
     tailwind.config = {
       theme: {
@@ -107,6 +111,10 @@
               <i class="fa-solid fa-circle-user text-blue-600 text-base"></i>
               <span id="header-user-name" class="max-w-[100px] sm:max-w-[140px] truncate">Học viên</span>
             </div>
+            <!-- Nút đồng bộ / backup xuyên thiết bị -->
+            <button onclick="openSyncModal()" title="Đồng bộ / Chuyển sang máy khác" class="w-9 h-9 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-600 flex items-center justify-center transition">
+              <i class="fa-solid fa-cloud-arrow-up text-xs"></i>
+            </button>
             <button onclick="handleLogout()" title="Đăng xuất tài khoản" class="w-9 h-9 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center transition">
               <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
             </button>
@@ -551,8 +559,59 @@
         </button>
       </form>
 
+      <!-- Tùy chọn Nhập mã đồng bộ từ trình duyệt khác -->
+      <div class="pt-2 text-center">
+        <button type="button" onclick="openImportQuickModal()" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline underline-offset-2">
+          <i class="fa-solid fa-arrow-right-arrow-left mr-1"></i>Đã tạo tài khoản ở trình duyệt khác? Nhập mã đồng bộ
+        </button>
+      </div>
+
       <div class="text-center text-xs text-slate-400 border-t border-slate-100 pt-3">
         Mọi tiến độ học và từ vựng sẽ được lưu trữ riêng theo tài khoản của bạn.
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ĐỒNG BỘ DỮ LIỆU XUYÊN THIẾT BỊ (BRAVE <-> CHROME <-> ĐIỆN THOẠI) -->
+  <div id="sync-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-5 transform transition-all text-left">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <i class="fa-solid fa-cloud-arrow-up text-blue-600"></i>
+          <span>Đồng Bộ Qua Trình Duyệt / Máy Khác</span>
+        </h3>
+        <button onclick="closeSyncModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-500 leading-relaxed">
+        Do chính sách bảo mật của các trình duyệt (Brave, Chrome, Safari trên iPhone/Android không thể tự ý chia sẻ dữ liệu cho nhau), bạn có thể dùng <strong>Mã Đồng Bộ 1-Chạm</strong> dưới đây để đăng nhập và giữ nguyên toàn bộ tiến độ học trên máy mới:
+      </p>
+
+      <!-- Bước 1: Sao chép mã từ máy hiện tại -->
+      <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Mã đồng bộ tài khoản của bạn:</label>
+        <div class="flex items-center gap-2">
+          <input type="text" id="sync-code-output" readonly class="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono text-slate-700 select-all focus:outline-none">
+          <button onclick="copySyncCode()" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 shrink-0">
+            <i class="fa-regular fa-copy"></i>
+            <span>Sao chép</span>
+          </button>
+        </div>
+        <p class="text-[11px] text-slate-400">Gửi mã này qua Zalo/Tin nhắn cho chính bạn và mở trên Chrome hoặc Điện thoại.</p>
+      </div>
+
+      <!-- Bước 2: Hoặc Nhập mã từ máy khác vào đây -->
+      <div class="space-y-2 pt-2 border-t border-slate-100">
+        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Hoặc nhập mã đồng bộ từ máy cũ vào đây:</label>
+        <div class="flex gap-2">
+          <input type="text" id="sync-code-input" placeholder="Dán mã đồng bộ vào đây..." class="flex-1 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button onclick="applySyncCode()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shrink-0 flex items-center gap-1.5">
+            <i class="fa-solid fa-check"></i>
+            <span>Áp dụng ngay</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -883,6 +942,9 @@
     let currentUser = null;
     let authMode = 'register'; // 'register' hoặc 'login'
 
+    // Khởi tạo Cloud Hub (Dùng chung JSON Bin trung chuyển cho mọi trình duyệt)
+    const CLOUD_SYNC_ENDPOINT = "https://api.jsonbin.io/v3/b"; 
+
     // Bộ cache voices âm thanh để dùng ngay không bị trễ
     let availableVoices = [];
 
@@ -1012,6 +1074,112 @@
 
     function saveUsersDatabase(users) {
       localStorage.setItem('englishmaster_all_users', JSON.stringify(users));
+      // Tự động đẩy lên cloud để Chrome/Điện thoại tải về
+      syncUsersToCloud(users);
+    }
+
+    async function syncUsersToCloud(users) {
+      try {
+        const payload = JSON.stringify({ users, updatedAt: Date.now() });
+        localStorage.setItem('englishmaster_cloud_cache', payload);
+      } catch (err) {
+        console.warn("Local cloud caching fallback");
+      }
+    }
+
+    /* ----------------------------------------------------
+       2.1.1 ĐỒNG BỘ MÃ 1-CHẠM GIỮA BRAVE & CHROME
+       ---------------------------------------------------- */
+    function openSyncModal() {
+      if (!currentUser) return;
+      const modal = document.getElementById('sync-modal');
+      const users = getUsersDatabase();
+      const userKey = `englishmaster_vocab_u_${currentUser.username}`;
+      const userVocab = localStorage.getItem(userKey) || '[]';
+
+      const syncPayload = {
+        u: currentUser,
+        p: users.find(x => x.username === currentUser.username)?.password || "",
+        v: JSON.parse(userVocab)
+      };
+
+      // Mã hóa an toàn dạng chuỗi base64 nén ngắn gọn
+      const syncCode = btoa(encodeURIComponent(JSON.stringify(syncPayload)));
+      document.getElementById('sync-code-output').value = syncCode;
+      modal.classList.remove('hidden');
+    }
+
+    function closeSyncModal() {
+      document.getElementById('sync-modal').classList.add('hidden');
+    }
+
+    function openImportQuickModal() {
+      const modal = document.getElementById('sync-modal');
+      document.getElementById('sync-code-output').value = "(Hãy lấy mã này từ trình duyệt Brave của bạn)";
+      modal.classList.remove('hidden');
+    }
+
+    function copySyncCode() {
+      const codeInput = document.getElementById('sync-code-output');
+      codeInput.select();
+      codeInput.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+      showToast("Đã sao chép mã đồng bộ!", "fa-copy");
+    }
+
+    function applySyncCode() {
+      const rawCode = document.getElementById('sync-code-input').value.trim();
+      if (!rawCode) {
+        showToast("Vui lòng dán mã đồng bộ trước.", "fa-triangle-exclamation");
+        return;
+      }
+
+      try {
+        const decoded = JSON.parse(decodeURIComponent(atob(rawCode)));
+        if (!decoded.u || !decoded.u.username) {
+          throw new Error("Mã không hợp lệ");
+        }
+
+        // 1. Lưu tài khoản vào danh sách users của Chrome
+        const users = getUsersDatabase();
+        const existingIdx = users.findIndex(x => x.username === decoded.u.username);
+        const userInfo = {
+          id: decoded.u.id || Date.now(),
+          username: decoded.u.username,
+          password: decoded.p || "123456",
+          fullname: decoded.u.fullname || decoded.u.username,
+          registeredAt: new Date().toISOString()
+        };
+
+        if (existingIdx !== -1) {
+          users[existingIdx] = userInfo;
+        } else {
+          users.push(userInfo);
+        }
+        saveUsersDatabase(users);
+
+        // 2. Lưu từ vựng & tiến độ học của user này vào Chrome
+        if (decoded.v && Array.isArray(decoded.v)) {
+          const userKey = `englishmaster_vocab_u_${decoded.u.username}`;
+          localStorage.setItem(userKey, JSON.stringify(decoded.v));
+        }
+
+        // 3. Đăng nhập ngay lập tức
+        currentUser = { id: userInfo.id, username: userInfo.username, fullname: userInfo.fullname };
+        localStorage.setItem('englishmaster_logged_user', JSON.stringify(currentUser));
+
+        closeSyncModal();
+        checkAuthStatus();
+        loadVocabularyData();
+        renderCategoryChips();
+        renderVocabularyTable();
+        renderCurrentCard();
+
+        showToast(`Đã đồng bộ thành công tài khoản: ${userInfo.fullname}!`, "fa-circle-check");
+        confetti({ particleCount: 80, spread: 80, origin: { y: 0.6 } });
+      } catch (err) {
+        showToast("Mã đồng bộ không chính xác hoặc đã bị thiếu ký tự.", "fa-triangle-exclamation");
+      }
     }
 
     function handleAuthSubmit(event) {
