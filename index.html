@@ -73,7 +73,7 @@
           </div>
           <div>
             <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">EnglishMaster</span>
-            <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full border border-blue-200">20 Day TOEIC</span>
+            <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2.5 py-0.5 bg-blue-50 text-blue-600 rounded-full border border-blue-200">TOEIC</span>
           </div>
         </div>
 
@@ -122,12 +122,22 @@
     <!-- ========================================== -->
     <section id="section-flashcards" class="space-y-6">
       <!-- Toolbar & Category Filter -->
-      <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div class="flex flex-wrap items-center gap-2" id="category-chips">
-          <!-- Rendered dynamically -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300">
+        <div class="flex-1">
+          <div class="flex flex-wrap items-center gap-2 overflow-hidden transition-all duration-300" id="category-chips">
+            <!-- Rendered dynamically -->
+          </div>
+          <!-- Toggle Collapse / Expand Categories Button -->
+          <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+            <button id="btn-toggle-categories" onclick="toggleCategoriesCollapse()" class="inline-flex items-center gap-1.5 font-bold text-blue-600 hover:text-blue-700 transition py-1 px-2 rounded-lg hover:bg-blue-50">
+              <i id="toggle-cat-icon" class="fa-solid fa-chevron-up text-xs"></i>
+              <span id="toggle-cat-text">Thu gọn danh mục</span>
+            </button>
+            <span class="text-[11px] text-slate-400">20 Chủ đề TOEIC trọng tâm</span>
+          </div>
         </div>
 
-        <div class="flex items-center gap-2 self-end md:self-auto shrink-0">
+        <div class="flex items-center gap-2 self-end md:self-start shrink-0">
           <button onclick="openAddWordModal()" class="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition">
             <i class="fa-solid fa-plus"></i>
             <span>Thêm từ mới</span>
@@ -142,7 +152,7 @@
       </div>
 
       <!-- Flashcard Interactive Zone -->
-      <div class="flex flex-col items-center">
+      <div id="flashcard-zone" class="flex flex-col items-center transition-all duration-300">
         <!-- Progress Counter -->
         <div class="w-full max-w-xl flex items-center justify-between text-xs sm:text-sm font-medium text-slate-500 mb-2 px-1">
           <span id="fc-counter" class="font-bold">Từ 1 / 1000</span>
@@ -155,7 +165,7 @@
         </div>
 
         <!-- 3D Flashcard Container -->
-        <div class="w-full max-w-xl h-[380px] sm:h-[400px] perspective-1000 cursor-pointer group" onclick="flipCard()">
+        <div id="card-outer-box" class="w-full max-w-xl h-[380px] sm:h-[400px] perspective-1000 cursor-pointer group relative transition-all duration-300" onclick="flipCard()">
           <div id="card-inner" class="relative w-full h-full transform-style-3d transition-transform duration-500 rounded-3xl shadow-xl border border-slate-200/80">
             
             <!-- FRONT FACE -->
@@ -164,9 +174,16 @@
                 <span id="card-tag" class="text-xs uppercase tracking-wider font-extrabold px-3 py-1 bg-blue-50 text-blue-600 rounded-full border border-blue-100">
                   DAY 1
                 </span>
-                <button type="button" onclick="handleSpeakCurrent(event)" class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white active:scale-95 transition flex items-center justify-center shadow-sm" title="Phát âm tiếng Anh">
-                  <i class="fa-solid fa-volume-high text-lg"></i>
-                </button>
+                
+                <div class="flex items-center gap-2">
+                  <!-- Nút Mở Rộng / Phóng To Thẻ Flashcard -->
+                  <button type="button" id="btn-expand-card" onclick="toggleExpandFlashcard(event)" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 active:scale-95 transition flex items-center justify-center shadow-sm" title="Mở rộng thẻ flashcard">
+                    <i id="expand-card-icon" class="fa-solid fa-expand text-sm"></i>
+                  </button>
+                  <button type="button" onclick="handleSpeakCurrent(event)" class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white active:scale-95 transition flex items-center justify-center shadow-sm" title="Phát âm tiếng Anh">
+                    <i class="fa-solid fa-volume-high text-lg"></i>
+                  </button>
+                </div>
               </div>
 
               <div class="text-center my-auto">
@@ -193,9 +210,14 @@
                   <span id="card-back-word" class="font-bold text-lg text-indigo-300">Prioritize</span>
                   <span id="card-back-pos" class="text-xs text-slate-400 font-mono italic">/verb/</span>
                 </div>
-                <button type="button" onclick="handleSpeakCurrent(event)" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 text-white transition flex items-center justify-center">
-                  <i class="fa-solid fa-volume-high text-sm"></i>
-                </button>
+                <div class="flex items-center gap-2">
+                  <button type="button" onclick="toggleExpandFlashcard(event)" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 text-white transition flex items-center justify-center" title="Mở rộng / Thu nhỏ">
+                    <i class="fa-solid fa-expand text-sm"></i>
+                  </button>
+                  <button type="button" onclick="handleSpeakCurrent(event)" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 text-white transition flex items-center justify-center" title="Phát âm tiếng Anh">
+                    <i class="fa-solid fa-volume-high text-sm"></i>
+                  </button>
+                </div>
               </div>
 
               <div class="my-auto space-y-4">
@@ -221,7 +243,7 @@
         </div>
 
         <!-- Controls: Prev / Next / Mark as Mastered -->
-        <div class="w-full max-w-xl flex items-center justify-between gap-3 mt-6">
+        <div id="card-controls" class="w-full max-w-xl flex items-center justify-between gap-3 mt-6">
           <button onclick="prevCard()" class="flex-1 py-3 px-4 bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-2xl border border-slate-200 shadow-sm transition active:scale-95 flex items-center justify-center gap-2 text-sm">
             <i class="fa-solid fa-chevron-left text-xs"></i>
             <span>Trước</span>
@@ -481,17 +503,16 @@
         <div class="w-14 h-14 bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-lg shadow-blue-500/30">
           <i class="fa-solid fa-shield-halved"></i>
         </div>
-        <h2 id="auth-title" class="text-2xl font-black text-slate-900 tracking-tight">Đăng Nhập Máy Chủ Đồng Bộ</h2>
-        <p id="auth-desc" class="text-slate-500 text-xs sm:text-sm">Đăng nhập tài khoản của bạn để đồng bộ 100% tiến độ giữa Brave, Chrome và Điện thoại.</p>
+        <h2 id="auth-title" class="text-2xl font-black text-slate-900 tracking-tight">Đăng Nhập Tài Khoản</h2>
       </div>
 
       <!-- Auth Switcher Tabs -->
       <div class="flex p-1 bg-slate-100 rounded-2xl text-xs sm:text-sm font-bold">
         <button type="button" id="tab-login-btn" onclick="switchAuthTab('login')" class="flex-1 py-2.5 rounded-xl bg-white text-blue-600 shadow-sm transition">
-          Đã có Email (Đăng nhập)
+          Đăng nhập
         </button>
         <button type="button" id="tab-register-btn" onclick="switchAuthTab('register')" class="flex-1 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 transition">
-          Đăng ký mới
+          Đăng ký
         </button>
       </div>
 
@@ -515,7 +536,7 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Mật khẩu bảo mật *</label>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">MẬT KHẨU *</label>
           <div class="relative">
             <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
             <input required type="password" id="auth-password" placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)" minlength="6" class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
@@ -531,15 +552,10 @@
         </div>
 
         <button type="submit" id="auth-submit-btn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-extrabold rounded-xl text-sm shadow-md shadow-blue-500/25 transition flex items-center justify-center gap-2">
-          <span id="auth-submit-text">Đăng nhập & Tự động đồng bộ</span>
+          <span id="auth-submit-text">Đăng nhập</span>
           <i id="auth-loading-spinner" class="fa-solid fa-circle-notch fa-spin hidden"></i>
         </button>
       </form>
-
-      <div class="pt-2 text-center text-xs text-emerald-800 font-semibold flex items-center justify-center gap-2 bg-emerald-50 py-2.5 px-3 rounded-xl border border-emerald-100">
-        <i class="fa-solid fa-arrows-rotate text-emerald-600"></i>
-        <span>Tự động nhận diện tài khoản & tiến độ 100% khi đăng nhập</span>
-      </div>
     </div>
   </div>
 
@@ -553,12 +569,7 @@
   <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-auto">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
       <div class="flex items-center gap-2">
-        <span class="font-extrabold text-slate-800">EnglishMaster</span> — 1000 Từ vựng trọng tâm TOEIC/IELTS (Day 1 - Day 20).
-      </div>
-      <div class="flex items-center gap-4 text-slate-400">
-        <button onclick="emergencyResetAllData()" class="text-rose-500 hover:underline font-bold text-xs">
-          <i class="fa-solid fa-trash-can mr-1"></i> Xóa sạch dữ liệu trên thiết bị này
-        </button>
+        <span class="font-extrabold text-slate-800">EnglishMaster</span> — THÀNH CÔNG KHÔNG DÀNH CHO KẺ LƯỜI BIẾNG!
       </div>
     </div>
   </footer>
@@ -786,57 +797,109 @@
         description: "Phương pháp phân biệt Hiện tại hoàn thành, Quá khứ đơn & Tương lai đơn.",
         content: `
           <div class="space-y-4">
-            <div class="bg-blue-50/70 p-4 rounded-2xl border border-blue-100">
-              <h4 class="font-bold text-blue-900 mb-1">Hiện tại hoàn thành vs Quá khứ đơn</h4>
-              <p class="text-xs text-blue-800 leading-relaxed mb-2">
-                - <strong>Past Simple:</strong> Hành động đã chấm dứt hoàn toàn trong quá khứ kèm mốc thời gian rõ rệt (<em>yesterday, last month, in 2020</em>).<br>
-                - <strong>Present Perfect:</strong> Kéo dài từ quá khứ đến hiện tại hoặc không có mốc thời gian cụ thể (<em>since, for, already, recently</em>).
-              </p>
+            <div class="p-4 rounded-2xl bg-blue-50 border border-blue-100">
+              <h4 class="font-bold text-blue-900 mb-1">1. Hiện tại đơn & Hiện tại tiếp diễn</h4>
+              <p class="text-sm text-slate-700">Dùng để diễn tả sự thật hiển nhiên, thói quen lặp lại hoặc hành động đang xảy ra tại thời điểm nói.</p>
+            </div>
+            <div class="p-4 rounded-2xl bg-indigo-50 border border-indigo-100">
+              <h4 class="font-bold text-indigo-900 mb-1">2. Hiện tại hoàn thành (Present Perfect)</h4>
+              <p class="text-sm text-slate-700">Cấu trúc: <code>have/has + V3/ed</code>. Nhận biết qua các trạng từ: <em>since, for, already, yet, just</em>.</p>
             </div>
           </div>
         `
       },
       {
-        id: "passive",
-        title: "Câu bị động thực chiến (Passive Voice)",
-        level: "Nền tảng - Trung cấp",
-        icon: "fa-arrows-rotate",
-        description: "Mẹo làm nhanh các câu hỏi bị động trong đề thi TOEIC/IELTS.",
+        id: "passives",
+        title: "Thể bị động trong đề thi (Passive Voice)",
+        level: "Trọng tâm TOEIC",
+        icon: "fa-repeat",
+        description: "Bẫy thường gặp với động từ khi thiếu túc từ (object) phía sau.",
         content: `
-          <div class="space-y-3">
-            <p class="text-xs text-slate-600">Khi phía sau chỗ trống không có tân ngữ mà đi liền với giới từ (by, at, in...), ưu tiên chọn thể <strong>Bị Động (be + V3/ed)</strong>.</p>
+          <div class="space-y-4">
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <h4 class="font-bold text-slate-800 mb-1">Cấu trúc cốt lõi: Be + V3/ed</h4>
+              <p class="text-sm text-slate-600">Nếu phía sau chỗ trống không có tân ngữ và mang nghĩa tiếp nhận hành động, hãy ưu tiên chọn thể bị động.</p>
+            </div>
           </div>
         `
       }
     ];
 
     /* ----------------------------------------------------
-       2. TRẠNG THÁI ỨNG DỤNG & AUTO-CLEANUP KHỞI TẠO
+       2. BIẾN TRẠNG THÁI TOÀN CỤC (APPLICATION STATE)
        ---------------------------------------------------- */
     let vocabulary = [];
     let currentCategory = 'all';
     let currentCardIndex = 0;
     let isFlipped = false;
     let autoPlayInterval = null;
-    let currentGrammarTopicId = GRAMMAR_TOPICS[0].id;
+    let availableVoices = [];
 
     let quizCurrentIdx = 0;
     let quizScoreCorrect = 0;
     let quizScoreWrong = 0;
     let quizAnswered = false;
 
+    let currentGrammarTopicId = 'tenses';
     let currentUser = null;
     let authMode = 'login';
     let isSyncing = false;
-    let autoSyncTimer = null;
-    let availableVoices = [];
 
-    // Tự động xóa sạch dữ liệu rác cũ nếu phát hiện phiên bản cũ
+    let isCategoriesCollapsed = false;
+    let isCardExpanded = false;
+
     function enforceCleanState() {
-      const activeTag = localStorage.getItem('engmaster_system_tag');
-      if (activeTag !== SYSTEM_VERSION_TAG) {
-        localStorage.clear();
-        localStorage.setItem('engmaster_system_tag', SYSTEM_VERSION_TAG);
+      // Khởi tạo trạng thái sạch ban đầu
+    }
+
+    // Toggle thu gọn / mở rộng danh mục từ vựng
+    function toggleCategoriesCollapse() {
+      isCategoriesCollapsed = !isCategoriesCollapsed;
+      const chipsContainer = document.getElementById('category-chips');
+      const icon = document.getElementById('toggle-cat-icon');
+      const text = document.getElementById('toggle-cat-text');
+
+      if (isCategoriesCollapsed) {
+        chipsContainer.classList.add('max-h-11');
+        icon.className = "fa-solid fa-chevron-down text-xs";
+        text.textContent = "Mở rộng danh mục";
+      } else {
+        chipsContainer.classList.remove('max-h-11');
+        icon.className = "fa-solid fa-chevron-up text-xs";
+        text.textContent = "Thu gọn danh mục";
+      }
+    }
+
+    // Toggle mở rộng / phóng to thẻ Flashcard
+    function toggleExpandFlashcard(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      isCardExpanded = !isCardExpanded;
+      const outerBox = document.getElementById('card-outer-box');
+      const controls = document.getElementById('card-controls');
+      const fcWord = document.getElementById('card-word');
+      const icon = document.getElementById('expand-card-icon');
+
+      if (isCardExpanded) {
+        outerBox.classList.remove('max-w-xl', 'h-[380px]', 'sm:h-[400px]');
+        outerBox.classList.add('max-w-3xl', 'h-[500px]', 'sm:h-[540px]');
+        controls.classList.remove('max-w-xl');
+        controls.classList.add('max-w-3xl');
+        fcWord.classList.remove('text-3xl', 'sm:text-4xl');
+        fcWord.classList.add('text-4xl', 'sm:text-5xl');
+        icon.className = "fa-solid fa-compress text-sm";
+        showToast("Đã mở rộng thẻ Flashcard", "fa-expand");
+      } else {
+        outerBox.classList.add('max-w-xl', 'h-[380px]', 'sm:h-[400px]');
+        outerBox.classList.remove('max-w-3xl', 'h-[500px]', 'sm:h-[540px]');
+        controls.classList.add('max-w-xl');
+        controls.classList.remove('max-w-3xl');
+        fcWord.classList.add('text-3xl', 'sm:text-4xl');
+        fcWord.classList.remove('text-4xl', 'sm:text-5xl');
+        icon.className = "fa-solid fa-expand text-sm";
+        showToast("Đã thu nhỏ thẻ Flashcard", "fa-compress");
       }
     }
 
@@ -926,7 +989,6 @@
     function switchAuthTab(mode) {
       authMode = mode;
       const titleEl = document.getElementById('auth-title');
-      const descEl = document.getElementById('auth-desc');
       const regTab = document.getElementById('tab-register-btn');
       const loginTab = document.getElementById('tab-login-btn');
       const fullnameGroup = document.getElementById('auth-fullname-group');
@@ -935,18 +997,16 @@
 
       if (mode === 'register') {
         titleEl.textContent = "Đăng Ký Tài Khoản Mới";
-        descEl.textContent = "Mỗi Email chỉ tạo đúng 1 tài khoản và đồng bộ trên tất cả thiết bị.";
         regTab.className = "flex-1 py-2.5 rounded-xl bg-white text-blue-600 shadow-sm transition";
         loginTab.className = "flex-1 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 transition";
         fullnameGroup.classList.remove('hidden');
         submitText.textContent = "Đăng ký & Bắt đầu học";
       } else {
-        titleEl.textContent = "Đăng Nhập Máy Chủ Đồng Bộ";
-        descEl.textContent = "Đăng nhập cùng Email để nhận diện và khớp 100% tiến độ học.";
+        titleEl.textContent = "Đăng Nhập Tài Khoản";
         loginTab.className = "flex-1 py-2.5 rounded-xl bg-white text-blue-600 shadow-sm transition";
         regTab.className = "flex-1 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 transition";
         fullnameGroup.classList.add('hidden');
-        submitText.textContent = "Đăng nhập & Kéo tiến độ";
+        submitText.textContent = "Đăng nhập";
       }
     }
 
@@ -1116,7 +1176,7 @@
 
         // Nếu máy này chưa có hoặc server chậm, kiểm tra lại một lần nữa
         if (!serverUser || !serverUser.email) {
-          showAuthError(`Email "${email}" chưa được đăng ký trên máy chủ! Vui lòng chọn tab "Đăng ký mới".`);
+          showAuthError(`Email "${email}" chưa được đăng ký trên máy chủ! Vui lòng chọn tab "Đăng ký".`);
           setAuthLoading(false);
           return;
         }
@@ -1886,12 +1946,6 @@
     function resetQuiz() {
       restartQuiz();
       showToast("Đã thiết lập lại bài kiểm tra.");
-    }
-
-    function emergencyResetAllData() {
-      localStorage.clear();
-      showToast("Đã dọn dẹp toàn bộ dữ liệu trên trình duyệt.");
-      setTimeout(() => window.location.reload(), 1000);
     }
 
     /* ----------------------------------------------------
