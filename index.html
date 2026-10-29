@@ -609,7 +609,6 @@
     const CLOUD_BACKUP_BASE = "https://api.npoint.io";
 
     const CATEGORIES = [
-      { id: 'all', name: 'Chủ đề', icon: 'fa-layer-group' },
       { id: 'day1', name: 'Day 1: Công sở & Tuyển dụng', icon: 'fa-briefcase' },
       { id: 'day2', name: 'Day 2: Giao tiếp & Thủ tục', icon: 'fa-envelope-open-text' },
       { id: 'day3', name: 'Day 3: Nhân sự & Đào tạo', icon: 'fa-users-gear' },
@@ -629,8 +628,7 @@
       { id: 'day17', name: 'Day 17: Bán hàng & Chiến lược', icon: 'fa-tags' },
       { id: 'day18', name: 'Day 18: Dịch vụ & Khách hàng', icon: 'fa-bullhorn' },
       { id: 'day19', name: 'Day 19: Phát triển & Thúc đẩy', icon: 'fa-arrow-trend-up' },
-      { id: 'day20', name: 'Day 20: Tổng kết & Đạt chuẩn', icon: 'fa-award' },
-      { id: 'custom', name: 'Từ Của Tôi', icon: 'fa-user' }
+      { id: 'day20', name: 'Day 20: Tổng kết & Đạt chuẩn', icon: 'fa-award' }
     ];
 
     function buildDayVocabulary(dayNumber, wordsData) {
@@ -847,7 +845,7 @@
        2. BIẾN TRẠNG THÁI TOÀN CỤC (APPLICATION STATE)
        ---------------------------------------------------- */
     let vocabulary = [];
-    let currentCategory = 'all';
+    let currentCategory = 'day1';
     let currentCardIndex = 0;
     let isFlipped = false;
     let autoPlayInterval = null;
@@ -1477,7 +1475,6 @@
     }
 
     function getFilteredVocab() {
-      if (currentCategory === 'all') return vocabulary;
       return vocabulary.filter(item => item.category === currentCategory);
     }
 
@@ -1487,16 +1484,12 @@
       
       // Cập nhật tên và số lượng từ trên nút chính "Chủ đề"
       document.getElementById('current-topic-name').textContent = curTopic.name;
-      const totalCount = currentCategory === 'all' 
-        ? vocabulary.length 
-        : vocabulary.filter(v => v.category === currentCategory).length;
+      const totalCount = vocabulary.filter(v => v.category === currentCategory).length;
       document.getElementById('current-topic-count').textContent = totalCount;
 
-      container.innerHTML = CATEGORIES.map((cat, index) => {
+      container.innerHTML = CATEGORIES.map((cat) => {
         const isActive = cat.id === currentCategory;
-        const count = cat.id === 'all' 
-          ? vocabulary.length 
-          : vocabulary.filter(v => v.category === cat.id).length;
+        const count = vocabulary.filter(v => v.category === cat.id).length;
 
         const activeClasses = "bg-blue-600 text-white font-bold shadow-sm shadow-blue-500/20";
         const inactiveClasses = "bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium border border-slate-200/80";
@@ -1791,29 +1784,27 @@
       vocabulary.unshift(newEntry);
       saveVocabularyLocal();
       pushDataToServer();
-
       renderCategoryChips();
       renderVocabularyTable();
-      currentCardIndex = 0;
       renderCurrentCard();
-
       closeAddWordModal();
-      showToast(`Đã thêm từ "${word}" thành công!`, "fa-circle-check");
+      showToast(`Đã thêm từ mới: "${word}"`, "fa-circle-check");
     }
 
     /* ----------------------------------------------------
-       11. GRAMMAR & QUIZ MODULE
+       11. GRAMMAR & PRACTICE CONTROLLER
        ---------------------------------------------------- */
     function renderGrammarSidebar() {
-      const listEl = document.getElementById('grammar-list');
-      document.getElementById('grammar-total-count').textContent = GRAMMAR_TOPICS.length;
-
-      listEl.innerHTML = GRAMMAR_TOPICS.map(topic => {
+      const container = document.getElementById('grammar-list');
+      container.innerHTML = GRAMMAR_TOPICS.map(topic => {
         const isActive = topic.id === currentGrammarTopicId;
+        const activeClasses = "bg-blue-50 border-blue-500 text-blue-900 shadow-sm";
+        const inactiveClasses = "bg-white border-slate-200 text-slate-700 hover:bg-slate-50";
+
         return `
-          <button onclick="renderGrammarDetail('${topic.id}')" class="w-full text-left p-4 rounded-2xl border transition-all flex items-start gap-3.5 ${isActive ? 'bg-blue-50 border-blue-300 shadow-sm' : 'bg-white border-slate-200 hover:bg-slate-50'}">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isActive ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 text-slate-500'}">
-              <i class="fa-solid ${topic.icon} text-sm"></i>
+          <button onclick="renderGrammarDetail('${topic.id}')" class="w-full text-left p-4 rounded-2xl border transition-all flex items-start gap-3.5 ${isActive ? activeClasses : inactiveClasses}">
+            <div class="w-10 h-10 rounded-xl ${isActive ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'} flex items-center justify-center shrink-0 text-sm">
+              <i class="fa-solid ${topic.icon}"></i>
             </div>
             <div class="space-y-0.5">
               <div class="text-xs font-bold ${isActive ? 'text-blue-600' : 'text-slate-500'}">${topic.level}</div>
