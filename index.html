@@ -122,32 +122,50 @@
     <!-- ========================================== -->
     <section id="section-flashcards" class="space-y-6">
       <!-- Toolbar & Category Filter -->
-      <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-start justify-between gap-4 transition-all duration-300">
-        <div class="flex-1 w-full">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 overflow-hidden transition-all duration-300" id="category-chips">
-            <!-- Rendered dynamically -->
-          </div>
-          <!-- Toggle Collapse / Expand Categories Button -->
-          <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-            <button id="btn-toggle-categories" onclick="toggleCategoriesCollapse()" class="inline-flex items-center gap-1.5 font-bold text-blue-600 hover:text-blue-700 transition py-1 px-2 rounded-lg hover:bg-blue-50">
-              <i id="toggle-cat-icon" class="fa-solid fa-chevron-up text-xs"></i>
-              <span id="toggle-cat-text">Thu gọn danh mục</span>
+      <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 flex flex-col gap-4 transition-all duration-300">
+        <!-- Top Action Bar: Nút Chủ Đề & Các phím chức năng -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <!-- Nút Chủ Đề: Nhấn vào để mở / đóng danh sách Day 1 - Day 20 -->
+            <button id="btn-toggle-topics-dropdown" onclick="toggleTopicDropdown()" class="px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center justify-between gap-3 bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20 active:scale-95">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-sm"></i>
+                <span id="current-topic-name">Chủ đề</span>
+              </div>
+              <div class="flex items-center gap-1.5 pl-2 border-l border-white/20">
+                <span id="current-topic-count" class="text-xs px-2 py-0.5 rounded-full bg-white/20 font-bold">1000</span>
+                <i id="topic-dropdown-arrow" class="fa-solid fa-chevron-down text-xs transition-transform duration-300"></i>
+              </div>
             </button>
-            <span class="text-[11px] text-slate-400">20 Chủ đề TOEIC trọng tâm</span>
+          </div>
+
+          <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
+            <button onclick="openAddWordModal()" class="px-3.5 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-plus"></i>
+              <span>Thêm từ mới</span>
+            </button>
+            <button onclick="shuffleCards()" title="Xáo trộn thẻ" class="p-2.5 w-10 h-10 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-600 flex items-center justify-center transition">
+              <i class="fa-solid fa-shuffle text-sm"></i>
+            </button>
+            <button id="btn-toggle-auto" onclick="toggleAutoPlay()" title="Tự động chuyển từ" class="p-2.5 w-10 h-10 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-600 flex items-center justify-center transition">
+              <i class="fa-solid fa-play text-sm"></i>
+            </button>
           </div>
         </div>
 
-        <div class="flex items-center gap-2 self-end md:self-start shrink-0">
-          <button onclick="openAddWordModal()" class="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition">
-            <i class="fa-solid fa-plus"></i>
-            <span>Thêm từ mới</span>
-          </button>
-          <button onclick="shuffleCards()" title="Xáo trộn thẻ" class="p-2 w-9 h-9 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-600 flex items-center justify-center transition">
-            <i class="fa-solid fa-shuffle text-sm"></i>
-          </button>
-          <button id="btn-toggle-auto" onclick="toggleAutoPlay()" title="Tự động chuyển từ" class="p-2 w-9 h-9 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-600 flex items-center justify-center transition">
-            <i class="fa-solid fa-play text-sm"></i>
-          </button>
+        <!-- Khung danh mục Day 1 - Day 20 hiển thị khi bấm nút Chủ đề -->
+        <div id="topics-panel" class="pt-3 border-t border-slate-100 transition-all duration-300">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 overflow-hidden transition-all duration-300" id="category-chips">
+            <!-- Rendered dynamically -->
+          </div>
+          <!-- Ghi chú chân bảng danh mục -->
+          <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+            <span class="text-[11px] text-slate-400">Chọn 1 chủ đề để tập trung ôn luyện từ vựng</span>
+            <button onclick="toggleTopicDropdown()" class="text-blue-600 hover:text-blue-700 font-bold text-xs flex items-center gap-1">
+              <span>Đóng bảng chủ đề</span>
+              <i class="fa-solid fa-chevron-up text-[10px]"></i>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -845,28 +863,25 @@
     let authMode = 'login';
     let isSyncing = false;
 
-    let isCategoriesCollapsed = false;
+    let isTopicsOpen = true; // Quản lý trạng thái mở/đóng của bảng chủ đề
     let isCardExpanded = false;
 
     function enforceCleanState() {
       // Khởi tạo trạng thái sạch ban đầu
     }
 
-    // Toggle thu gọn / mở rộng danh mục từ vựng
-    function toggleCategoriesCollapse() {
-      isCategoriesCollapsed = !isCategoriesCollapsed;
-      const chipsContainer = document.getElementById('category-chips');
-      const icon = document.getElementById('toggle-cat-icon');
-      const text = document.getElementById('toggle-cat-text');
+    // Bật / tắt hiển thị danh mục các Day khi bấm vào nút "Chủ đề"
+    function toggleTopicDropdown() {
+      isTopicsOpen = !isTopicsOpen;
+      const panel = document.getElementById('topics-panel');
+      const arrow = document.getElementById('topic-dropdown-arrow');
 
-      if (isCategoriesCollapsed) {
-        chipsContainer.classList.add('max-h-12');
-        icon.className = "fa-solid fa-chevron-down text-xs";
-        text.textContent = "Mở rộng danh mục";
+      if (isTopicsOpen) {
+        panel.classList.remove('hidden');
+        arrow.classList.add('rotate-180');
       } else {
-        chipsContainer.classList.remove('max-h-12');
-        icon.className = "fa-solid fa-chevron-up text-xs";
-        text.textContent = "Thu gọn danh mục";
+        panel.classList.add('hidden');
+        arrow.classList.remove('rotate-180');
       }
     }
 
@@ -1468,6 +1483,15 @@
 
     function renderCategoryChips() {
       const container = document.getElementById('category-chips');
+      const curTopic = CATEGORIES.find(c => c.id === currentCategory) || CATEGORIES[0];
+      
+      // Cập nhật tên và số lượng từ trên nút chính "Chủ đề"
+      document.getElementById('current-topic-name').textContent = curTopic.name;
+      const totalCount = currentCategory === 'all' 
+        ? vocabulary.length 
+        : vocabulary.filter(v => v.category === currentCategory).length;
+      document.getElementById('current-topic-count').textContent = totalCount;
+
       container.innerHTML = CATEGORIES.map((cat, index) => {
         const isActive = cat.id === currentCategory;
         const count = cat.id === 'all' 
@@ -1475,10 +1499,10 @@
           : vocabulary.filter(v => v.category === cat.id).length;
 
         const activeClasses = "bg-blue-600 text-white font-bold shadow-sm shadow-blue-500/20";
-        const inactiveClasses = "bg-slate-100 text-slate-700 hover:bg-slate-200 font-medium";
+        const inactiveClasses = "bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium border border-slate-200/80";
 
         return `
-          <button onclick="setCategory('${cat.id}')" class="w-full px-3.5 py-2 rounded-xl text-xs sm:text-sm transition-all flex items-center justify-between text-left ${isActive ? activeClasses : inactiveClasses}">
+          <button onclick="selectCategoryTopic('${cat.id}')" class="w-full px-3.5 py-2.5 rounded-xl text-xs sm:text-sm transition-all flex items-center justify-between text-left ${isActive ? activeClasses : inactiveClasses}">
             <div class="flex items-center gap-2 truncate pr-2">
               <i class="fa-solid ${cat.icon} text-xs shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}"></i>
               <span class="truncate">${cat.name}</span>
@@ -1489,13 +1513,23 @@
       }).join('');
     }
 
-    function setCategory(catId) {
+    function selectCategoryTopic(catId) {
       currentCategory = catId;
       currentCardIndex = 0;
       isFlipped = false;
       renderCategoryChips();
       renderCurrentCard();
       renderVocabularyTable();
+
+      // Sau khi chọn chủ đề, đóng bảng danh mục lại để tập trung học thẻ flashcard
+      isTopicsOpen = false;
+      document.getElementById('topics-panel').classList.add('hidden');
+      document.getElementById('topic-dropdown-arrow').classList.remove('rotate-180');
+      showToast(`Đã chọn: ${CATEGORIES.find(c => c.id === catId)?.name || 'Chủ đề'}`, "fa-folder-open");
+    }
+
+    function setCategory(catId) {
+      selectCategoryTopic(catId);
     }
 
     function renderCurrentCard() {
