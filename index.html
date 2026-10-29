@@ -423,6 +423,70 @@
         </button>
       </div>
 
+      <!-- Add Word Form -->
+      <form id="add-word-form" onsubmit="handleSaveWord(event)" class="space-y-4 text-left">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Từ vựng (Word) *</label>
+            <input required type="text" id="new-word" placeholder="Ví dụ: Accomplish" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Phiên âm IPA</label>
+            <input type="text" id="new-phonetic" placeholder="/əˈkʌm.plɪʃ/" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Loại từ</label>
+            <select id="new-pos" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="verb">Động từ (verb)</option>
+              <option value="noun">Danh từ (noun)</option>
+              <option value="adj">Tính từ (adj)</option>
+              <option value="adv">Phó từ (adv)</option>
+              <option value="phr">Cụm từ (phrase)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Chọn ngày/chủ đề</label>
+            <select id="new-category" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="custom">Từ Của Tôi (Tự tạo)</option>
+              <option value="day1">Day 1</option>
+              <option value="day2">Day 2</option>
+              <option value="day3">Day 3</option>
+              <option value="day4">Day 4</option>
+              <option value="day5">Day 5</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nghĩa tiếng Việt *</label>
+          <input required type="text" id="new-meaning" placeholder="hoàn thành, đạt được" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ví dụ câu tiếng Anh</label>
+          <input type="text" id="new-example" placeholder="We have accomplished our mission." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Dịch nghĩa câu ví dụ</label>
+          <input type="text" id="new-example-vi" placeholder="Chúng tôi đã hoàn thành sứ mệnh của mình." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeAddWordModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-sm font-semibold transition">
+            Hủy bỏ
+          </button>
+          <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-md shadow-blue-500/25 transition">
+            Lưu vào thư viện
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- ======================================================== -->
   <!-- MODAL: BẮT BUỘC ĐĂNG KÝ / ĐĂNG NHẬP MỚI ĐƯỢC HỌC        -->
   <!-- ======================================================== -->
