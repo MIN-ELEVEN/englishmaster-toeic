@@ -104,10 +104,10 @@
           <!-- User Profile & Cloud Sync Indicator -->
           <div id="user-header-menu" class="hidden items-center gap-2 pl-2 sm:pl-3 ml-1 sm:ml-2 border-l border-slate-200">
             <!-- Đèn báo trạng thái Cloud Realtime -->
-            <div id="cloud-status-pill" onclick="openEmailSyncModal()" title="Nhấn để xem hoặc sao lưu tiến độ qua Email" class="cursor-pointer flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-700 text-xs font-semibold hover:bg-indigo-100 transition">
+            <div id="cloud-status-pill" onclick="triggerManualCloudSync()" title="Bấm để đồng bộ dữ liệu đám mây ngay" class="cursor-pointer flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-700 text-xs font-semibold hover:bg-indigo-100 transition">
               <span id="cloud-indicator-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span id="cloud-status-text" class="hidden md:inline">Đồng bộ Email</span>
-              <i id="cloud-sync-icon" class="fa-solid fa-envelope-circle-check text-xs"></i>
+              <span id="cloud-status-text" class="hidden md:inline">Đám mây kết nối</span>
+              <i id="cloud-sync-icon" class="fa-solid fa-cloud-arrow-up text-xs"></i>
             </div>
 
             <div class="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 py-1.5 px-3 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium text-slate-700">
@@ -536,7 +536,7 @@
             <i class="fa-regular fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
             <input required type="email" id="auth-email" placeholder="tenban@gmail.com" class="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
-          <span class="text-[11px] text-slate-400 mt-1 block">Tiến độ học sẽ tự động được gửi và đồng bộ qua email này.</span>
+          <span class="text-[11px] text-slate-400 mt-1 block">Tài khoản và toàn bộ tiến độ sẽ tự động đồng bộ trên đám mây theo email này.</span>
         </div>
 
         <div>
@@ -550,81 +550,25 @@
           </div>
         </div>
 
-        <!-- Khung Nhập Mã Khôi Phục Nhanh cho Chrome/Điện Thoại -->
-        <div id="auth-restore-block" class="hidden p-3 bg-blue-50 rounded-2xl border border-blue-200 text-xs space-y-1.5">
-          <label class="block font-bold text-blue-900">Mã sao lưu Email (nếu mở từ máy khác):</label>
-          <input type="text" id="auth-sync-code-input" placeholder="Dán mã sao lưu gửi về email (tùy chọn)" class="w-full px-3 py-2 bg-white border border-blue-200 rounded-xl text-xs focus:outline-none">
-        </div>
-
         <div id="auth-error-msg" class="hidden text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-xl flex items-center gap-2">
           <i class="fa-solid fa-triangle-exclamation"></i>
           <span id="auth-error-text">Thông báo lỗi</span>
         </div>
 
-        <button type="submit" id="auth-submit-btn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-bold rounded-xl text-sm shadow-md shadow-blue-500/25 transition">
-          Đăng ký & Bắt đầu học
+        <button type="submit" id="auth-submit-btn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-bold rounded-xl text-sm shadow-md shadow-blue-500/25 transition flex items-center justify-center gap-2">
+          <span id="auth-submit-text">Đăng ký & Bắt đầu học</span>
+          <i id="auth-loading-spinner" class="fa-solid fa-circle-notch fa-spin hidden"></i>
         </button>
       </form>
 
       <!-- Ghi chú tự động đồng bộ đám mây bằng email -->
-      <div class="pt-2 text-center text-xs text-indigo-700 font-medium flex items-center justify-center gap-2 bg-indigo-50 py-2.5 px-3 rounded-xl border border-indigo-100">
-        <i class="fa-solid fa-shield-halved text-indigo-600"></i>
-        <span>Tự động sao lưu tiến độ học tập gắn liền với Email của bạn</span>
+      <div class="pt-2 text-center text-xs text-emerald-700 font-medium flex items-center justify-center gap-2 bg-emerald-50 py-2.5 px-3 rounded-xl border border-emerald-100">
+        <i class="fa-solid fa-cloud-arrow-up text-emerald-600"></i>
+        <span>Tự động đồng bộ đám mây giữa Brave, Chrome & Điện thoại</span>
       </div>
 
       <div class="text-center text-xs text-slate-400 border-t border-slate-100 pt-3">
-        Mọi tiến độ từ vựng được mã hóa và bảo mật tuyệt đối theo Email.
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: QUẢN LÝ ĐỒNG BỘ EMAIL & GỬI TIẾN ĐỘ -->
-  <div id="email-sync-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 space-y-5">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-          <i class="fa-solid fa-envelope-circle-check text-indigo-600"></i>
-          <span>Sao Lưu & Đồng Bộ Email</span>
-        </h3>
-        <button onclick="closeEmailSyncModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
-          <i class="fa-solid fa-xmark text-sm"></i>
-        </button>
-      </div>
-
-      <div class="space-y-3 text-sm text-slate-600">
-        <p>Email tài khoản: <strong id="modal-user-email" class="text-blue-600 font-mono">user@gmail.com</strong></p>
-        <p>Tiến độ hiện tại: <strong id="modal-learned-stat" class="text-emerald-600">0/1000 từ đã thuộc</strong></p>
-
-        <!-- Nút gửi sao lưu tự động về email -->
-        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
-          <div class="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-paper-plane text-indigo-600"></i> 1. Tự động gửi sao lưu về hộp thư Email
-          </div>
-          <p class="text-xs text-slate-500 leading-relaxed">
-            Hệ thống sẽ soạn sẵn một email chứa toàn bộ mã tiến độ và gửi thẳng vào hòm thư cá nhân của bạn để lưu vĩnh viễn.
-          </p>
-          <button onclick="sendBackupToUserEmail()" class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm transition">
-            <i class="fa-solid fa-envelope"></i> Gửi tiến độ về Email của tôi ngay
-          </button>
-        </div>
-
-        <!-- Mã đồng bộ nhanh 1-chạm -->
-        <div class="p-4 bg-blue-50/70 rounded-2xl border border-blue-200 space-y-2">
-          <div class="font-bold text-blue-900 text-xs uppercase tracking-wider flex items-center justify-between">
-            <span>2. Mã đồng bộ nhanh cho thiết bị khác:</span>
-            <button onclick="copyEmailSyncCode()" class="text-blue-600 hover:underline text-xs flex items-center gap-1">
-              <i class="fa-regular fa-copy"></i> Sao chép
-            </button>
-          </div>
-          <textarea id="email-sync-code-area" readonly rows="3" class="w-full p-2.5 bg-white border border-blue-200 rounded-xl text-xs font-mono text-slate-700 select-all"></textarea>
-          <span class="text-[11px] text-blue-700 block">Khi mở Chrome hoặc Điện thoại, dán mã này vào là xong ngay lập tức.</span>
-        </div>
-      </div>
-
-      <div class="flex justify-end pt-2 border-t border-slate-100">
-        <button onclick="closeEmailSyncModal()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition">
-          Đóng cửa sổ
-        </button>
+        Chỉ cần nhập cùng Email & Mật khẩu trên mọi thiết bị để tiếp tục học.
       </div>
     </div>
   </div>
@@ -654,11 +598,15 @@
     /* ----------------------------------------------------
        1. DATA DEFINITIONS & 20-DAY VOCABULARY ENGINE
        ---------------------------------------------------- */
-    const VOCAB_DATA_VERSION = "2026_v4_email_sync";
+    const VOCAB_DATA_VERSION = "2026_v5_direct_cloud_sync";
     
+    // Cloud Storage Endpoint dành riêng cho ứng dụng (hỗ trợ CORS mọi trình duyệt kể cả Brave)
+    const CLOUD_SYNC_BASE = "https://api.allorigins.win/raw?url=";
+    const CLOUD_BACKUP_SERVICE = "https://kvdb.io/4y2P78BqTqM9zXwYk3s1jG/";
+
     const CATEGORIES = [
-      { id: 'all', name: 'Tất cả từ (1000 từ)', icon: 'fa-globe' },
-      { id: 'day1', name: 'Day 1: Công việc & Văn phòng', icon: 'fa-briefcase' },
+      { id: 'all', name: 'Tất cả (1000 từ)', icon: 'fa-globe' },
+      { id: 'day1', name: 'Day 1: Công sở & Tuyển dụng', icon: 'fa-briefcase' },
       { id: 'day2', name: 'Day 2: Giao tiếp & Thủ tục', icon: 'fa-envelope-open-text' },
       { id: 'day3', name: 'Day 3: Nhân sự & Đào tạo', icon: 'fa-users-gear' },
       { id: 'day4', name: 'Day 4: Hội nghị & Kế hoạch', icon: 'fa-calendar-check' },
@@ -954,6 +902,7 @@
     // Authentication State
     let currentUser = null;
     let authMode = 'register'; // 'register' hoặc 'login'
+    let isCloudSyncing = false;
 
     // Bộ cache voices âm thanh để dùng ngay không bị trễ
     let availableVoices = [];
@@ -969,7 +918,7 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       initSpeechVoices();
-      checkAuthStatus(); // Kiểm tra tài khoản người dùng ngay khi khởi chạy
+      checkAuthStatus();
       loadVocabularyData();
       renderCategoryChips();
       renderVocabularyTable();
@@ -977,6 +926,11 @@
       renderGrammarSidebar();
       renderGrammarDetail(currentGrammarTopicId);
       loadQuizQuestion();
+
+      // Nếu đã có tài khoản, tự động đồng bộ đám mây ngầm
+      if (currentUser) {
+        syncDataWithCloud(false);
+      }
 
       window.addEventListener('keydown', (e) => {
         if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
@@ -992,7 +946,7 @@
     });
 
     /* ----------------------------------------------------
-       2.1 HỆ THỐNG XÁC THỰC EMAIL & TỰ ĐỘNG SAO LƯU EMAIL
+       2.1 HỆ THỐNG XÁC THỰC & ĐỒNG BỘ ĐÁM MÂY TỰ ĐỘNG
        ---------------------------------------------------- */
     function checkAuthStatus() {
       const loggedUserJson = localStorage.getItem('englishmaster_logged_user');
@@ -1031,8 +985,7 @@
       const regTab = document.getElementById('tab-register-btn');
       const loginTab = document.getElementById('tab-login-btn');
       const fullnameGroup = document.getElementById('auth-fullname-group');
-      const restoreBlock = document.getElementById('auth-restore-block');
-      const submitBtn = document.getElementById('auth-submit-btn');
+      const submitText = document.getElementById('auth-submit-text');
       hideAuthError();
 
       if (mode === 'register') {
@@ -1041,16 +994,14 @@
         regTab.className = "flex-1 py-2 rounded-xl bg-white text-blue-600 shadow-sm transition";
         loginTab.className = "flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition";
         fullnameGroup.classList.remove('hidden');
-        restoreBlock.classList.add('hidden');
-        submitBtn.textContent = "Đăng ký & Bắt đầu học";
+        submitText.textContent = "Đăng ký & Bắt đầu học";
       } else {
         titleEl.textContent = "Đăng Nhập Bằng Email";
-        descEl.textContent = "Chào mừng bạn quay lại! Nhập Email để truy cập tiến độ học.";
+        descEl.textContent = "Chào mừng bạn quay lại! Nhập Email để tự động lấy lại tiến độ từ đám mây.";
         loginTab.className = "flex-1 py-2 rounded-xl bg-white text-blue-600 shadow-sm transition";
         regTab.className = "flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition";
         fullnameGroup.classList.add('hidden');
-        restoreBlock.classList.remove('hidden');
-        submitBtn.textContent = "Đăng nhập ngay";
+        submitText.textContent = "Đăng nhập & Đồng bộ đám mây";
       }
     }
 
@@ -1077,210 +1028,207 @@
       document.getElementById('auth-error-msg').classList.add('hidden');
     }
 
-    function getUsersDatabase() {
-      try {
-        return JSON.parse(localStorage.getItem('englishmaster_all_users') || '[]');
-      } catch (e) {
-        return [];
+    function setAuthLoading(loading) {
+      const btn = document.getElementById('auth-submit-btn');
+      const spinner = document.getElementById('auth-loading-spinner');
+      if (loading) {
+        btn.disabled = true;
+        spinner.classList.remove('hidden');
+      } else {
+        btn.disabled = false;
+        spinner.classList.add('hidden');
       }
     }
 
-    function saveUsersDatabase(users) {
-      localStorage.setItem('englishmaster_all_users', JSON.stringify(users));
+    function getSanitizedUserKey(email) {
+      return btoa(email.toLowerCase().trim()).replace(/[^a-zA-Z0-9]/g, '');
     }
 
-    // ====================================================
-    // CƠ CHẾ SAO LƯU EMAIL AN TOÀN TUYỆT ĐỐI (EMAIL CLOUD)
-    // ====================================================
-    function generateEmailSyncPayload() {
-      if (!currentUser) return "";
-      const payload = {
-        email: currentUser.email,
-        fullname: currentUser.fullname,
-        learnedIds: vocabulary.filter(v => v.learned).map(v => v.id),
-        customWords: vocabulary.filter(v => v.category === 'custom'),
-        savedAt: new Date().toLocaleString('vi-VN')
-      };
-      return btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-    }
+    /* ----------------------------------------------------
+       2.2 CORE CLOUD SYNC ENGINE (ĐỒNG BỘ ĐÁM MÂY TỰ ĐỘNG)
+       ---------------------------------------------------- */
+    async function syncDataWithCloud(isManual = false) {
+      if (!currentUser || isCloudSyncing) return;
+      isCloudSyncing = true;
+      updateCloudIndicator('syncing');
 
-    function applyEmailSyncPayload(encodedStr) {
+      const cloudKey = getSanitizedUserKey(currentUser.email);
+      const url = `${CLOUD_BACKUP_SERVICE}${cloudKey}`;
+
       try {
-        const decodedJson = decodeURIComponent(escape(atob(encodedStr.trim())));
-        const data = JSON.parse(decodedJson);
-        if (data && Array.isArray(data.learnedIds)) {
-          const learnedSet = new Set(data.learnedIds);
-          vocabulary.forEach(item => {
-            if (learnedSet.has(item.id)) {
-              item.learned = true;
-            }
-          });
+        // 1. Tải dữ liệu hiện tại từ Cloud về trước
+        const response = await fetch(url, { method: 'GET', cache: 'no-cache' });
+        if (response.ok) {
+          const cloudData = await response.json();
+          if (cloudData && Array.isArray(cloudData.learnedIds)) {
+            const cloudLearnedSet = new Set(cloudData.learnedIds);
+            let hasChanges = false;
 
-          if (Array.isArray(data.customWords) && data.customWords.length > 0) {
-            data.customWords.forEach(cw => {
-              if (!vocabulary.some(v => v.id === cw.id)) {
-                vocabulary.unshift(cw);
+            // Merge thông minh: Gộp từ đã thuộc giữa các máy
+            vocabulary.forEach(item => {
+              if (cloudLearnedSet.has(item.id) && !item.learned) {
+                item.learned = true;
+                hasChanges = true;
               }
             });
-          }
 
-          saveVocabularyToStorage();
-          renderCategoryChips();
-          renderVocabularyTable();
-          renderCurrentCard();
-          return true;
+            // Gộp các từ custom tự tạo
+            if (Array.isArray(cloudData.customWords)) {
+              cloudData.customWords.forEach(cw => {
+                if (!vocabulary.some(v => v.id === cw.id)) {
+                  vocabulary.unshift(cw);
+                  hasChanges = true;
+                }
+              });
+            }
+
+            if (hasChanges) {
+              saveVocabularyToStorage();
+              renderCategoryChips();
+              renderVocabularyTable();
+              renderCurrentCard();
+            }
+          }
+        }
+
+        // 2. Đẩy trạng thái mới nhất lên Cloud
+        const payloadToSave = {
+          email: currentUser.email,
+          fullname: currentUser.fullname,
+          learnedIds: vocabulary.filter(v => v.learned).map(v => v.id),
+          customWords: vocabulary.filter(v => v.category === 'custom'),
+          lastUpdated: new Date().toISOString()
+        };
+
+        await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payloadToSave)
+        });
+
+        updateCloudIndicator('online');
+        if (isManual) {
+          showToast("Đã đồng bộ đám mây thành công!", "fa-cloud-arrow-up");
         }
       } catch (err) {
-        console.warn("Invalid sync code:", err);
+        console.warn("Cloud sync fallback:", err);
+        updateCloudIndicator('offline');
+      } finally {
+        isCloudSyncing = false;
       }
-      return false;
     }
 
-    function openEmailSyncModal() {
-      if (!currentUser) return;
-      document.getElementById('modal-user-email').textContent = currentUser.email;
-      const learnedCount = vocabulary.filter(v => v.learned).length;
-      document.getElementById('modal-learned-stat').textContent = `${learnedCount} / 1000 từ đã thuộc`;
-      document.getElementById('email-sync-code-area').value = generateEmailSyncPayload();
-      document.getElementById('email-sync-modal').classList.remove('hidden');
+    function triggerManualCloudSync() {
+      syncDataWithCloud(true);
     }
 
-    function closeEmailSyncModal() {
-      document.getElementById('email-sync-modal').classList.add('hidden');
+    function updateCloudIndicator(status) {
+      const dot = document.getElementById('cloud-indicator-dot');
+      const text = document.getElementById('cloud-status-text');
+      const icon = document.getElementById('cloud-sync-icon');
+
+      if (status === 'syncing') {
+        dot.className = "w-2 h-2 rounded-full bg-amber-500 animate-ping";
+        text.textContent = "Đang đồng bộ...";
+        icon.className = "fa-solid fa-arrows-rotate fa-spin text-xs";
+      } else if (status === 'online') {
+        dot.className = "w-2 h-2 rounded-full bg-emerald-500";
+        text.textContent = "Đã đồng bộ Cloud";
+        icon.className = "fa-solid fa-cloud-check text-xs";
+      } else {
+        dot.className = "w-2 h-2 rounded-full bg-slate-400";
+        text.textContent = "Lưu ngoại tuyến";
+        icon.className = "fa-solid fa-cloud text-xs";
+      }
     }
 
-    function copyEmailSyncCode() {
-      const area = document.getElementById('email-sync-code-area');
-      area.select();
-      document.execCommand('copy');
-      showToast("Đã sao chép mã sao lưu vào bộ nhớ tạm!", "fa-copy");
-    }
-
-    function sendBackupToUserEmail() {
-      if (!currentUser || !currentUser.email) return;
-      const learnedCount = vocabulary.filter(v => v.learned).length;
-      const syncCode = generateEmailSyncPayload();
-      
-      const subject = encodeURIComponent(`[EnglishMaster] Bản sao lưu tiến độ học 1000 từ vựng của ${currentUser.fullname}`);
-      const body = encodeURIComponent(
-        `Xin chào ${currentUser.fullname},\n\n` +
-        `Đây là bản sao lưu tự động tiến độ học tập của bạn tại EnglishMaster:\n` +
-        `- Email tài khoản: ${currentUser.email}\n` +
-        `- Số từ đã thuộc: ${learnedCount} / 1000 từ\n` +
-        `- Thời gian sao lưu: ${new Date().toLocaleString('vi-VN')}\n\n` +
-        `-----------------------------------------\n` +
-        `MÃ ĐỒNG BỘ TIẾN ĐỘ CỦA BẠN (Dùng để dán vào Chrome/Điện thoại khi đăng nhập):\n\n` +
-        `${syncCode}\n\n` +
-        `-----------------------------------------\n` +
-        `Chúc bạn học tập hiệu quả và chinh phục mục tiêu TOEIC/IELTS!`
-      );
-
-      // Mở trình soạn thảo thư của máy (Gmail/Outlook/Apple Mail)
-      window.location.href = `mailto:${currentUser.email}?subject=${subject}&body=${body}`;
-      showToast("Đang mở ứng dụng Email để gửi mã sao lưu...", "fa-paper-plane");
-    }
-
-    function handleAuthSubmit(event) {
+    async function handleAuthSubmit(event) {
       event.preventDefault();
       hideAuthError();
 
       const email = document.getElementById('auth-email').value.trim().toLowerCase();
       const password = document.getElementById('auth-password').value.trim();
       const fullname = document.getElementById('auth-fullname').value.trim();
-      const restoreCode = document.getElementById('auth-sync-code-input') ? document.getElementById('auth-sync-code-input').value.trim() : "";
-      const users = getUsersDatabase();
+
+      setAuthLoading(true);
+
+      const cloudKey = getSanitizedUserKey(email);
+      const url = `${CLOUD_BACKUP_SERVICE}${cloudKey}`;
 
       if (authMode === 'register') {
         if (!fullname) {
           showAuthError("Vui lòng nhập họ và tên của bạn.");
-          return;
-        }
-        if (users.some(u => u.email === email)) {
-          showAuthError("Email này đã được đăng ký. Hãy chuyển sang tab 'Đã có Email' để đăng nhập.");
+          setAuthLoading(false);
           return;
         }
 
-        const newUser = {
-          id: Date.now(),
+        currentUser = {
           email,
-          password,
           fullname,
           registeredAt: new Date().toISOString()
         };
 
-        users.push(newUser);
-        saveUsersDatabase(users);
-
-        currentUser = { id: newUser.id, email: newUser.email, fullname: newUser.fullname };
         localStorage.setItem('englishmaster_logged_user', JSON.stringify(currentUser));
-        
+        localStorage.setItem(`englishmaster_pass_${cloudKey}`, password);
+
+        // Khởi tạo và đẩy lên đám mây ngay lập tức
         loadVocabularyData();
+        await syncDataWithCloud(false);
+
         checkAuthStatus();
         renderCategoryChips();
         renderVocabularyTable();
         renderCurrentCard();
 
-        showToast(`Đăng ký thành công! Chào ${newUser.fullname}.`, "fa-circle-check");
+        setAuthLoading(false);
+        showToast(`Đăng ký thành công! Chào ${currentUser.fullname}.`, "fa-circle-check");
         confetti({ particleCount: 70, spread: 70, origin: { y: 0.6 } });
       } else {
         // Mode: Login
-        let matched = users.find(u => u.email === email && u.password === password);
-        
-        // Nếu chuyển sang trình duyệt mới (Chrome) chưa có tài khoản cục bộ:
-        if (!matched && restoreCode) {
-          // Tự động khôi phục tài khoản từ mã sao lưu Email
-          try {
-            const decodedJson = decodeURIComponent(escape(atob(restoreCode)));
-            const data = JSON.parse(decodedJson);
-            if (data && data.email === email) {
-              matched = {
-                id: Date.now(),
-                email: data.email,
-                fullname: data.fullname || email.split('@')[0],
-                password: password
-              };
-              users.push(matched);
-              saveUsersDatabase(users);
-            }
-          } catch (e) {
-            console.warn("Invalid backup code during login", e);
-          }
-        }
+        // Tự động kiểm tra trên Cloud xem tài khoản đã từng học ở Brave hay chưa
+        try {
+          const res = await fetch(url, { method: 'GET', cache: 'no-cache' });
+          let cloudUser = null;
 
-        if (!matched) {
-          // Cho phép đăng nhập linh hoạt nếu người dùng dùng cùng Email + Mật khẩu trên thiết bị mới
-          if (email && password.length >= 6) {
-            matched = {
-              id: Date.now(),
-              email: email,
-              fullname: email.split('@')[0],
-              password: password
-            };
-            users.push(matched);
-            saveUsersDatabase(users);
-          } else {
-            showAuthError("Email hoặc mật khẩu không chính xác.");
+          if (res.ok) {
+            cloudUser = await res.json();
+          }
+
+          const localPass = localStorage.getItem(`englishmaster_pass_${cloudKey}`);
+          if (localPass && localPass !== password) {
+            showAuthError("Mật khẩu không chính xác.");
+            setAuthLoading(false);
             return;
           }
+
+          currentUser = {
+            email,
+            fullname: cloudUser && cloudUser.fullname ? cloudUser.fullname : email.split('@')[0],
+            loggedInAt: new Date().toISOString()
+          };
+
+          localStorage.setItem('englishmaster_logged_user', JSON.stringify(currentUser));
+          localStorage.setItem(`englishmaster_pass_${cloudKey}`, password);
+
+          loadVocabularyData();
+          await syncDataWithCloud(false);
+
+          checkAuthStatus();
+          renderCategoryChips();
+          renderVocabularyTable();
+          renderCurrentCard();
+
+          setAuthLoading(false);
+          showToast(`Đăng nhập & Đồng bộ thành công! Chào ${currentUser.fullname}.`, "fa-cloud-arrow-up");
+        } catch (e) {
+          // Fallback offline login
+          currentUser = { email, fullname: email.split('@')[0] };
+          localStorage.setItem('englishmaster_logged_user', JSON.stringify(currentUser));
+          checkAuthStatus();
+          loadVocabularyData();
+          setAuthLoading(false);
+          showToast("Đăng nhập thành công!", "fa-circle-check");
         }
-
-        currentUser = { id: matched.id, email: matched.email, fullname: matched.fullname };
-        localStorage.setItem('englishmaster_logged_user', JSON.stringify(currentUser));
-
-        checkAuthStatus();
-        loadVocabularyData();
-
-        // Nếu có dán kèm mã sao lưu từ email, tự động nạp tiến độ đã thuộc ngay lập tức
-        if (restoreCode) {
-          applyEmailSyncPayload(restoreCode);
-          showToast(`Đã đồng bộ toàn bộ tiến độ từ Email thành công!`, "fa-envelope-circle-check");
-        } else {
-          showToast(`Đăng nhập thành công! Chào ${matched.fullname}.`, "fa-circle-check");
-        }
-
-        renderCategoryChips();
-        renderVocabularyTable();
-        renderCurrentCard();
       }
     }
 
@@ -1294,7 +1242,7 @@
     }
 
     /* ----------------------------------------------------
-       2.2 LOAD & SAVE VOCABULARY THEO USER HIỆN TẠI
+       2.3 LOAD & SAVE VOCABULARY THEO USER HIỆN TẠI
        ---------------------------------------------------- */
     function loadVocabularyData() {
       const userKey = currentUser ? `englishmaster_vocab_u_${currentUser.email}` : 'englishmaster_vocab_guest';
@@ -1585,13 +1533,18 @@
       updateMasterUI(currentItem.learned);
       renderVocabularyTable();
 
+      // Tự động đẩy tiến độ lên đám mây trong nền
+      if (currentUser) {
+        syncDataWithCloud(false);
+      }
+
       if (currentItem.learned) {
         confetti({
           particleCount: 35,
           spread: 60,
           origin: { y: 0.7 }
         });
-        showToast(`Đã thuộc từ "${currentItem.word}"!`, "fa-check");
+        showToast(`Đã thuộc từ "${currentItem.word}"! (Đã lưu Cloud)`, "fa-check");
       } else {
         showToast(`Đã chuyển "${currentItem.word}" vào danh sách cần ôn.`);
       }
