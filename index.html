@@ -96,7 +96,7 @@
           <div id="user-header-menu" class="hidden items-center gap-2 pl-2 sm:pl-3 ml-1 sm:ml-2 border-l border-slate-200">
             <button id="cloud-status-pill" onclick="triggerManualSync()" title="Bấm để đồng bộ dữ liệu ngay lập tức với máy chủ" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700 text-xs font-bold hover:bg-emerald-100 transition active:scale-95">
               <span id="cloud-indicator-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span id="cloud-status-text" class="hidden md:inline">Đã Đồng Bộ Server</span>
+              <span id="cloud-status-text" class="hidden md:inline">Sao lưu</span>
               <i id="cloud-sync-icon" class="fa-solid fa-cloud-arrow-up text-xs"></i>
             </button>
 
@@ -283,7 +283,7 @@
       <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm mt-10">
         <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 class="font-extrabold text-slate-900 text-lg">Danh sách từ trong chủ đề</h3>
+            <h3 class="font-extrabold text-slate-900 text-lg">Danh sách từ vựng trong chủ đề</h3>
             <p class="text-xs text-slate-500 mt-0.5">Bấm vào bất kỳ từ nào để ôn tập ngay trên thẻ Flashcard</p>
           </div>
           <div class="relative">
@@ -300,7 +300,6 @@
                 <th class="py-3 px-4">Loại từ</th>
                 <th class="py-3 px-4">Nghĩa tiếng Việt</th>
                 <th class="py-3 px-4 text-center">Trạng thái</th>
-                <th class="py-3 px-4 text-center">Hành động</th>
               </tr>
             </thead>
             <tbody id="vocab-tbody" class="divide-y divide-slate-100 text-slate-700">
@@ -588,6 +587,9 @@
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
       <div class="flex items-center gap-2">
         <span class="font-extrabold text-slate-800">EnglishMaster</span> — THÀNH CÔNG KHÔNG DÀNH CHO KẺ LƯỜI BIẾNG!
+      </div>
+      <div class="text-slate-400 font-bold tracking-wider text-xs uppercase">
+        MIN ELEVEN
       </div>
     </div>
   </footer>
@@ -1345,15 +1347,15 @@
 
       if (status === 'syncing') {
         dot.className = "w-2 h-2 rounded-full bg-amber-500 animate-ping";
-        text.textContent = "Đang đồng bộ...";
+        text.textContent = "Đang sao lưu...";
         icon.className = "fa-solid fa-arrows-rotate fa-spin text-xs";
       } else if (status === 'synced') {
         dot.className = "w-2 h-2 rounded-full bg-emerald-500";
-        text.textContent = "Đã Đồng Bộ Server";
+        text.textContent = "Sao lưu";
         icon.className = "fa-solid fa-cloud-arrow-up text-xs text-emerald-600";
       } else {
         dot.className = "w-2 h-2 rounded-full bg-rose-500";
-        text.textContent = "Thử lại đồng bộ";
+        text.textContent = "Lỗi sao lưu";
         icon.className = "fa-solid fa-circle-exclamation text-xs text-rose-600";
       }
     }
@@ -1685,7 +1687,7 @@
       if (list.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="6" class="p-6 text-center text-slate-400">
+            <td colspan="5" class="p-6 text-center text-slate-400">
               Không tìm thấy từ vựng nào phù hợp.
             </td>
           </tr>
@@ -1710,11 +1712,6 @@
             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold ${item.learned ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}">
               ${item.learned ? 'Thuộc' : 'Chưa'}
             </span>
-          </td>
-          <td class="py-3 px-4 text-center">
-            <button type="button" onclick="event.stopPropagation(); deleteWord(${item.id})" class="text-slate-400 hover:text-rose-600 transition p-1" title="Xóa từ này">
-              <i class="fa-regular fa-trash-can text-xs"></i>
-            </button>
           </td>
         </tr>
       `).join('');
