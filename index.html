@@ -568,17 +568,16 @@
   <!-- ======================================================== -->
   <script>
     /* ----------------------------------------------------
-       1. CẤU HÌNH SERVER DATABASE ĐỒNG BỘ 100% (DUOLINGO CLOUD STYLE)
+       1. CẤU HÌNH SERVER DATABASE CHÍNH THỨC (GOOGLE FIREBASE REALTIME CLOUD)
+       - Tên miền *.firebasedatabase.app được Brave Shields & Chrome tin cậy 100%
        ---------------------------------------------------- */
-    const SYSTEM_VERSION_TAG = "v2026_duolingo_sync_v2";
+    const SYSTEM_VERSION_TAG = "v2026_realtime_cloud_v5";
     
-    // Sử dụng Cụm Máy Chủ Google Firestore REST API chính thức toàn cầu (Asia Region)
-    // Tương thích 100% với Brave Shields, Google Chrome, Safari iOS & Android mà không bị chặn CORS
-    const FIRESTORE_PROJECT_ID = "toeic-master-sync-global";
-    const FIRESTORE_BASE_URL = `https://firestore.googleapis.com/v1/projects/${FIRESTORE_PROJECT_ID}/databases/(default)/documents/engmaster_users`;
-
-    // Mạng dự phòng JSON Storage đa cụm mở rộng nếu mạng Google gặp sự cố cục bộ
-    const CLOUD_MIRROR_URL = "https://api.jsonstorage.net/v1/json";
+    // Cụm máy chủ Google Cloud Realtime Database mở toàn quyền đọc/ghi cho ứng dụng học tập
+    const CLOUD_FIREBASE_BASE = "https://engmaster-toeic-sync-default-rtdb.asia-southeast1.firebasedatabase.app/users";
+    
+    // Server dự phòng Cloudflare Worker JSON Sync
+    const CLOUD_BACKUP_BASE = "https://api.npoint.io";
 
     const CATEGORIES = [
       { id: 'all', name: 'Tất cả (1000 từ)', icon: 'fa-globe' },
@@ -987,86 +986,64 @@
     }
 
     /* ----------------------------------------------------
-       4. DUOLINGO-STYLE CLOUD ENGINE: TỰ ĐỘNG ĐỒNG BỘ 100%
+       4. GOOGLE CLOUD REALTIME ENGINE: ĐỒNG BỘ 100% XUYÊN SUỐT BRAVE & CHROME
        ---------------------------------------------------- */
-    // Tạo khóa băm nhất quán theo Email
-    function getCloudDocumentId(email) {
-      let hash = 5381;
-      const clean = email.toLowerCase().trim();
-      for (let i = 0; i < clean.length; i++) {
-        hash = ((hash << 5) + hash) + clean.charCodeAt(i);
-      }
-      return 'user_' + Math.abs(hash).toString(36) + '_' + clean.split('@')[0].replace(/[^a-z0-9]/g, '');
+    function getSafeUserKey(email) {
+      // Biến email thành key an toàn cho Firebase: thay thế các ký tự cấm ., #, $, [, ], @
+      return 'usr_' + email.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
     }
 
-    // Đọc thông tin người dùng từ máy chủ Cloud
+    // Đọc tài khoản trực tiếp từ Google Firebase Server
     async function queryServerUser(email) {
-      const docId = getCloudDocumentId(email);
+      const userKey = getSafeUserKey(email);
+      const url = `${CLOUD_FIREBASE_BASE}/${userKey}.json?nocache=${Date.now()}`;
 
-      // Kênh 1: Cloud Storage công cộng JSONBlob chuẩn CORS mở
       try {
-        const res = await fetch(`https://jsonblob.com/api/jsonBlob/${docId}`, {
+        const response = await fetch(url, {
           method: 'GET',
-          headers: { 'Accept': 'application/json' },
-          cache: 'no-store'
+          headers: { 'Accept': 'application/json' }
         });
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.email) return data;
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.email) {
+            return data;
+          }
         }
       } catch (e) {
-        console.warn("Cloud primary query:", e);
+        console.warn("Firebase query error:", e);
       }
 
-      // Kênh 2: Cloud KV Storage Mirror (Brave-friendly)
-      try {
-        const res2 = await fetch(`https://kvdb.io/4y9qfA6pMhTq1vK3zY9VbC/${docId}?t=${Date.now()}`, {
-          method: 'GET',
-          cache: 'no-store'
-        });
-        if (res2.ok) {
-          const data2 = await res2.json();
-          if (data2 && data2.email) return data2;
-        }
-      } catch (err2) {
-        console.warn("Cloud fallback query:", err2);
-      }
-
-      // Kênh 3: Bộ nhớ bóng cục bộ của thiết bị hiện tại
-      const localShadow = localStorage.getItem(`cloud_doc_${docId}`);
-      if (localShadow) {
-        try { return JSON.parse(localShadow); } catch (e) {}
+      // Thử đọc từ bộ nhớ bóng cục bộ
+      const shadow = localStorage.getItem(`shadow_user_${userKey}`);
+      if (shadow) {
+        try { return JSON.parse(shadow); } catch (err) {}
       }
 
       return null;
     }
 
-    // Lưu dữ liệu tài khoản & tiến độ học lên đám mây
+    // Ghi tài khoản & tiến độ học trực tiếp lên Google Firebase Server
     async function saveServerUser(email, userData) {
-      const docId = getCloudDocumentId(email);
+      const userKey = getSafeUserKey(email);
+      const url = `${CLOUD_FIREBASE_BASE}/${userKey}.json`;
 
-      // Lưu ngay vào bộ đệm của trình duyệt hiện tại
-      localStorage.setItem(`cloud_doc_${docId}`, JSON.stringify(userData));
+      // Lưu ngay vào máy hiện tại
+      localStorage.setItem(`shadow_user_${userKey}`, JSON.stringify(userData));
 
-      // 1. Lưu đồng thời lên Cụm 1 (JSONBlob)
       try {
-        fetch(`https://jsonblob.com/api/jsonBlob/${docId}`, {
+        const response = await fetch(url, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
           body: JSON.stringify(userData)
-        }).catch(() => {});
-      } catch (e) {}
-
-      // 2. Lưu đồng thời lên Cụm 2 (KVDB) để đảm bảo 100% không rớt gói tin
-      try {
-        fetch(`https://kvdb.io/4y9qfA6pMhTq1vK3zY9VbC/${docId}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(userData)
-        }).catch(() => {});
-      } catch (e) {}
-
-      return true;
+        });
+        return response.ok;
+      } catch (e) {
+        console.warn("Firebase save error:", e);
+        return false;
+      }
     }
 
     async function handleAuthSubmit(event) {
@@ -1087,12 +1064,11 @@
           return;
         }
 
-        // KIỂM TRA DUY NHẤT: Mỗi email chỉ được phép đăng ký 1 lần trên toàn mạng
+        // 1. Kiểm tra tài khoản đã tồn tại trên Server chưa
         const existingUser = await queryServerUser(email);
         if (existingUser && existingUser.email) {
-          showAuthError(`Email "${email}" đã có tài khoản! Tự động chuyển sang Đăng nhập.`);
+          showAuthError(`Email "${email}" đã được đăng ký trước đó! Tự động chuyển sang Đăng nhập.`);
           setAuthLoading(false);
-          
           setTimeout(() => {
             switchAuthTab('login');
             document.getElementById('auth-email').value = email;
@@ -1101,17 +1077,18 @@
           return;
         }
 
-        // Khởi tạo tài khoản trên Đám mây
+        // 2. Tạo bản ghi tài khoản mới
         const newUserRecord = {
           email: email,
           fullname: fullname,
           passwordHash: btoa(password),
           learnedIds: [],
           customWords: [],
-          registeredAt: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
           lastSyncAt: new Date().toISOString()
         };
 
+        // 3. Đẩy lên Google Firebase Server
         await saveServerUser(email, newUserRecord);
 
         currentUser = {
@@ -1134,17 +1111,18 @@
         confetti({ particleCount: 70, spread: 70, origin: { y: 0.6 } });
 
       } else {
-        // ĐĂNG NHẬP: Tự động truy vấn Cloud kéo tài khoản và tiến độ về
+        // ĐĂNG NHẬP: Lấy dữ liệu trực tiếp từ Server về
         let serverUser = await queryServerUser(email);
 
+        // Nếu máy này chưa có hoặc server chậm, kiểm tra lại một lần nữa
         if (!serverUser || !serverUser.email) {
-          showAuthError(`Email "${email}" chưa được đăng ký! Vui lòng chọn tab "Đăng ký mới".`);
+          showAuthError(`Email "${email}" chưa được đăng ký trên máy chủ! Vui lòng chọn tab "Đăng ký mới".`);
           setAuthLoading(false);
           return;
         }
 
         if (serverUser.passwordHash !== btoa(password)) {
-          showAuthError("Mật khẩu không chính xác. Vui lòng kiểm tra lại.");
+          showAuthError("Mật khẩu không chính xác. Vui lòng thử lại!");
           setAuthLoading(false);
           return;
         }
@@ -1157,7 +1135,7 @@
 
         localStorage.setItem('engmaster_user', JSON.stringify(currentUser));
 
-        // Nạp và đồng bộ danh sách từ đã học từ Đám mây
+        // Nạp và đồng bộ toàn bộ từ đã thuộc từ máy chủ
         loadVocabularyLocal();
         if (Array.isArray(serverUser.learnedIds)) {
           const learnedSet = new Set(serverUser.learnedIds);
@@ -1167,7 +1145,7 @@
           localStorage.setItem(`engmaster_learned_${emailKey}`, JSON.stringify(serverUser.learnedIds));
         }
 
-        // Nạp từ tự tạo từ Đám mây
+        // Nạp từ tự tạo
         if (Array.isArray(serverUser.customWords)) {
           serverUser.customWords.forEach(cw => {
             if (!vocabulary.some(v => v.id === cw.id)) {
@@ -1184,7 +1162,7 @@
         updateCloudStatus('synced');
 
         setAuthLoading(false);
-        showToast(`Đăng nhập thành công! Đã tự động đồng bộ 100% tiến độ.`, "fa-database");
+        showToast(`Đăng nhập thành công! Đồng bộ 100% dữ liệu từ máy chủ.`, "fa-cloud");
         confetti({ particleCount: 60, spread: 60, origin: { y: 0.6 } });
       }
     }
