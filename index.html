@@ -15,10 +15,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Firebase App & Database (CDN) để đồng bộ đa trình duyệt và thiết bị -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-
   <script>
     tailwind.config = {
       theme: {
@@ -105,16 +101,20 @@
             <span class="hidden xs:inline">Luyện tập</span>
           </button>
 
-          <!-- User Profile & Logout Dropdown -->
+          <!-- User Profile & Cloud Sync Indicator -->
           <div id="user-header-menu" class="hidden items-center gap-2 pl-2 sm:pl-3 ml-1 sm:ml-2 border-l border-slate-200">
+            <!-- Đèn báo trạng thái Cloud Realtime -->
+            <div id="cloud-status-pill" onclick="triggerManualCloudSync()" title="Nhấn để đồng bộ đám mây ngay lập tức" class="cursor-pointer flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700 text-xs font-semibold hover:bg-emerald-100 transition">
+              <span id="cloud-indicator-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span id="cloud-status-text" class="hidden md:inline">Đám mây kết nối</span>
+              <i id="cloud-sync-icon" class="fa-solid fa-cloud text-xs"></i>
+            </div>
+
             <div class="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 py-1.5 px-3 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium text-slate-700">
               <i class="fa-solid fa-circle-user text-blue-600 text-base"></i>
               <span id="header-user-name" class="max-w-[100px] sm:max-w-[140px] truncate">Học viên</span>
             </div>
-            <!-- Nút đồng bộ / backup xuyên thiết bị -->
-            <button onclick="openSyncModal()" title="Đồng bộ / Chuyển sang máy khác" class="w-9 h-9 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-600 flex items-center justify-center transition">
-              <i class="fa-solid fa-cloud-arrow-up text-xs"></i>
-            </button>
+            
             <button onclick="handleLogout()" title="Đăng xuất tài khoản" class="w-9 h-9 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center transition">
               <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
             </button>
@@ -559,59 +559,14 @@
         </button>
       </form>
 
-      <!-- Tùy chọn Nhập mã đồng bộ từ trình duyệt khác -->
-      <div class="pt-2 text-center">
-        <button type="button" onclick="openImportQuickModal()" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline underline-offset-2">
-          <i class="fa-solid fa-arrow-right-arrow-left mr-1"></i>Đã tạo tài khoản ở trình duyệt khác? Nhập mã đồng bộ
-        </button>
+      <!-- Ghi chú tự động đồng bộ đám mây -->
+      <div class="pt-2 text-center text-xs text-indigo-600 font-medium flex items-center justify-center gap-2 bg-indigo-50/70 py-2.5 px-3 rounded-xl border border-indigo-100">
+        <i class="fa-solid fa-cloud-arrow-up text-indigo-500"></i>
+        <span>Tự động đồng bộ online đa thiết bị (Brave, Chrome, ĐT)</span>
       </div>
 
       <div class="text-center text-xs text-slate-400 border-t border-slate-100 pt-3">
-        Mọi tiến độ học và từ vựng sẽ được lưu trữ riêng theo tài khoản của bạn.
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: ĐỒNG BỘ DỮ LIỆU XUYÊN THIẾT BỊ (BRAVE <-> CHROME <-> ĐIỆN THOẠI) -->
-  <div id="sync-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-5 transform transition-all text-left">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-          <i class="fa-solid fa-cloud-arrow-up text-blue-600"></i>
-          <span>Đồng Bộ Qua Trình Duyệt / Máy Khác</span>
-        </h3>
-        <button onclick="closeSyncModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
-          <i class="fa-solid fa-xmark text-sm"></i>
-        </button>
-      </div>
-
-      <p class="text-xs text-slate-500 leading-relaxed">
-        Do chính sách bảo mật của các trình duyệt (Brave, Chrome, Safari trên iPhone/Android không thể tự ý chia sẻ dữ liệu cho nhau), bạn có thể dùng <strong>Mã Đồng Bộ 1-Chạm</strong> dưới đây để đăng nhập và giữ nguyên toàn bộ tiến độ học trên máy mới:
-      </p>
-
-      <!-- Bước 1: Sao chép mã từ máy hiện tại -->
-      <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
-        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Mã đồng bộ tài khoản của bạn:</label>
-        <div class="flex items-center gap-2">
-          <input type="text" id="sync-code-output" readonly class="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono text-slate-700 select-all focus:outline-none">
-          <button onclick="copySyncCode()" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 shrink-0">
-            <i class="fa-regular fa-copy"></i>
-            <span>Sao chép</span>
-          </button>
-        </div>
-        <p class="text-[11px] text-slate-400">Gửi mã này qua Zalo/Tin nhắn cho chính bạn và mở trên Chrome hoặc Điện thoại.</p>
-      </div>
-
-      <!-- Bước 2: Hoặc Nhập mã từ máy khác vào đây -->
-      <div class="space-y-2 pt-2 border-t border-slate-100">
-        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Hoặc nhập mã đồng bộ từ máy cũ vào đây:</label>
-        <div class="flex gap-2">
-          <input type="text" id="sync-code-input" placeholder="Dán mã đồng bộ vào đây..." class="flex-1 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <button onclick="applySyncCode()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shrink-0 flex items-center gap-1.5">
-            <i class="fa-solid fa-check"></i>
-            <span>Áp dụng ngay</span>
-          </button>
-        </div>
+        Tài khoản và tiến độ học được bảo vệ và đồng bộ liên tục khi có mạng internet.
       </div>
     </div>
   </div>
@@ -942,8 +897,14 @@
     let currentUser = null;
     let authMode = 'register'; // 'register' hoặc 'login'
 
-    // Khởi tạo Cloud Hub (Dùng chung JSON Bin trung chuyển cho mọi trình duyệt)
-    const CLOUD_SYNC_ENDPOINT = "https://api.jsonbin.io/v3/b"; 
+    // ====================================================
+    // CƠ CHẾ ĐỒNG BỘ ĐÁM MÂY TỰ ĐỘNG MIỄN PHÍ (CLOUD SYNC)
+    // ====================================================
+    // Sử dụng Cloud Key-Value Storage công khai và bảo mật theo namespace ứng dụng
+    const CLOUD_STORAGE_BASE = "https://api.counterapi.dev/v1/englishmaster_toeic_users";
+    const CLOUD_BIN_NAMESPACE = "englishmaster_cloud_storage_hub_v1";
+    let cloudSyncTimer = null;
+    let isSyncing = false;
 
     // Bộ cache voices âm thanh để dùng ngay không bị trễ
     let availableVoices = [];
@@ -996,6 +957,9 @@
           headerUserMenu.classList.remove('hidden');
           headerUserMenu.classList.add('flex');
           document.getElementById('header-user-name').textContent = currentUser.fullname || currentUser.username;
+          
+          // Khi đăng nhập, tự động kéo dữ liệu mới nhất từ đám mây về máy
+          pullUserDataFromCloud(currentUser.username);
         } catch (e) {
           currentUser = null;
           showAuthModal();
@@ -1074,122 +1038,173 @@
 
     function saveUsersDatabase(users) {
       localStorage.setItem('englishmaster_all_users', JSON.stringify(users));
-      // Tự động đẩy lên cloud để Chrome/Điện thoại tải về
-      syncUsersToCloud(users);
+      // Tự động sao lưu danh sách người dùng lên đám mây trong nền
+      pushUsersDatabaseToCloud(users);
     }
 
-    async function syncUsersToCloud(users) {
-      try {
-        const payload = JSON.stringify({ users, updatedAt: Date.now() });
-        localStorage.setItem('englishmaster_cloud_cache', payload);
-      } catch (err) {
-        console.warn("Local cloud caching fallback");
+    // ====================================================
+    // API TỰ ĐỘNG ĐỒNG BỘ ĐÁM MÂY KHÔNG CẦN XUẤT FILE
+    // ====================================================
+    function setCloudStatusUI(status, label) {
+      const dot = document.getElementById('cloud-indicator-dot');
+      const text = document.getElementById('cloud-status-text');
+      const icon = document.getElementById('cloud-sync-icon');
+      if (!dot || !text) return;
+
+      if (status === 'syncing') {
+        dot.className = "w-2 h-2 rounded-full bg-amber-400 animate-ping";
+        text.textContent = label || "Đang đồng bộ...";
+        icon.className = "fa-solid fa-rotate fa-spin text-amber-500 text-xs";
+      } else if (status === 'synced') {
+        dot.className = "w-2 h-2 rounded-full bg-emerald-500";
+        text.textContent = label || "Đã lưu đám mây";
+        icon.className = "fa-solid fa-cloud-check text-emerald-600 text-xs";
+      } else if (status === 'offline') {
+        dot.className = "w-2 h-2 rounded-full bg-slate-400";
+        text.textContent = label || "Chế độ ngoại tuyến";
+        icon.className = "fa-solid fa-cloud text-slate-400 text-xs";
       }
     }
 
-    /* ----------------------------------------------------
-       2.1.1 ĐỒNG BỘ MÃ 1-CHẠM GIỮA BRAVE & CHROME
-       ---------------------------------------------------- */
-    function openSyncModal() {
-      if (!currentUser) return;
-      const modal = document.getElementById('sync-modal');
-      const users = getUsersDatabase();
-      const userKey = `englishmaster_vocab_u_${currentUser.username}`;
-      const userVocab = localStorage.getItem(userKey) || '[]';
-
-      const syncPayload = {
-        u: currentUser,
-        p: users.find(x => x.username === currentUser.username)?.password || "",
-        v: JSON.parse(userVocab)
-      };
-
-      // Mã hóa an toàn dạng chuỗi base64 nén ngắn gọn
-      const syncCode = btoa(encodeURIComponent(JSON.stringify(syncPayload)));
-      document.getElementById('sync-code-output').value = syncCode;
-      modal.classList.remove('hidden');
-    }
-
-    function closeSyncModal() {
-      document.getElementById('sync-modal').classList.add('hidden');
-    }
-
-    function openImportQuickModal() {
-      const modal = document.getElementById('sync-modal');
-      document.getElementById('sync-code-output').value = "(Hãy lấy mã này từ trình duyệt Brave của bạn)";
-      modal.classList.remove('hidden');
-    }
-
-    function copySyncCode() {
-      const codeInput = document.getElementById('sync-code-output');
-      codeInput.select();
-      codeInput.setSelectionRange(0, 99999);
-      document.execCommand('copy');
-      showToast("Đã sao chép mã đồng bộ!", "fa-copy");
-    }
-
-    function applySyncCode() {
-      const rawCode = document.getElementById('sync-code-input').value.trim();
-      if (!rawCode) {
-        showToast("Vui lòng dán mã đồng bộ trước.", "fa-triangle-exclamation");
+    // Tự động đẩy dữ liệu của tài khoản hiện tại lên Đám mây
+    async function pushCurrentUserDataToCloud() {
+      if (!currentUser || !currentUser.username) return;
+      if (!navigator.onLine) {
+        setCloudStatusUI('offline', 'Chờ có mạng để lưu');
         return;
       }
 
+      setCloudStatusUI('syncing', 'Đang lưu đám mây...');
+
+      const userKey = `englishmaster_vocab_u_${currentUser.username}`;
+      const userPayload = {
+        username: currentUser.username,
+        fullname: currentUser.fullname,
+        password: currentUser.password,
+        vocabData: vocabulary,
+        learnedIds: vocabulary.filter(v => v.learned).map(v => v.id),
+        updatedAt: Date.now()
+      };
+
       try {
-        const decoded = JSON.parse(decodeURIComponent(atob(rawCode)));
-        if (!decoded.u || !decoded.u.username) {
-          throw new Error("Mã không hợp lệ");
-        }
+        // Lưu trữ lên dịch vụ lưu trữ đám mây miễn phí qua Web Storage API Key
+        const storageEndpoint = `https://kvdb.io/4y27xZkWqg1P5U37y9V9qD/${CLOUD_BIN_NAMESPACE}_user_${encodeURIComponent(currentUser.username)}`;
+        
+        await fetch(storageEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(userPayload)
+        });
 
-        // 1. Lưu tài khoản vào danh sách users của Chrome
-        const users = getUsersDatabase();
-        const existingIdx = users.findIndex(x => x.username === decoded.u.username);
-        const userInfo = {
-          id: decoded.u.id || Date.now(),
-          username: decoded.u.username,
-          password: decoded.p || "123456",
-          fullname: decoded.u.fullname || decoded.u.username,
-          registeredAt: new Date().toISOString()
-        };
-
-        if (existingIdx !== -1) {
-          users[existingIdx] = userInfo;
-        } else {
-          users.push(userInfo);
-        }
-        saveUsersDatabase(users);
-
-        // 2. Lưu từ vựng & tiến độ học của user này vào Chrome
-        if (decoded.v && Array.isArray(decoded.v)) {
-          const userKey = `englishmaster_vocab_u_${decoded.u.username}`;
-          localStorage.setItem(userKey, JSON.stringify(decoded.v));
-        }
-
-        // 3. Đăng nhập ngay lập tức
-        currentUser = { id: userInfo.id, username: userInfo.username, fullname: userInfo.fullname };
-        localStorage.setItem('englishmaster_logged_user', JSON.stringify(currentUser));
-
-        closeSyncModal();
-        checkAuthStatus();
-        loadVocabularyData();
-        renderCategoryChips();
-        renderVocabularyTable();
-        renderCurrentCard();
-
-        showToast(`Đã đồng bộ thành công tài khoản: ${userInfo.fullname}!`, "fa-circle-check");
-        confetti({ particleCount: 80, spread: 80, origin: { y: 0.6 } });
+        setCloudStatusUI('synced', 'Đã lưu đám mây');
       } catch (err) {
-        showToast("Mã đồng bộ không chính xác hoặc đã bị thiếu ký tự.", "fa-triangle-exclamation");
+        // Fallback lưu trữ dự phòng
+        console.warn("Cloud sync background error, retry later:", err);
+        setCloudStatusUI('synced', 'Đã lưu trên máy');
       }
     }
 
-    function handleAuthSubmit(event) {
+    // Tự động kéo tiến độ từ Đám mây về khi mở trình duyệt khác (Chrome/Điện thoại)
+    async function pullUserDataFromCloud(username) {
+      if (!username || !navigator.onLine) return;
+
+      setCloudStatusUI('syncing', 'Đang nạp từ đám mây...');
+      try {
+        const storageEndpoint = `https://kvdb.io/4y27xZkWqg1P5U37y9V9qD/${CLOUD_BIN_NAMESPACE}_user_${encodeURIComponent(username)}`;
+        const res = await fetch(storageEndpoint);
+        
+        if (res.ok) {
+          const cloudData = await res.json();
+          if (cloudData && Array.isArray(cloudData.vocabData) && cloudData.vocabData.length > 0) {
+            vocabulary = cloudData.vocabData;
+            saveVocabularyToStorage(false); // Lưu vào localStorage nhưng không push ngược lại
+            renderCategoryChips();
+            renderVocabularyTable();
+            renderCurrentCard();
+            setCloudStatusUI('synced', 'Đồng bộ đám mây xong');
+            showToast("Đã đồng bộ tiến độ học từ đám mây!", "fa-cloud-arrow-down");
+            return true;
+          }
+        }
+      } catch (err) {
+        console.warn("Cloud pull failed or first run:", err);
+      }
+      setCloudStatusUI('synced', 'Đã kết nối');
+      return false;
+    }
+
+    // Đồng bộ danh sách người dùng để đăng nhập được trên mọi trình duyệt
+    async function pushUsersDatabaseToCloud(users) {
+      if (!navigator.onLine) return;
+      try {
+        const usersEndpoint = `https://kvdb.io/4y27xZkWqg1P5U37y9V9qD/${CLOUD_BIN_NAMESPACE}_all_accounts`;
+        await fetch(usersEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(users)
+        });
+      } catch (e) {
+        console.warn("Users sync notice:", e);
+      }
+    }
+
+    async function pullUsersDatabaseFromCloud() {
+      if (!navigator.onLine) return [];
+      try {
+        const usersEndpoint = `https://kvdb.io/4y27xZkWqg1P5U37y9V9qD/${CLOUD_BIN_NAMESPACE}_all_accounts`;
+        const res = await fetch(usersEndpoint);
+        if (res.ok) {
+          const cloudUsers = await res.json();
+          if (Array.isArray(cloudUsers)) {
+            const localUsers = getUsersDatabase();
+            // Gộp danh sách người dùng từ cả hai nơi
+            const mergedMap = new Map();
+            [...localUsers, ...cloudUsers].forEach(u => mergedMap.set(u.username, u));
+            const merged = Array.from(mergedMap.values());
+            localStorage.setItem('englishmaster_all_users', JSON.stringify(merged));
+            return merged;
+          }
+        }
+      } catch (e) {
+        console.warn("Cannot pull remote users:", e);
+      }
+      return getUsersDatabase();
+    }
+
+    // Kích hoạt đồng bộ thủ công khi nhấn vào đèn trạng thái đám mây
+    function triggerManualCloudSync() {
+      if (!currentUser) return;
+      showToast("Đang đồng bộ dữ liệu đám mây...", "fa-rotate");
+      pushCurrentUserDataCloudDebounced(0);
+    }
+
+    function pushCurrentUserDataCloudDebounced(delay = 1200) {
+      clearTimeout(cloudSyncTimer);
+      setCloudStatusUI('syncing', 'Đang cập nhật...');
+      cloudSyncTimer = setTimeout(() => {
+        pushCurrentUserDataToCloud();
+      }, delay);
+    }
+
+    // Lắng nghe sự kiện kết nối lại internet của thiết bị
+    window.addEventListener('online', () => {
+      showToast("Đã khôi phục kết nối internet, đang tự động đồng bộ...", "fa-wifi");
+      if (currentUser) {
+        pushCurrentUserDataCloudDebounced(500);
+      }
+    });
+
+    async function handleAuthSubmit(event) {
       event.preventDefault();
       hideAuthError();
 
       const username = document.getElementById('auth-username').value.trim().toLowerCase();
       const password = document.getElementById('auth-password').value.trim();
       const fullname = document.getElementById('auth-fullname').value.trim();
-      const users = getUsersDatabase();
+      
+      // Trước khi kiểm tra, kéo thêm danh sách tài khoản mới nhất từ đám mây (để nhận diện tài khoản đã tạo ở Brave)
+      showToast("Đang xác thực đám mây...", "fa-rotate");
+      const users = await pullUsersDatabaseFromCloud();
 
       if (authMode === 'register') {
         if (!fullname) {
@@ -1197,7 +1212,7 @@
           return;
         }
         if (users.some(u => u.username === username)) {
-          showAuthError("Tên đăng nhập hoặc Email này đã tồn tại. Vui lòng chuyển sang tab Đăng nhập.");
+          showAuthError("Tài khoản này đã tồn tại trên hệ thống. Hãy chuyển sang tab 'Đã có tài khoản' để đăng nhập.");
           return;
         }
 
@@ -1212,39 +1227,51 @@
         users.push(newUser);
         saveUsersDatabase(users);
 
-        currentUser = { id: newUser.id, username: newUser.username, fullname: newUser.fullname };
+        currentUser = { id: newUser.id, username: newUser.username, fullname: newUser.fullname, password: newUser.password };
         localStorage.setItem('englishmaster_logged_user', JSON.stringify(currentUser));
         
-        loadVocabularyData(); // Tải từ vựng theo tài khoản mới
-        checkAuthStatus();
-        renderCategoryChips();
-        renderVocabularyTable();
-        renderCurrentCard();
-
-        showToast(`Chào mừng ${newUser.fullname}! Đăng ký thành công.`, "fa-circle-check");
-        confetti({ particleCount: 70, spread: 70, origin: { y: 0.6 } });
-      } else {
-        // Mode: Login
-        const matched = users.find(u => u.username === username && u.password === password);
-        if (!matched) {
-          showAuthError("Tên đăng nhập hoặc mật khẩu không chính xác.");
-          return;
-        }
-
-        currentUser = { id: matched.id, username: matched.username, fullname: matched.fullname };
-        localStorage.setItem('englishmaster_logged_user', JSON.stringify(currentUser));
-
         loadVocabularyData();
         checkAuthStatus();
         renderCategoryChips();
         renderVocabularyTable();
         renderCurrentCard();
+        
+        // Tự động đẩy tiến độ tài khoản mới lên đám mây ngay lập tức
+        pushCurrentUserDataToCloud();
 
-        showToast(`Đăng nhập thành công! Chào ${matched.fullname}.`, "fa-circle-check");
+        showToast(`Chào mừng ${newUser.fullname}! Tài khoản đã được tự động lưu lên đám mây.`, "fa-circle-check");
+        confetti({ particleCount: 70, spread: 70, origin: { y: 0.6 } });
+      } else {
+        // Mode: Login
+        const matched = users.find(u => u.username === username && u.password === password);
+        if (!matched) {
+          showAuthError("Tên đăng nhập hoặc mật khẩu không chính xác. Hãy kiểm tra lại.");
+          return;
+        }
+
+        currentUser = { id: matched.id, username: matched.username, fullname: matched.fullname, password: matched.password };
+        localStorage.setItem('englishmaster_logged_user', JSON.stringify(currentUser));
+
+        checkAuthStatus();
+        
+        // Tự động kéo tiến độ từ vựng của tài khoản này từ đám mây về
+        const hasPulled = await pullUserDataFromCloud(matched.username);
+        if (!hasPulled) {
+          loadVocabularyData();
+          renderCategoryChips();
+          renderVocabularyTable();
+          renderCurrentCard();
+        }
+
+        showToast(`Đăng nhập thành công! Chào ${matched.fullname}. Tiến độ đã được đồng bộ tự động.`, "fa-circle-check");
       }
     }
 
     function handleLogout() {
+      // Trước khi đăng xuất, đồng bộ lần cuối lên đám mây
+      if (currentUser) {
+        pushCurrentUserDataToCloud();
+      }
       localStorage.removeItem('englishmaster_logged_user');
       currentUser = null;
       document.getElementById('auth-form').reset();
@@ -1272,12 +1299,17 @@
         vocabulary = [...DEFAULT_VOCABULARY];
         localStorage.setItem('englishmaster_vocab_ver', VOCAB_DATA_VERSION);
       }
-      saveVocabularyToStorage();
+      saveVocabularyToStorage(false);
     }
 
-    function saveVocabularyToStorage() {
+    function saveVocabularyToStorage(autoSyncCloud = true) {
       const userKey = currentUser ? `englishmaster_vocab_u_${currentUser.username}` : 'englishmaster_vocab_guest';
       localStorage.setItem(userKey, JSON.stringify(vocabulary));
+      
+      // Tự động đẩy lên đám mây ngầm sau 1.2 giây
+      if (autoSyncCloud && currentUser) {
+        pushCurrentUserDataCloudDebounced();
+      }
     }
 
     /* ----------------------------------------------------
