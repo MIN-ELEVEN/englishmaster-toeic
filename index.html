@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EnglishMaster - TOEIC</title>
+  <title>EnglishMaster - 1000 Từ Vựng TOEIC/IELTS 20 Ngày</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
@@ -91,6 +91,34 @@
             <i class="fa-solid fa-bolt"></i>
             <span class="hidden xs:inline">Luyện tập</span>
           </button>
+
+          <!-- DUOLINGO STREAK BADGE (VỊ TRÍ SỐ 1) -->
+          <div class="relative">
+            <button id="streak-badge-btn" onclick="toggleStreakPopup(event)" title="Chuỗi ngày học liên tục (Streak)" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-600 font-extrabold text-xs sm:text-sm transition active:scale-95 shadow-sm">
+              <i id="streak-flame-icon" class="fa-solid fa-fire text-amber-500 text-base animate-bounce"></i>
+              <span id="streak-count-display">1</span>
+            </button>
+
+            <!-- Streak Dropdown Popup Info -->
+            <div id="streak-popup" class="hidden absolute top-full mt-2 left-1/2 -translate-x-1/2 sm:left-auto sm:right-0 sm:translate-x-0 w-72 bg-white rounded-2xl shadow-2xl border border-slate-100 p-4 z-50 animate-in fade-in zoom-in-95 duration-150">
+              <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center text-2xl shadow-md shadow-orange-500/30">
+                  <i class="fa-solid fa-fire"></i>
+                </div>
+                <div>
+                  <h4 class="font-extrabold text-slate-900 text-base leading-tight"><span id="popup-streak-num">1</span> Ngày Streak!</h4>
+                  <p id="popup-streak-desc" class="text-xs text-slate-500 mt-0.5">Bạn đã duy trì ngọn lửa hôm nay!</p>
+                </div>
+              </div>
+              <div class="py-3 text-xs text-slate-600 space-y-2">
+                <p class="leading-relaxed">Học ít nhất 1 từ vựng hoặc làm 1 bài trắc nghiệm mỗi ngày để giữ ngọn lửa không bị dập tắt!</p>
+                <div class="p-2.5 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-between font-bold text-orange-700">
+                  <span>Trạng thái hôm nay:</span>
+                  <span id="streak-status-label" class="flex items-center gap-1 text-emerald-600"><i class="fa-solid fa-circle-check"></i> Đã hoàn thành</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <!-- User Profile & Realtime Server Sync Status -->
           <div id="user-header-menu" class="hidden items-center gap-2 pl-2 sm:pl-3 ml-1 sm:ml-2 border-l border-slate-200">
@@ -866,6 +894,81 @@
     let isTopicsOpen = true; // Quản lý trạng thái mở/đóng của bảng chủ đề
     let isCardExpanded = false;
 
+    // QUẢN LÝ NGÀY STREAK DUOLINGO
+    let userStreak = {
+      count: 1,
+      lastDate: new Date().toISOString().slice(0, 10)
+    };
+
+    function getTodayString() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function toggleStreakPopup(event) {
+      if (event) {
+        event.stopPropagation();
+      }
+      const popup = document.getElementById('streak-popup');
+      popup.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', (e) => {
+      const popup = document.getElementById('streak-popup');
+      const btn = document.getElementById('streak-badge-btn');
+      if (popup && !popup.classList.contains('hidden') && !popup.contains(e.target) && !btn.contains(e.target)) {
+        popup.classList.add('hidden');
+      }
+    });
+
+    function updateStreakDisplay() {
+      const countDisplay = document.getElementById('streak-count-display');
+      const popupNum = document.getElementById('popup-streak-num');
+      const flameIcon = document.getElementById('streak-flame-icon');
+      const statusLabel = document.getElementById('streak-status-label');
+      const today = getTodayString();
+
+      const count = userStreak.count || 1;
+      countDisplay.textContent = count;
+      popupNum.textContent = count;
+
+      if (userStreak.lastDate === today) {
+        flameIcon.className = "fa-solid fa-fire text-amber-500 text-base animate-bounce";
+        statusLabel.innerHTML = `<i class="fa-solid fa-circle-check"></i> Đã hoàn thành`;
+        statusLabel.className = "flex items-center gap-1 text-emerald-600";
+      } else {
+        flameIcon.className = "fa-solid fa-fire text-slate-400 text-base";
+        statusLabel.innerHTML = `<i class="fa-regular fa-clock"></i> Chưa hoàn thành`;
+        statusLabel.className = "flex items-center gap-1 text-amber-600";
+      }
+    }
+
+    function recordStreakActivity() {
+      const today = getTodayString();
+      if (!userStreak.lastDate) {
+        userStreak = { count: 1, lastDate: today };
+      } else if (userStreak.lastDate !== today) {
+        const last = new Date(userStreak.lastDate);
+        const curr = new Date(today);
+        const diffDays = Math.round((curr - last) / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 1) {
+          userStreak.count = (userStreak.count || 0) + 1;
+          showToast(`🔥 Tuyệt vời! Bạn đã nâng chuỗi Streak lên ${userStreak.count} ngày liên tiếp!`, "fa-fire");
+          confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
+        } else if (diffDays > 1) {
+          userStreak.count = 1;
+        }
+        userStreak.lastDate = today;
+      }
+
+      if (currentUser) {
+        const emailKey = encodeEmailKey(currentUser.email);
+        localStorage.setItem(`engmaster_streak_${emailKey}`, JSON.stringify(userStreak));
+        pushDataToServer();
+      }
+      updateStreakDisplay();
+    }
+
     function enforceCleanState() {
       // Khởi tạo trạng thái sạch ban đầu
     }
@@ -1159,6 +1262,8 @@
           passwordHash: btoa(password),
           learnedIds: [],
           customWords: [],
+          streakCount: 1,
+          lastStreakDate: getTodayString(),
           createdAt: new Date().toISOString(),
           lastSyncAt: new Date().toISOString()
         };
@@ -1172,11 +1277,14 @@
           passwordHash: btoa(password)
         };
 
+        userStreak = { count: 1, lastDate: getTodayString() };
         localStorage.setItem('engmaster_user', JSON.stringify(currentUser));
         localStorage.setItem(`engmaster_learned_${emailKey}`, JSON.stringify([]));
+        localStorage.setItem(`engmaster_streak_${emailKey}`, JSON.stringify(userStreak));
 
         loadVocabularyLocal();
         checkAuthStatus();
+        updateStreakDisplay();
         renderCategoryChips();
         renderVocabularyTable();
         renderCurrentCard();
@@ -1210,6 +1318,15 @@
 
         localStorage.setItem('engmaster_user', JSON.stringify(currentUser));
 
+        // Nạp Streak từ Server
+        if (serverUser.streakCount) {
+          userStreak = {
+            count: serverUser.streakCount,
+            lastDate: serverUser.lastStreakDate || getTodayString()
+          };
+          localStorage.setItem(`engmaster_streak_${emailKey}`, JSON.stringify(userStreak));
+        }
+
         // Nạp và đồng bộ toàn bộ từ đã thuộc từ máy chủ
         loadVocabularyLocal();
         if (Array.isArray(serverUser.learnedIds)) {
@@ -1231,6 +1348,7 @@
 
         saveVocabularyLocal();
         checkAuthStatus();
+        updateStreakDisplay();
         renderCategoryChips();
         renderVocabularyTable();
         renderCurrentCard();
@@ -1268,6 +1386,8 @@
         passwordHash: currentUser.passwordHash,
         learnedIds: learnedList,
         customWords: customList,
+        streakCount: userStreak.count || 1,
+        lastStreakDate: userStreak.lastDate || getTodayString(),
         lastSyncAt: new Date().toISOString()
       };
 
@@ -1294,6 +1414,14 @@
           currentUser.fullname = serverUser.fullname;
           localStorage.setItem('engmaster_user', JSON.stringify(currentUser));
           document.getElementById('header-user-name').textContent = currentUser.fullname;
+        }
+
+        // Cập nhật Streak từ server
+        if (serverUser.streakCount && serverUser.streakCount !== userStreak.count) {
+          userStreak.count = serverUser.streakCount;
+          userStreak.lastDate = serverUser.lastStreakDate || getTodayString();
+          localStorage.setItem(`engmaster_streak_${emailKey}`, JSON.stringify(userStreak));
+          updateStreakDisplay();
         }
 
         // Cập nhật danh sách từ đã học
@@ -1377,6 +1505,14 @@
             });
           } catch (e) {}
         }
+
+        const storedStreak = localStorage.getItem(`engmaster_streak_${emailKey}`);
+        if (storedStreak) {
+          try {
+            userStreak = JSON.parse(storedStreak);
+          } catch (e) {}
+        }
+        updateStreakDisplay();
       }
     }
 
@@ -1601,6 +1737,7 @@
       } else {
         cardInner.classList.remove('rotate-y-180');
       }
+      recordStreakActivity();
     }
 
     function nextCard() {
@@ -1660,6 +1797,9 @@
       saveVocabularyLocal();
       updateMasterUI(currentItem.learned);
       renderVocabularyTable();
+
+      // Ghi nhận hoạt động tính Streak Duolingo
+      recordStreakActivity();
 
       // Đẩy tiến độ lên máy chủ Server ngay lập tức
       pushDataToServer();
@@ -1893,6 +2033,7 @@
       if (isCorrect) {
         quizScoreCorrect++;
         confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+        recordStreakActivity();
       } else {
         quizScoreWrong++;
       }
