@@ -71,12 +71,12 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col selection:bg-blue-100 selection:text-blue-700">
 
-  <!-- TOP HEADER -->
-  <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <!-- TOP HEADER (Căn tràn đều 2 mép màn hình: Vị trí 1 dạt trái, Vị trí 2 dạt phải) -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 w-full">
+    <div class="w-full px-4 sm:px-8 lg:px-12">
       <div class="flex items-center justify-between h-16">
-        <!-- Logo -->
-        <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('flashcards')">
+        <!-- Vị trí 1: Logo sát lề trái -->
+        <div class="flex items-center gap-3 cursor-pointer shrink-0" onclick="switchTab('flashcards')">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
             <i class="fa-solid fa-graduation-cap text-lg"></i>
           </div>
@@ -86,8 +86,8 @@
           </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <nav class="flex items-center gap-1 sm:gap-2">
+        <!-- Vị trí 2: Navigation Tabs & User Profile sát lề phải -->
+        <nav class="flex items-center gap-1 sm:gap-2 shrink-0">
           <button id="nav-flashcards" onclick="switchTab('flashcards')" class="nav-btn px-3 sm:px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 bg-blue-600 text-white shadow-sm shadow-blue-500/20">
             <i class="fa-solid fa-layer-group"></i>
             <span>Flashcard</span>
@@ -619,12 +619,14 @@
     <span id="toast-msg">Thông báo thành công</span>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-auto">
-    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+  <!-- FOOTER (Căn tràn đều 2 mép màn hình: Vị trí 3 dạt trái, Vị trí 4 dạt phải) -->
+  <footer class="bg-white border-t border-slate-200 py-6 text-xs text-slate-500 mt-auto w-full">
+    <div class="w-full px-4 sm:px-8 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <!-- Vị trí 3: Dòng khẩu hiệu sát lề trái -->
       <div class="flex items-center gap-2">
         <span class="font-extrabold text-slate-800">EnglishMaster</span> — THÀNH CÔNG KHÔNG DÀNH CHO KẺ LƯỜI BIẾNG!
       </div>
+      <!-- Vị trí 4: Chữ MIN ELEVEN sát lề phải -->
       <div class="text-slate-400 font-bold tracking-wider text-xs uppercase">
         MIN ELEVEN
       </div>
