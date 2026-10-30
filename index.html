@@ -199,7 +199,7 @@
           <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
             <span class="text-[11px] text-slate-400">Chọn 1 chủ đề để tập trung ôn luyện từ vựng</span>
             <button onclick="toggleTopicDropdown()" class="text-blue-600 hover:text-blue-700 font-bold text-xs flex items-center gap-1">
-              <span>Đóng bảng chủ đề</span>
+              <span>Thu gọn</span>
               <i class="fa-solid fa-chevron-up text-[10px]"></i>
             </button>
           </div>
@@ -304,9 +304,9 @@
             <span>Trước</span>
           </button>
 
-          <button id="btn-master" onclick="toggleMasteredCurrentCard()" class="px-5 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold rounded-2xl transition flex items-center gap-2 text-sm shadow-sm active:scale-95" title="Đánh dấu đã thuộc">
+          <button id="btn-master" onclick="toggleMasteredCurrentCard()" class="px-5 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold rounded-2xl transition flex items-center gap-2 text-sm shadow-sm active:scale-95" title="Đánh dấu đã nhớ">
             <i id="master-icon" class="fa-regular fa-circle-check text-base"></i>
-            <span id="master-text">Đã thuộc</span>
+            <span id="master-text">Đã nhớ</span>
           </button>
 
           <button onclick="nextCard()" class="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-md shadow-blue-500/25 transition active:scale-95 flex items-center justify-center gap-2 text-sm">
@@ -1743,7 +1743,7 @@
 
       if (isLearned) {
         badge.className = "px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold";
-        badge.textContent = "Đã thuộc";
+        badge.textContent = "Đã nhớ";
 
         btn.className = "px-5 py-3 bg-emerald-600 text-white font-bold rounded-2xl transition flex items-center gap-2 text-sm shadow-md shadow-emerald-600/20 active:scale-95";
         icon.className = "fa-solid fa-circle-check text-base";
@@ -1754,7 +1754,7 @@
 
         btn.className = "px-5 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold rounded-2xl transition flex items-center gap-2 text-sm active:scale-95";
         icon.className = "fa-regular fa-circle-check text-base";
-        text.textContent = "Đã thuộc";
+        text.textContent = "Đã nhớ";
       }
     }
 
@@ -1835,7 +1835,7 @@
 
       if (currentItem.learned) {
         confetti({ particleCount: 35, spread: 60, origin: { y: 0.7 } });
-        showToast(`Đã thuộc từ "${currentItem.word}"! (Đã đồng bộ Server)`, "fa-cloud-arrow-up");
+        showToast(`Đã nhớ từ "${currentItem.word}"! (Đã đồng bộ Server)`, "fa-cloud-arrow-up");
       } else {
         showToast(`Đã chuyển "${currentItem.word}" về danh sách cần ôn.`);
       }
@@ -1879,7 +1879,7 @@
           <td class="py-3 px-4 font-medium text-slate-800">${item.meaning}</td>
           <td class="py-3 px-4 text-center">
             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold ${item.learned ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}">
-              ${item.learned ? 'Thuộc' : 'Chưa'}
+              ${item.learned ? 'Đã nhớ' : 'Chưa'}
             </span>
           </td>
         </tr>
