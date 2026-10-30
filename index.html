@@ -159,7 +159,7 @@
     <!-- ========================================== -->
     <section id="section-flashcards" class="space-y-6">
       <!-- Toolbar & Category Filter -->
-      <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 flex flex-col gap-4 transition-all duration-300">
+      <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 flex flex-col gap-4 transition-all duration-300 max-w-4xl mx-auto w-full">
         <!-- Top Action Bar: Nút Chủ Đề & Các phím chức năng -->
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           <div class="flex items-center gap-2">
@@ -206,22 +206,22 @@
         </div>
       </div>
 
-      <!-- Flashcard Interactive Zone -->
-      <div id="flashcard-zone" class="flex flex-col items-center transition-all duration-300">
+      <!-- Flashcard Interactive Zone (Cân đối lại kích thước & tỉ lệ trên màn hình) -->
+      <div id="flashcard-zone" class="flex flex-col items-center transition-all duration-300 max-w-4xl mx-auto w-full">
         <!-- Progress Counter -->
-        <div class="w-full max-w-xl flex items-center justify-between text-xs sm:text-sm font-medium text-slate-500 mb-2 px-1">
-          <span id="fc-counter" class="font-bold">Từ 1 / 1000</span>
-          <span id="fc-learned-badge" class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">Chưa học</span>
+        <div id="fc-counter-wrap" class="w-full max-w-2xl flex items-center justify-between text-xs sm:text-sm font-medium text-slate-500 mb-2 px-1 transition-all duration-300">
+          <span id="fc-counter" class="font-bold text-slate-700">Từ 1 / 50</span>
+          <span id="fc-learned-badge" class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">Cần ôn tập</span>
         </div>
         
         <!-- Progress Bar -->
-        <div class="w-full max-w-xl h-2 bg-slate-200 rounded-full overflow-hidden mb-6">
+        <div id="fc-progress-wrap" class="w-full max-w-2xl h-2 bg-slate-200 rounded-full overflow-hidden mb-5 transition-all duration-300">
           <div id="fc-progressbar" class="h-full bg-gradient-to-r from-blue-500 to-indigo-600 w-0 transition-all duration-300"></div>
         </div>
 
-        <!-- 3D Flashcard Container -->
-        <div id="card-outer-box" class="w-full max-w-xl h-[380px] sm:h-[400px] perspective-1000 cursor-pointer group relative transition-all duration-300" onclick="flipCard()">
-          <div id="card-inner" class="relative w-full h-full transform-style-3d transition-transform duration-500 rounded-3xl shadow-xl border border-slate-200/80">
+        <!-- 3D Flashcard Container: Cân đối kích thước sang max-w-2xl giúp thoáng và cân xứng -->
+        <div id="card-outer-box" class="w-full max-w-2xl h-[360px] sm:h-[390px] perspective-1000 cursor-pointer group relative transition-all duration-300" onclick="flipCard()">
+          <div id="card-inner" class="relative w-full h-full transform-style-3d transition-transform duration-500 rounded-3xl shadow-lg border border-slate-200/80">
             
             <!-- FRONT FACE -->
             <div class="absolute inset-0 w-full h-full backface-hidden rounded-3xl bg-white p-6 sm:p-8 flex flex-col justify-between select-none">
@@ -232,22 +232,22 @@
                 
                 <div class="flex items-center gap-2">
                   <!-- Nút Mở Rộng / Phóng To Thẻ Flashcard -->
-                  <button type="button" id="btn-expand-card" onclick="toggleExpandFlashcard(event)" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 active:scale-95 transition flex items-center justify-center shadow-sm" title="Mở rộng thẻ flashcard">
+                  <button type="button" id="btn-expand-card" onclick="toggleExpandFlashcard(event)" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 active:scale-95 transition flex items-center justify-center shadow-sm" title="Mở rộng / Thu nhỏ thẻ">
                     <i id="expand-card-icon" class="fa-solid fa-expand text-sm"></i>
                   </button>
-                  <button type="button" onclick="handleSpeakCurrent(event)" class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white active:scale-95 transition flex items-center justify-center shadow-sm" title="Phát âm tiếng Anh">
-                    <i class="fa-solid fa-volume-high text-lg"></i>
+                  <button type="button" onclick="handleSpeakCurrent(event)" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white active:scale-95 transition flex items-center justify-center shadow-sm" title="Phát âm tiếng Anh">
+                    <i class="fa-solid fa-volume-high text-base"></i>
                   </button>
                 </div>
               </div>
 
-              <div class="text-center my-auto">
-                <h2 id="card-word" class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-2">Prioritize</h2>
+              <div class="text-center my-auto py-2">
+                <h2 id="card-word" class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-2">Prioritize</h2>
                 <div class="flex items-center justify-center gap-2 mb-3">
                   <span id="card-pos" class="italic text-xs sm:text-sm text-slate-500 font-semibold">(verb)</span>
                   <span id="card-phonetic" class="text-slate-500 font-mono text-sm sm:text-base">/praɪˈɒr.ɪ.taɪz/</span>
                 </div>
-                <p class="text-slate-400 text-xs flex items-center justify-center gap-1.5 mt-4">
+                <p class="text-slate-400 text-xs flex items-center justify-center gap-1.5 mt-3">
                   <i class="fa-solid fa-arrow-rotate-right text-[10px]"></i>
                   <span>Nhấn vào thẻ để xem nghĩa & ví dụ</span>
                 </p>
@@ -266,7 +266,7 @@
                   <span id="card-back-pos" class="text-xs text-slate-400 font-mono italic">/verb/</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <button type="button" onclick="toggleExpandFlashcard(event)" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 text-white transition flex items-center justify-center" title="Mở rộng / Thu nhỏ">
+                  <button type="button" onclick="toggleExpandFlashcard(event)" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 text-white transition flex items-center justify-center" title="Mở rộng / Thu nhỏ thẻ">
                     <i class="fa-solid fa-expand text-sm"></i>
                   </button>
                   <button type="button" onclick="handleSpeakCurrent(event)" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 text-white transition flex items-center justify-center" title="Phát âm tiếng Anh">
@@ -275,13 +275,13 @@
                 </div>
               </div>
 
-              <div class="my-auto space-y-4">
+              <div class="my-auto space-y-3 sm:space-y-4 py-2">
                 <div>
                   <div class="text-xs uppercase tracking-wider text-indigo-300 font-semibold mb-1">Định nghĩa tiếng Việt</div>
                   <div id="card-meaning" class="text-xl sm:text-2xl font-bold text-emerald-300">Ưu tiên</div>
                 </div>
 
-                <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+                <div class="bg-white/5 rounded-2xl p-3.5 sm:p-4 border border-white/10">
                   <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-1">Ví dụ thực tế</div>
                   <p id="card-example" class="text-slate-200 text-sm sm:text-base italic leading-relaxed">"We need to prioritize our tasks."</p>
                   <p id="card-example-vi" class="text-slate-400 text-xs sm:text-sm mt-1">"Chúng ta cần ưu tiên các nhiệm vụ của mình."</p>
@@ -298,7 +298,7 @@
         </div>
 
         <!-- Controls: Prev / Next / Mark as Mastered -->
-        <div id="card-controls" class="w-full max-w-xl flex items-center justify-between gap-3 mt-6">
+        <div id="card-controls" class="w-full max-w-2xl flex items-center justify-between gap-3 mt-5 transition-all duration-300">
           <button onclick="prevCard()" class="flex-1 py-3 px-4 bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-2xl border border-slate-200 shadow-sm transition active:scale-95 flex items-center justify-center gap-2 text-sm">
             <i class="fa-solid fa-chevron-left text-xs"></i>
             <span>Trước</span>
@@ -316,8 +316,8 @@
         </div>
       </div>
 
-      <!-- Quick Vocabulary List table -->
-      <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm mt-10">
+      <!-- Quick Vocabulary List table: Căn đồng bộ chiều rộng max-w-4xl tạo trục cân đối hoàn chỉnh -->
+      <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm mt-8 max-w-4xl mx-auto w-full">
         <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h3 class="font-extrabold text-slate-900 text-lg">Danh sách từ vựng trong chủ đề</h3>
@@ -1006,25 +1006,43 @@
       isCardExpanded = !isCardExpanded;
       const outerBox = document.getElementById('card-outer-box');
       const controls = document.getElementById('card-controls');
+      const counterWrap = document.getElementById('fc-counter-wrap');
+      const progressWrap = document.getElementById('fc-progress-wrap');
       const fcWord = document.getElementById('card-word');
       const icon = document.getElementById('expand-card-icon');
 
       if (isCardExpanded) {
-        outerBox.classList.remove('max-w-xl', 'h-[380px]', 'sm:h-[400px]');
-        outerBox.classList.add('max-w-3xl', 'h-[500px]', 'sm:h-[540px]');
-        controls.classList.remove('max-w-xl');
-        controls.classList.add('max-w-3xl');
-        fcWord.classList.remove('text-3xl', 'sm:text-4xl');
-        fcWord.classList.add('text-4xl', 'sm:text-5xl');
+        outerBox.classList.remove('max-w-2xl', 'h-[360px]', 'sm:h-[390px]');
+        outerBox.classList.add('max-w-4xl', 'h-[440px]', 'sm:h-[470px]');
+        controls.classList.remove('max-w-2xl');
+        controls.classList.add('max-w-4xl');
+        if (counterWrap) {
+          counterWrap.classList.remove('max-w-2xl');
+          counterWrap.classList.add('max-w-4xl');
+        }
+        if (progressWrap) {
+          progressWrap.classList.remove('max-w-2xl');
+          progressWrap.classList.add('max-w-4xl');
+        }
+        fcWord.classList.remove('text-3xl', 'sm:text-4xl', 'md:text-5xl');
+        fcWord.classList.add('text-4xl', 'sm:text-5xl', 'md:text-6xl');
         icon.className = "fa-solid fa-compress text-sm";
         showToast("Đã mở rộng thẻ Flashcard", "fa-expand");
       } else {
-        outerBox.classList.add('max-w-xl', 'h-[380px]', 'sm:h-[400px]');
-        outerBox.classList.remove('max-w-3xl', 'h-[500px]', 'sm:h-[540px]');
-        controls.classList.add('max-w-xl');
-        controls.classList.remove('max-w-3xl');
-        fcWord.classList.add('text-3xl', 'sm:text-4xl');
-        fcWord.classList.remove('text-4xl', 'sm:text-5xl');
+        outerBox.classList.add('max-w-2xl', 'h-[360px]', 'sm:h-[390px]');
+        outerBox.classList.remove('max-w-4xl', 'h-[440px]', 'sm:h-[470px]');
+        controls.classList.add('max-w-2xl');
+        controls.classList.remove('max-w-4xl');
+        if (counterWrap) {
+          counterWrap.classList.add('max-w-2xl');
+          counterWrap.classList.remove('max-w-4xl');
+        }
+        if (progressWrap) {
+          progressWrap.classList.add('max-w-2xl');
+          progressWrap.classList.remove('max-w-4xl');
+        }
+        fcWord.classList.add('text-3xl', 'sm:text-4xl', 'md:text-5xl');
+        fcWord.classList.remove('text-4xl', 'sm:text-5xl', 'md:text-6xl');
         icon.className = "fa-solid fa-expand text-sm";
         showToast("Đã thu nhỏ thẻ Flashcard", "fa-compress");
       }
