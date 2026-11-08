@@ -101,7 +101,7 @@
             <span class="hidden xs:inline">Luyện tập</span>
           </button>
 
-          <!-- DUOLINGO STREAK BADGE (VỊ TRÍ SỐ 1) -->
+          <!-- DUOLINGO STREAK BADGE -->
           <div class="relative">
             <button id="streak-badge-btn" onclick="toggleStreakPopup(event)" title="Chuỗi ngày học liên tục (Streak)" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-600 font-extrabold text-xs sm:text-sm transition active:scale-95 shadow-sm">
               <i id="streak-flame-icon" class="fa-solid fa-fire text-amber-500 text-base animate-bounce"></i>
@@ -170,7 +170,7 @@
                 <span id="current-topic-name">Chủ đề</span>
               </div>
               <div class="flex items-center gap-1.5 pl-2 border-l border-white/20">
-                <span id="current-topic-count" class="text-xs px-2 py-0.5 rounded-full bg-white/20 font-bold">1000</span>
+                <span id="current-topic-count" class="text-xs px-2 py-0.5 rounded-full bg-white/20 font-bold">50</span>
                 <i id="topic-dropdown-arrow" class="fa-solid fa-chevron-down text-xs transition-transform duration-300"></i>
               </div>
             </button>
@@ -206,7 +206,7 @@
         </div>
       </div>
 
-      <!-- Flashcard Interactive Zone (Cân đối lại kích thước & tỉ lệ trên màn hình) -->
+      <!-- Flashcard Interactive Zone -->
       <div id="flashcard-zone" class="flex flex-col items-center transition-all duration-300 max-w-4xl mx-auto w-full">
         <!-- Progress Counter -->
         <div id="fc-counter-wrap" class="w-full max-w-2xl flex items-center justify-between text-xs sm:text-sm font-medium text-slate-500 mb-2 px-1 transition-all duration-300">
@@ -219,7 +219,7 @@
           <div id="fc-progressbar" class="h-full bg-gradient-to-r from-blue-500 to-indigo-600 w-0 transition-all duration-300"></div>
         </div>
 
-        <!-- 3D Flashcard Container: Cân đối kích thước sang max-w-2xl giúp thoáng và cân xứng -->
+        <!-- 3D Flashcard Container -->
         <div id="card-outer-box" class="w-full max-w-2xl h-[360px] sm:h-[390px] perspective-1000 cursor-pointer group relative transition-all duration-300" onclick="flipCard()">
           <div id="card-inner" class="relative w-full h-full transform-style-3d transition-transform duration-500 rounded-3xl shadow-lg border border-slate-200/80">
             
@@ -316,7 +316,7 @@
         </div>
       </div>
 
-      <!-- Quick Vocabulary List table: Căn đồng bộ chiều rộng max-w-4xl tạo trục cân đối hoàn chỉnh -->
+      <!-- Quick Vocabulary List table -->
       <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm mt-8 max-w-4xl mx-auto w-full">
         <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
@@ -387,47 +387,77 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- SECTION 3: PRACTICE QUIZ                   -->
+    <!-- SECTION 3: PRACTICE QUIZ (ÔN LUYỆN 20 CHỦ ĐỀ TRẮC NGHIỆM 4 ĐÁP ÁN) -->
     <!-- ========================================== -->
     <section id="section-quiz" class="hidden space-y-6">
-      <div class="max-w-3xl mx-auto space-y-6">
-        <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm text-center space-y-3">
-          <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-sm">
-            <i class="fa-solid fa-award"></i>
+      <div class="max-w-4xl mx-auto space-y-6">
+        
+        <!-- Header Luyện Tập & Chọn Chủ Đề Ôn Luyện -->
+        <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-5">
+          <div class="text-center space-y-2">
+            <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-sm">
+              <i class="fa-solid fa-award"></i>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Trắc Nghiệm Luyện Phản Xạ</h2>
+            <p class="text-slate-500 text-sm max-w-lg mx-auto">Chọn chủ đề Day 1 - Day 20 để ôn luyện trắc nghiệm 4 đáp án từ vựng trọng tâm.</p>
           </div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Trắc Nghiệm Luyện Phản Xạ</h2>
-          <p class="text-slate-500 text-sm max-w-lg mx-auto">Kiểm tra khả năng ghi nhớ từ vựng và vận dụng ngữ pháp chính xác.</p>
-          
-          <div class="flex items-center justify-center gap-6 pt-3 text-sm">
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-              <span class="text-slate-600 font-medium">Đúng: <strong id="quiz-correct-count" class="text-emerald-600 font-bold">0</strong></span>
+
+          <!-- BỘ CHỌN CHỦ ĐỀ ÔN LUYỆN DẠNG DROPDOWN / BẢNG 20 DAY -->
+          <div class="pt-4 border-t border-slate-100 flex flex-col items-center gap-3">
+            <div class="flex items-center justify-between w-full max-w-xl">
+              <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Chủ đề trắc nghiệm:</label>
+              <button onclick="toggleQuizTopicsPanel()" class="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 transition">
+                <i class="fa-solid fa-list-check"></i>
+                <span id="quiz-selected-topic-title">Day 1: Công sở & Tuyển dụng</span>
+                <i id="quiz-topic-arrow" class="fa-solid fa-chevron-down text-[10px] ml-1 transition-transform"></i>
+              </button>
             </div>
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-rose-500"></span>
-              <span class="text-slate-600 font-medium">Sai: <strong id="quiz-wrong-count" class="text-rose-600 font-bold">0</strong></span>
+
+            <!-- Panel 20 Day chọn nhanh cho bài Quiz -->
+            <div id="quiz-topics-panel" class="hidden w-full max-w-xl p-3 bg-slate-50 rounded-2xl border border-slate-200 transition-all duration-300">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1" id="quiz-topic-buttons">
+                <!-- Injected via JS -->
+              </div>
             </div>
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-              <span class="text-slate-600 font-medium">Câu: <strong id="quiz-progress-text" class="text-blue-600 font-bold">1/4</strong></span>
+
+            <!-- Bảng thống kê điểm số bài kiểm tra hiện tại -->
+            <div class="flex items-center justify-center gap-6 pt-2 text-sm">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                <span class="text-slate-600 font-medium">Đúng: <strong id="quiz-correct-count" class="text-emerald-600 font-bold">0</strong></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                <span class="text-slate-600 font-medium">Sai: <strong id="quiz-wrong-count" class="text-rose-600 font-bold">0</strong></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                <span class="text-slate-600 font-medium">Câu: <strong id="quiz-progress-text" class="text-blue-600 font-bold">1/10</strong></span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div id="quiz-box" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-md space-y-6">
+        <!-- Khung Câu Hỏi & 4 Đáp Án Trắc Nghiệm -->
+        <div id="quiz-box" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-md space-y-6 max-w-2xl mx-auto">
           <div class="flex items-center justify-between text-xs font-semibold text-slate-400 border-b border-slate-100 pb-3">
-            <span id="quiz-category-badge" class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full font-bold">TỪ VỰNG</span>
-            <span id="quiz-question-index">Câu hỏi 1 / 4</span>
+            <span id="quiz-category-badge" class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full font-bold">TỪ VỰNG TOEIC</span>
+            <span id="quiz-question-index">Câu hỏi 1 / 10</span>
           </div>
 
-          <h3 id="quiz-question" class="text-lg sm:text-xl font-bold text-slate-900 leading-snug min-h-[50px] flex items-center">
-            Từ "Soaring" có nghĩa tiếng Việt là gì?
-          </h3>
+          <div class="space-y-1">
+            <h3 id="quiz-question" class="text-xl sm:text-2xl font-extrabold text-slate-900 leading-snug">
+              Từ "Prioritize" có nghĩa tiếng Việt là gì?
+            </h3>
+            <p id="quiz-question-sub" class="text-xs text-slate-400 italic">Chọn 1 trong 4 đáp án đúng nhất bên dưới:</p>
+          </div>
 
+          <!-- 4 Đáp án A, B, C, D -->
           <div id="quiz-options" class="grid grid-cols-1 gap-3">
             <!-- Render options dynamically -->
           </div>
 
+          <!-- Giải thích kết quả sau khi chọn -->
           <div id="quiz-explanation" class="hidden p-4 rounded-2xl bg-slate-50 border border-slate-200 text-sm space-y-1">
             <div class="font-bold text-slate-800 flex items-center gap-1.5" id="quiz-feedback-title">
               <i class="fa-solid fa-circle-info"></i> Giải thích chi tiết
@@ -435,33 +465,38 @@
             <p id="quiz-feedback-desc" class="text-slate-600 leading-relaxed"></p>
           </div>
 
-          <div class="flex items-center justify-between pt-2">
-            <button onclick="resetQuiz()" class="text-xs text-slate-400 hover:text-slate-600 font-medium transition flex items-center gap-1">
-              <i class="fa-solid fa-rotate-left"></i> Làm lại
+          <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+            <button onclick="resetQuiz()" class="text-xs text-slate-400 hover:text-slate-600 font-bold transition flex items-center gap-1.5 py-2 px-3 rounded-xl hover:bg-slate-100">
+              <i class="fa-solid fa-rotate-left"></i> Làm lại chủ đề này
             </button>
-            <button id="btn-next-quiz" onclick="nextQuizQuestion()" disabled class="px-6 py-2.5 bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-md shadow-blue-500/25 transition">
-              Câu tiếp theo <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
+            <button id="btn-next-quiz" onclick="nextQuizQuestion()" disabled class="px-6 py-2.5 bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-md shadow-blue-500/25 transition flex items-center gap-1.5">
+              <span>Câu tiếp theo</span>
+              <i class="fa-solid fa-arrow-right text-xs"></i>
             </button>
           </div>
         </div>
 
-        <div id="quiz-result-modal" class="hidden bg-white rounded-3xl border border-slate-200 p-8 shadow-xl text-center space-y-5">
+        <!-- Bảng Kết Quả Khi Làm Xong Toàn Bộ Câu Trong Day -->
+        <div id="quiz-result-modal" class="hidden bg-white rounded-3xl border border-slate-200 p-8 shadow-xl text-center space-y-5 max-w-2xl mx-auto">
           <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
             <i class="fa-solid fa-trophy"></i>
           </div>
           <div class="space-y-2">
-            <h3 class="text-2xl font-black text-slate-900">Hoàn Thành Bài Kiểm Tra!</h3>
-            <p id="quiz-final-score" class="text-slate-600 text-base">Bạn đã trả lời đúng 4 / 4 câu.</p>
+            <h3 class="text-2xl font-black text-slate-900">Hoàn Thành Bài Ôn Luyện!</h3>
+            <p id="quiz-final-score" class="text-slate-600 text-base">Bạn đã trả lời đúng 8 / 10 câu.</p>
           </div>
-          <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 max-w-sm mx-auto">
+          <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 max-w-md mx-auto">
             <span id="quiz-appraisal" class="text-sm font-bold text-indigo-600">Tuyệt vời! Bạn nắm rất vững kiến thức.</span>
           </div>
-          <div class="flex justify-center gap-3 pt-2">
+          <div class="flex flex-wrap justify-center gap-3 pt-2">
             <button onclick="restartQuiz()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-md shadow-blue-500/30 transition">
-              <i class="fa-solid fa-rotate-right mr-1.5"></i> Làm lại lần nữa
+              <i class="fa-solid fa-rotate-right mr-1.5"></i> Ôn lại chủ đề này
+            </button>
+            <button onclick="nextQuizTopic()" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-md shadow-emerald-600/30 transition">
+              <i class="fa-solid fa-forward-step mr-1.5"></i> Sang Day tiếp theo
             </button>
             <button onclick="switchTab('flashcards')" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition">
-              Ôn từ vựng
+              Học Flashcard
             </button>
           </div>
         </div>
@@ -509,7 +544,6 @@
           <div>
             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ngày học / Chủ đề</label>
             <select id="new-category" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="custom">Từ Của Tôi (Tự tạo)</option>
               <option value="day1">Day 1</option>
               <option value="day2">Day 2</option>
               <option value="day3">Day 3</option>
@@ -546,9 +580,7 @@
     </div>
   </div>
 
-  <!-- ======================================================== -->
-  <!-- MODAL: BẮT BUỘC ĐĂNG KÝ / ĐĂNG NHẬP (1 EMAIL = 1 TÀI KHOẢN) -->
-  <!-- ======================================================== -->
+  <!-- MODAL: ĐĂNG NHẬP / ĐĂNG KÝ (1 EMAIL = 1 TÀI KHOẢN) -->
   <div id="auth-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-100 space-y-6 relative animate-in fade-in zoom-in-95 duration-200">
       
@@ -639,15 +671,9 @@
   <script>
     /* ----------------------------------------------------
        1. CẤU HÌNH SERVER DATABASE CHÍNH THỨC (GOOGLE FIREBASE REALTIME CLOUD)
-       - Tên miền *.firebasedatabase.app được Brave Shields & Chrome tin cậy 100%
        ---------------------------------------------------- */
-    const SYSTEM_VERSION_TAG = "v2026_realtime_cloud_v5";
-    
-    // Cụm máy chủ Google Cloud Realtime Database mở toàn quyền đọc/ghi cho ứng dụng học tập
+    const SYSTEM_VERSION_TAG = "v2026_realtime_cloud_v6";
     const CLOUD_FIREBASE_BASE = "https://engmaster-toeic-sync-default-rtdb.asia-southeast1.firebasedatabase.app/users";
-    
-    // Server dự phòng Cloudflare Worker JSON Sync
-    const CLOUD_BACKUP_BASE = "https://api.npoint.io";
 
     const CATEGORIES = [
       { id: 'day1', name: 'Day 1: Công sở & Tuyển dụng', icon: 'fa-briefcase' },
@@ -814,37 +840,6 @@
       return fullList;
     })();
 
-    const QUIZ_QUESTIONS = [
-      {
-        question: "Từ nào mang nghĩa là 'tuyệt đẹp, gây ấn tượng ngỡ ngàng'?",
-        type: "vocab",
-        options: ["Stunning", "Complex", "Separately", "Fictional"],
-        correct: 0,
-        explanation: "'Stunning' (tính từ) dùng để mô tả một vẻ đẹp tráng lệ, lộng lẫy."
-      },
-      {
-        question: "Điền cụm từ: 'Can you _____ me while I am on vacation next week?'",
-        type: "vocab",
-        options: ["dispose of", "fill in for", "cut down on", "keep track of"],
-        correct: 1,
-        explanation: "'Fill in for someone' có nghĩa là làm thay phần việc cho ai đó khi họ vắng mặt."
-      },
-      {
-        question: "Từ 'Courteous' mô tả phẩm chất nào sau đây?",
-        type: "vocab",
-        options: ["Nóng tính", "Lịch sự, hòa nhã", "Bảo thủ", "Chậm chạp"],
-        correct: 1,
-        explanation: "'Courteous' nghĩa là lịch sự, tao nhã và nhã nhặn."
-      },
-      {
-        question: "Chọn dạng đúng: 'The conference was _____ until next month.'",
-        type: "grammar",
-        options: ["postpone", "postponed", "postponing", "postpones"],
-        correct: 1,
-        explanation: "Cấu trúc câu bị động ở thì quá khứ: was/were + V3/ed ('was postponed')."
-      }
-    ];
-
     const GRAMMAR_TOPICS = [
       {
         id: "tenses",
@@ -892,17 +887,21 @@
     let autoPlayInterval = null;
     let availableVoices = [];
 
+    // BIẾN CHO PHẦN TRẮC NGHIỆM TỪ VỰNG THEO 20 DAY
+    let currentQuizTopic = 'day1';
+    let quizQuestionList = [];
     let quizCurrentIdx = 0;
     let quizScoreCorrect = 0;
     let quizScoreWrong = 0;
     let quizAnswered = false;
+    let isQuizTopicsOpen = false;
 
     let currentGrammarTopicId = 'tenses';
     let currentUser = null;
     let authMode = 'login';
     let isSyncing = false;
 
-    let isTopicsOpen = true; // Quản lý trạng thái mở/đóng của bảng chủ đề
+    let isTopicsOpen = false; // Mặc định thu gọn danh mục Flashcard
     let isCardExpanded = false;
 
     // QUẢN LÝ NGÀY STREAK DUOLINGO
@@ -980,17 +979,27 @@
       updateStreakDisplay();
     }
 
-    function enforceCleanState() {
-      // Khởi tạo trạng thái sạch ban đầu
-    }
-
-    // Bật / tắt hiển thị danh mục các Day khi bấm vào nút "Chủ đề"
+    // Bật / tắt hiển thị danh mục các Day khi bấm vào nút "Chủ đề" (Flashcard)
     function toggleTopicDropdown() {
       isTopicsOpen = !isTopicsOpen;
       const panel = document.getElementById('topics-panel');
       const arrow = document.getElementById('topic-dropdown-arrow');
 
       if (isTopicsOpen) {
+        panel.classList.remove('hidden');
+        arrow.classList.add('rotate-180');
+      } else {
+        panel.classList.add('hidden');
+        arrow.classList.remove('rotate-180');
+      }
+    }
+
+    // Bật / tắt chọn chủ đề trong giao diện Trắc nghiệm (Quiz)
+    function toggleQuizTopicsPanel() {
+      isQuizTopicsOpen = !isQuizTopicsOpen;
+      const panel = document.getElementById('quiz-topics-panel');
+      const arrow = document.getElementById('quiz-topic-arrow');
+      if (isQuizTopicsOpen) {
         panel.classList.remove('hidden');
         arrow.classList.add('rotate-180');
       } else {
@@ -1060,7 +1069,6 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      enforceCleanState();
       initSpeechVoices();
       checkAuthStatus();
       loadVocabularyLocal();
@@ -1069,14 +1077,17 @@
       renderCurrentCard();
       renderGrammarSidebar();
       renderGrammarDetail(currentGrammarTopicId);
-      loadQuizQuestion();
+      
+      // Khởi tạo trắc nghiệm 20 chủ đề
+      renderQuizTopicButtons();
+      generateQuizQuestionsForTopic(currentQuizTopic);
 
       // Nếu đã đăng nhập trước đó, tự động kéo dữ liệu từ đám mây về
       if (currentUser) {
         fetchDataFromServer(false);
       }
 
-      // Tự động đồng bộ ngầm định kỳ (như Duolingo) để giữa 2 trình duyệt luôn khớp 100%
+      // Tự động đồng bộ ngầm định kỳ
       setInterval(() => {
         if (currentUser && !isSyncing) {
           fetchDataFromServer(false);
@@ -1193,14 +1204,12 @@
     }
 
     /* ----------------------------------------------------
-       4. GOOGLE CLOUD REALTIME ENGINE: ĐỒNG BỘ 100% XUYÊN SUỐT BRAVE & CHROME
+       4. GOOGLE CLOUD REALTIME ENGINE: ĐỒNG BỘ 100%
        ---------------------------------------------------- */
     function getSafeUserKey(email) {
-      // Biến email thành key an toàn cho Firebase: thay thế các ký tự cấm ., #, $, [, ], @
       return 'usr_' + email.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
     }
 
-    // Đọc tài khoản trực tiếp từ Google Firebase Server
     async function queryServerUser(email) {
       const userKey = getSafeUserKey(email);
       const url = `${CLOUD_FIREBASE_BASE}/${userKey}.json?nocache=${Date.now()}`;
@@ -1220,7 +1229,6 @@
         console.warn("Firebase query error:", e);
       }
 
-      // Thử đọc từ bộ nhớ bóng cục bộ
       const shadow = localStorage.getItem(`shadow_user_${userKey}`);
       if (shadow) {
         try { return JSON.parse(shadow); } catch (err) {}
@@ -1229,12 +1237,10 @@
       return null;
     }
 
-    // Ghi tài khoản & tiến độ học trực tiếp lên Google Firebase Server
     async function saveServerUser(email, userData) {
       const userKey = getSafeUserKey(email);
       const url = `${CLOUD_FIREBASE_BASE}/${userKey}.json`;
 
-      // Lưu ngay vào máy hiện tại
       localStorage.setItem(`shadow_user_${userKey}`, JSON.stringify(userData));
 
       try {
@@ -1271,7 +1277,6 @@
           return;
         }
 
-        // 1. Kiểm tra tài khoản đã tồn tại trên Server chưa
         const existingUser = await queryServerUser(email);
         if (existingUser && existingUser.email) {
           showAuthError(`Email "${email}" đã được đăng ký trước đó! Tự động chuyển sang Đăng nhập.`);
@@ -1284,7 +1289,6 @@
           return;
         }
 
-        // 2. Tạo bản ghi tài khoản mới
         const newUserRecord = {
           email: email,
           fullname: fullname,
@@ -1297,7 +1301,6 @@
           lastSyncAt: new Date().toISOString()
         };
 
-        // 3. Đẩy lên Google Firebase Server
         await saveServerUser(email, newUserRecord);
 
         currentUser = {
@@ -1317,16 +1320,15 @@
         renderCategoryChips();
         renderVocabularyTable();
         renderCurrentCard();
+        generateQuizQuestionsForTopic(currentQuizTopic);
 
         setAuthLoading(false);
         showToast(`Đăng ký thành công! Chào mừng ${fullname}.`, "fa-circle-check");
         confetti({ particleCount: 70, spread: 70, origin: { y: 0.6 } });
 
       } else {
-        // ĐĂNG NHẬP: Lấy dữ liệu trực tiếp từ Server về
         let serverUser = await queryServerUser(email);
 
-        // Nếu máy này chưa có hoặc server chậm, kiểm tra lại một lần nữa
         if (!serverUser || !serverUser.email) {
           showAuthError(`Email "${email}" chưa được đăng ký trên máy chủ! Vui lòng chọn tab "Đăng ký".`);
           setAuthLoading(false);
@@ -1347,7 +1349,6 @@
 
         localStorage.setItem('engmaster_user', JSON.stringify(currentUser));
 
-        // Nạp Streak từ Server
         if (serverUser.streakCount) {
           userStreak = {
             count: serverUser.streakCount,
@@ -1356,7 +1357,6 @@
           localStorage.setItem(`engmaster_streak_${emailKey}`, JSON.stringify(userStreak));
         }
 
-        // Nạp và đồng bộ toàn bộ từ đã thuộc từ máy chủ
         loadVocabularyLocal();
         if (Array.isArray(serverUser.learnedIds)) {
           const learnedSet = new Set(serverUser.learnedIds);
@@ -1366,7 +1366,6 @@
           localStorage.setItem(`engmaster_learned_${emailKey}`, JSON.stringify(serverUser.learnedIds));
         }
 
-        // Nạp từ tự tạo
         if (Array.isArray(serverUser.customWords)) {
           serverUser.customWords.forEach(cw => {
             if (!vocabulary.some(v => v.id === cw.id)) {
@@ -1381,6 +1380,7 @@
         renderCategoryChips();
         renderVocabularyTable();
         renderCurrentCard();
+        generateQuizQuestionsForTopic(currentQuizTopic);
         updateCloudStatus('synced');
 
         setAuthLoading(false);
@@ -1438,14 +1438,12 @@
       if (serverUser && serverUser.email === currentUser.email) {
         let changed = false;
 
-        // Cập nhật tên nếu có thay đổi
         if (serverUser.fullname && serverUser.fullname !== currentUser.fullname) {
           currentUser.fullname = serverUser.fullname;
           localStorage.setItem('engmaster_user', JSON.stringify(currentUser));
           document.getElementById('header-user-name').textContent = currentUser.fullname;
         }
 
-        // Cập nhật Streak từ server
         if (serverUser.streakCount && serverUser.streakCount !== userStreak.count) {
           userStreak.count = serverUser.streakCount;
           userStreak.lastDate = serverUser.lastStreakDate || getTodayString();
@@ -1453,7 +1451,6 @@
           updateStreakDisplay();
         }
 
-        // Cập nhật danh sách từ đã học
         if (Array.isArray(serverUser.learnedIds)) {
           const serverSet = new Set(serverUser.learnedIds);
           vocabulary.forEach(v => {
@@ -1466,7 +1463,6 @@
           localStorage.setItem(`engmaster_learned_${emailKey}`, JSON.stringify(serverUser.learnedIds));
         }
 
-        // Cập nhật từ tự tạo
         if (Array.isArray(serverUser.customWords)) {
           serverUser.customWords.forEach(cw => {
             if (!vocabulary.some(v => v.id === cw.id)) {
@@ -1554,7 +1550,7 @@
     }
 
     /* ----------------------------------------------------
-       7. BỘ PHÁT ÂM TIẾNG ANH CHUẨN (KHÔNG ĐỌC PHIÊN ÂM)
+       7. BỘ PHÁT ÂM TIẾNG ANH CHUẨN
        ---------------------------------------------------- */
     function sanitizeForSpeech(rawWord) {
       if (!rawWord) return "";
@@ -1639,6 +1635,13 @@
       if (tabName !== 'flashcards' && autoPlayInterval) {
         toggleAutoPlay();
       }
+
+      if (tabName === 'quiz') {
+        // Đồng bộ chủ đề Quiz theo chủ đề đang học bên Flashcard
+        if (currentQuizTopic !== currentCategory) {
+          selectQuizTopic(currentCategory);
+        }
+      }
     }
 
     function getFilteredVocab() {
@@ -1649,7 +1652,6 @@
       const container = document.getElementById('category-chips');
       const curTopic = CATEGORIES.find(c => c.id === currentCategory) || CATEGORIES[0];
       
-      // Cập nhật tên và số lượng từ trên nút chính "Chủ đề"
       document.getElementById('current-topic-name').textContent = curTopic.name;
       const totalCount = vocabulary.filter(v => v.category === currentCategory).length;
       document.getElementById('current-topic-count').textContent = totalCount;
@@ -1681,7 +1683,6 @@
       renderCurrentCard();
       renderVocabularyTable();
 
-      // Sau khi chọn chủ đề, đóng bảng danh mục lại để tập trung học thẻ flashcard
       isTopicsOpen = false;
       document.getElementById('topics-panel').classList.add('hidden');
       document.getElementById('topic-dropdown-arrow').classList.remove('rotate-180');
@@ -1827,10 +1828,7 @@
       updateMasterUI(currentItem.learned);
       renderVocabularyTable();
 
-      // Ghi nhận hoạt động tính Streak Duolingo
       recordStreakActivity();
-
-      // Đẩy tiến độ lên máy chủ Server ngay lập tức
       pushDataToServer();
 
       if (currentItem.learned) {
@@ -1901,16 +1899,6 @@
       }
     }
 
-    function deleteWord(id) {
-      vocabulary = vocabulary.filter(w => w.id !== id);
-      saveVocabularyLocal();
-      pushDataToServer();
-      renderCategoryChips();
-      renderVocabularyTable();
-      renderCurrentCard();
-      showToast("Đã xóa từ vựng khỏi thư viện.");
-    }
-
     /* ----------------------------------------------------
        10. ADD WORD MODAL
        ---------------------------------------------------- */
@@ -1958,7 +1946,7 @@
     }
 
     /* ----------------------------------------------------
-       11. GRAMMAR & PRACTICE CONTROLLER
+       11. GRAMMAR CONTROLLER
        ---------------------------------------------------- */
     function renderGrammarSidebar() {
       const container = document.getElementById('grammar-list');
@@ -2013,25 +2001,125 @@
       `;
     }
 
+    /* ----------------------------------------------------
+       12. BỘ ĐỘNG TRẮC NGHIỆM TỪ VỰNG THEO 20 CHỦ ĐỀ (4 ĐÁP ÁN)
+       ---------------------------------------------------- */
+    function renderQuizTopicButtons() {
+      const container = document.getElementById('quiz-topic-buttons');
+      container.innerHTML = CATEGORIES.map(cat => {
+        const isCurrent = cat.id === currentQuizTopic;
+        return `
+          <button onclick="selectQuizTopic('${cat.id}')" class="p-2.5 rounded-xl text-xs font-bold transition flex items-center justify-between text-left ${isCurrent ? 'bg-blue-600 text-white' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'}">
+            <span class="truncate pr-1">${cat.name}</span>
+            <i class="fa-solid ${cat.icon} text-[10px] shrink-0 ${isCurrent ? 'text-white' : 'text-slate-400'}"></i>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectQuizTopic(topicId) {
+      currentQuizTopic = topicId;
+      isQuizTopicsOpen = false;
+      document.getElementById('quiz-topics-panel').classList.add('hidden');
+      document.getElementById('quiz-topic-arrow').classList.remove('rotate-180');
+
+      const topicObj = CATEGORIES.find(c => c.id === topicId) || CATEGORIES[0];
+      document.getElementById('quiz-selected-topic-title').textContent = topicObj.name;
+
+      renderQuizTopicButtons();
+      generateQuizQuestionsForTopic(topicId);
+      showToast(`Đã chọn trắc nghiệm: ${topicObj.name}`, "fa-bolt");
+    }
+
+    function nextQuizTopic() {
+      const currentIdx = CATEGORIES.findIndex(c => c.id === currentQuizTopic);
+      const nextIdx = (currentIdx + 1) % CATEGORIES.length;
+      selectQuizTopic(CATEGORIES[nextIdx].id);
+    }
+
+    // Tự động tạo bộ câu hỏi trắc nghiệm 4 đáp án từ vựng cho chủ đề đã chọn
+    function generateQuizQuestionsForTopic(topicId) {
+      const topicWords = vocabulary.filter(v => v.category === topicId);
+      const allWords = vocabulary.length > 0 ? vocabulary : DEFAULT_VOCABULARY;
+
+      if (topicWords.length === 0) {
+        showToast("Chủ đề này chưa có từ vựng để ôn tập.", "fa-circle-info");
+        return;
+      }
+
+      // Lấy tối đa 10 câu hỏi ngẫu nhiên trong chủ đề này
+      const shuffledTopicWords = [...topicWords].sort(() => 0.5 - Math.random());
+      const selectedWords = shuffledTopicWords.slice(0, 10);
+
+      quizQuestionList = selectedWords.map((targetWord, idx) => {
+        // Sinh 3 đáp án gây nhiễu từ các từ vựng khác
+        const otherWords = allWords.filter(w => w.id !== targetWord.id);
+        const shuffledOthers = [...otherWords].sort(() => 0.5 - Math.random()).slice(0, 3);
+
+        // Xen kẽ 2 dạng câu hỏi:
+        // Dạng 1: Cho từ tiếng Anh -> chọn nghĩa tiếng Việt
+        // Dạng 2: Cho nghĩa tiếng Việt -> chọn từ tiếng Anh
+        const isEnglishToVietnamese = idx % 2 === 0;
+
+        let questionText = "";
+        let correctOption = "";
+        let distractors = [];
+
+        if (isEnglishToVietnamese) {
+          questionText = `Từ vựng "${targetWord.word}" (${targetWord.pos}) có nghĩa tiếng Việt là gì?`;
+          correctOption = targetWord.meaning;
+          distractors = shuffledOthers.map(o => o.meaning);
+        } else {
+          questionText = `Từ tiếng Anh nào mang nghĩa là: "${targetWord.meaning}"?`;
+          correctOption = targetWord.word;
+          distractors = shuffledOthers.map(o => o.word);
+        }
+
+        // Trộn ngẫu nhiên 4 đáp án
+        const options = [correctOption, ...distractors].sort(() => 0.5 - Math.random());
+        const correctIndex = options.indexOf(correctOption);
+
+        return {
+          question: questionText,
+          wordItem: targetWord,
+          options: options,
+          correct: correctIndex,
+          explanation: `"${targetWord.word}" ${targetWord.phonetic || ''} (${targetWord.pos}): ${targetWord.meaning}. Ví dụ: ${targetWord.example} (${targetWord.exampleVi})`
+        };
+      });
+
+      quizCurrentIdx = 0;
+      quizScoreCorrect = 0;
+      quizScoreWrong = 0;
+      quizAnswered = false;
+
+      document.getElementById('quiz-result-modal').classList.add('hidden');
+      document.getElementById('quiz-box').classList.remove('hidden');
+
+      loadQuizQuestion();
+    }
+
     function loadQuizQuestion() {
-      if (quizCurrentIdx >= QUIZ_QUESTIONS.length) {
+      if (quizQuestionList.length === 0) {
+        generateQuizQuestionsForTopic(currentQuizTopic);
+        return;
+      }
+
+      if (quizCurrentIdx >= quizQuestionList.length) {
         showQuizResults();
         return;
       }
 
       quizAnswered = false;
-      const q = QUIZ_QUESTIONS[quizCurrentIdx];
+      const q = quizQuestionList[quizCurrentIdx];
 
-      document.getElementById('quiz-progress-text').textContent = `${quizCurrentIdx + 1}/${QUIZ_QUESTIONS.length}`;
-      document.getElementById('quiz-question-index').textContent = `Câu hỏi ${quizCurrentIdx + 1} / ${QUIZ_QUESTIONS.length}`;
+      document.getElementById('quiz-progress-text').textContent = `${quizCurrentIdx + 1}/${quizQuestionList.length}`;
+      document.getElementById('quiz-question-index').textContent = `Câu hỏi ${quizCurrentIdx + 1} / ${quizQuestionList.length}`;
       document.getElementById('quiz-correct-count').textContent = quizScoreCorrect;
       document.getElementById('quiz-wrong-count').textContent = quizScoreWrong;
 
-      const badge = document.getElementById('quiz-category-badge');
-      badge.textContent = q.type === 'vocab' ? 'TỪ VỰNG' : 'NGỮ PHÁP';
-      badge.className = q.type === 'vocab' 
-        ? "px-3 py-1 bg-amber-50 text-amber-700 rounded-full font-bold text-[11px]" 
-        : "px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full font-bold text-[11px]";
+      const currentTopicObj = CATEGORIES.find(c => c.id === currentQuizTopic);
+      document.getElementById('quiz-category-badge').textContent = currentTopicObj ? currentTopicObj.name.toUpperCase() : 'TRẮC NGHIỆM TỪ VỰNG';
 
       document.getElementById('quiz-question').textContent = q.question;
       document.getElementById('quiz-explanation').classList.add('hidden');
@@ -2055,7 +2143,7 @@
       if (quizAnswered) return;
       quizAnswered = true;
 
-      const q = QUIZ_QUESTIONS[quizCurrentIdx];
+      const q = quizQuestionList[quizCurrentIdx];
       const buttons = document.querySelectorAll('.quiz-option-btn');
       const isCorrect = chosenIdx === q.correct;
 
@@ -2111,30 +2199,24 @@
       const modal = document.getElementById('quiz-result-modal');
       modal.classList.remove('hidden');
 
-      const total = QUIZ_QUESTIONS.length;
+      const total = quizQuestionList.length;
       document.getElementById('quiz-final-score').textContent = `Bạn đã hoàn thành với số điểm: ${quizScoreCorrect} / ${total} câu đúng.`;
 
       const appraisal = document.getElementById('quiz-appraisal');
-      const ratio = quizScoreCorrect / total;
+      const ratio = total > 0 ? (quizScoreCorrect / total) : 0;
       if (ratio === 1) {
-        appraisal.textContent = "Xuất sắc tuyệt đối! Bạn nắm rất chắc toàn bộ từ vựng & cấu trúc.";
+        appraisal.textContent = "Xuất sắc tuyệt đối! Bạn nắm rất chắc toàn bộ từ vựng chủ đề này.";
       } else if (ratio >= 0.7) {
-        appraisal.textContent = "Rất tốt! Bạn có sự hiểu biết ngữ cảnh rất tốt.";
+        appraisal.textContent = "Rất tốt! Bạn phản xạ từ vựng rất nhanh.";
       } else {
-        appraisal.textContent = "Hãy lật lại các thẻ Flashcard và chuyên đề ngữ pháp rồi thử sức lại nhé!";
+        appraisal.textContent = "Hãy lật lại các thẻ Flashcard của Day này và thử sức lại nhé!";
       }
 
       confetti({ particleCount: 100, spread: 90, origin: { y: 0.5 } });
     }
 
     function restartQuiz() {
-      quizCurrentIdx = 0;
-      quizScoreCorrect = 0;
-      quizScoreWrong = 0;
-      quizAnswered = false;
-      document.getElementById('quiz-result-modal').classList.add('hidden');
-      document.getElementById('quiz-box').classList.remove('hidden');
-      loadQuizQuestion();
+      generateQuizQuestionsForTopic(currentQuizTopic);
     }
 
     function resetQuiz() {
@@ -2143,7 +2225,7 @@
     }
 
     /* ----------------------------------------------------
-       12. TOAST NOTIFICATION
+       13. TOAST NOTIFICATION
        ---------------------------------------------------- */
     let toastTimeout;
     function showToast(msg, iconClass = "fa-circle-check") {
