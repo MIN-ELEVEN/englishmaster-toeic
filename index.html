@@ -432,7 +432,7 @@
               </div>
               <div class="flex items-center gap-2">
                 <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-                <span class="text-slate-600 font-medium">Câu: <strong id="quiz-progress-text" class="text-blue-600 font-bold">1/10</strong></span>
+                <span class="text-slate-600 font-medium">Câu: <strong id="quiz-progress-text" class="text-blue-600 font-bold">1/50</strong></span>
               </div>
             </div>
           </div>
@@ -442,7 +442,7 @@
         <div id="quiz-box" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-md space-y-6 max-w-2xl mx-auto">
           <div class="flex items-center justify-between text-xs font-semibold text-slate-400 border-b border-slate-100 pb-3">
             <span id="quiz-category-badge" class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full font-bold">TỪ VỰNG TOEIC</span>
-            <span id="quiz-question-index">Câu hỏi 1 / 10</span>
+            <span id="quiz-question-index">Câu hỏi 1 / 50</span>
           </div>
 
           <div class="space-y-1">
@@ -2037,45 +2037,44 @@
       selectQuizTopic(CATEGORIES[nextIdx].id);
     }
 
-    // Tự động tạo bộ câu hỏi trắc nghiệm 4 đáp án từ vựng cho chủ đề đã chọn
+    // Tự động tạo chuẩn xác bộ 50 câu trắc nghiệm tương ứng 50 từ vựng của chủ đề đó:
+    // - Mỗi chủ đề: Đúng 50 câu trắc nghiệm tương ứng 50 từ vựng
+    // - Câu hỏi: Tiếng Anh (từ vựng, loại từ, phiên âm)
+    // - Đáp án: Nghĩa tiếng Việt
+    // - 4 đáp án lựa chọn: 1 đáp án đúng và 3 đáp án sai lấy từ nghĩa tiếng Việt bất kỳ của các từ còn lại trong 50 từ vựng của chủ đề đó
     function generateQuizQuestionsForTopic(topicId) {
       const topicWords = vocabulary.filter(v => v.category === topicId);
-      const allWords = vocabulary.length > 0 ? vocabulary : DEFAULT_VOCABULARY;
 
       if (topicWords.length === 0) {
         showToast("Chủ đề này chưa có từ vựng để ôn tập.", "fa-circle-info");
         return;
       }
 
-      // Lấy tối đa 10 câu hỏi ngẫu nhiên trong chủ đề này
+      // Đảo ngẫu nhiên thứ tự các từ vựng trong Day để làm bài thi phong phú
       const shuffledTopicWords = [...topicWords].sort(() => 0.5 - Math.random());
-      const selectedWords = shuffledTopicWords.slice(0, 10);
 
-      quizQuestionList = selectedWords.map((targetWord, idx) => {
-        // Sinh 3 đáp án gây nhiễu từ các từ vựng khác
-        const otherWords = allWords.filter(w => w.id !== targetWord.id);
-        const shuffledOthers = [...otherWords].sort(() => 0.5 - Math.random()).slice(0, 3);
+      // Tạo câu hỏi trắc nghiệm cho toàn bộ 50 từ của Day
+      quizQuestionList = shuffledTopicWords.map((targetWord) => {
+        // Lọc danh sách các từ còn lại trong cùng chủ đề có nghĩa tiếng Việt khác với từ mục tiêu
+        const otherWordsInTopic = topicWords.filter(w => w.id !== targetWord.id && w.meaning !== targetWord.meaning);
+        
+        // Đảo ngẫu nhiên các từ còn lại để bốc 3 đáp án sai
+        const shuffledOthers = [...otherWordsInTopic].sort(() => 0.5 - Math.random());
 
-        // Xen kẽ 2 dạng câu hỏi:
-        // Dạng 1: Cho từ tiếng Anh -> chọn nghĩa tiếng Việt
-        // Dạng 2: Cho nghĩa tiếng Việt -> chọn từ tiếng Anh
-        const isEnglishToVietnamese = idx % 2 === 0;
-
-        let questionText = "";
-        let correctOption = "";
-        let distractors = [];
-
-        if (isEnglishToVietnamese) {
-          questionText = `Từ vựng "${targetWord.word}" (${targetWord.pos}) có nghĩa tiếng Việt là gì?`;
-          correctOption = targetWord.meaning;
-          distractors = shuffledOthers.map(o => o.meaning);
-        } else {
-          questionText = `Từ tiếng Anh nào mang nghĩa là: "${targetWord.meaning}"?`;
-          correctOption = targetWord.word;
-          distractors = shuffledOthers.map(o => o.word);
+        // Chọn ra đúng 3 nghĩa tiếng Việt phân biệt từ 50 từ vựng của chủ đề đó
+        const distractors = [];
+        for (let i = 0; i < shuffledOthers.length && distractors.length < 3; i++) {
+          const meaningText = shuffledOthers[i].meaning;
+          if (!distractors.includes(meaningText)) {
+            distractors.push(meaningText);
+          }
         }
 
-        // Trộn ngẫu nhiên 4 đáp án
+        // Câu hỏi luôn là tiếng Anh
+        const questionText = `Từ "${targetWord.word}" (${targetWord.pos}) có nghĩa tiếng Việt là gì?`;
+        const correctOption = targetWord.meaning;
+
+        // Trộn ngẫu nhiên 4 đáp án nghĩa tiếng Việt (1 đúng + 3 sai lấy trong chính chủ đề)
         const options = [correctOption, ...distractors].sort(() => 0.5 - Math.random());
         const correctIndex = options.indexOf(correctOption);
 
