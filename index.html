@@ -818,22 +818,72 @@
       ]
     };
 
+    // Ngân hàng từ vựng TOEIC thực chiến chuẩn 100% (thay thế hoàn toàn mọi từ placeholder giả lập)
+    const TOEIC_CURATED_BANK = [
+      { w: "Implement", p: "verb", ph: "/ˈɪm.plɪ.ment/", m: "thực hiện, triển khai", e: "The team will implement the new policy next week.", ev: "Đội ngũ sẽ triển khai chính sách mới vào tuần tới." },
+      { w: "Mandatory", p: "adj", ph: "/ˈmæn.də.tər.i/", m: "bắt buộc", e: "Attendance at the safety briefing is mandatory.", ev: "Việc tham gia buổi phổ biến an toàn là bắt buộc." },
+      { w: "Accommodate", p: "verb", ph: "/əˈkɒm.ə.deɪt/", m: "đáp ứng; cung cấp chỗ ở", e: "The hotel can accommodate up to 500 guests.", ev: "Khách sạn có thể đón tiếp tới 500 khách." },
+      { w: "Collaborate", p: "verb", ph: "/kəˈlæb.ə.reɪt/", m: "hợp tác, phối hợp", e: "We collaborate closely with international partners.", ev: "Chúng tôi phối hợp chặt chẽ với các đối tác quốc tế." },
+      { w: "Promote", p: "verb", ph: "/prəˈmoʊt/", m: "thăng chức; quảng bá", e: "He was promoted to senior sales manager.", ev: "Anh ấy đã được thăng chức lên trưởng phòng kinh doanh." },
+      { w: "Warranty", p: "noun", ph: "/ˈwɒr.ən.ti/", m: "giấy bảo hành", e: "The laptop comes with a two-year warranty.", ev: "Máy tính xách tay đi kèm gói bảo hành hai năm." },
+      { w: "Strategy", p: "noun", ph: "/ˈstræt.ə.dʒi/", m: "chiến lược", e: "Our company devised a comprehensive marketing strategy.", ev: "Công ty đã xây dựng một chiến lược tiếp thị toàn diện." },
+      { w: "Facility", p: "noun", ph: "/fəˈsɪl.ə.ti/", m: "cơ sở vật chất, trang thiết bị", e: "The manufacturing facility operates around the clock.", ev: "Cơ sở sản xuất vận hành liên tục suốt ngày đêm." },
+      { w: "Candidate", p: "noun", ph: "/ˈkæn.dɪ.deɪt/", m: "ứng viên tuyển dụng", e: "The ideal candidate should have strong leadership skills.", ev: "Ứng viên lý tưởng cần có kỹ năng lãnh đạo vững vàng." },
+      { w: "Consistently", p: "adv", ph: "/kənˈsɪs.tənt.li/", m: "nhất quán, liên tục", e: "The brand consistently delivers high quality products.", ev: "Thương hiệu liên tục cung cấp các sản phẩm chất lượng cao." },
+      { w: "Compensation", p: "noun", ph: "/ˌkɒm.penˈseɪ.ʃən/", m: "tiền bồi thường, thù lao", e: "Workers receive fair compensation for travel expenses.", ev: "Công nhân nhận thù lao thỏa đáng cho chi phí đi lại." },
+      { w: "Eligible", p: "adj", ph: "/ˈel.ɪ.dʒə.bəl/", m: "đủ điều kiện, hợp lệ", e: "Full-time employees are eligible for dental benefits.", ev: "Nhân viên chính thức đủ điều kiện hưởng bảo hiểm nha khoa." },
+      { w: "Negotiate", p: "verb", ph: "/nəˈɡoʊ.ʃi.eɪt/", m: "thương lượng, đàm phán", e: "They managed to negotiate a lower rental price.", ev: "Họ đã thương lượng thành công mức giá thuê thấp hơn." },
+      { w: "Clientele", p: "noun", ph: "/ˌkliː.ɒnˈtel/", m: "tập khách hàng", e: "The boutique attracts an upscale clientele.", ev: "Cửa hàng thu hút tập khách hàng cao cấp." },
+      { w: "Efficient", p: "adj", ph: "/ɪˈfɪʃ.ənt/", m: "hiệu quả, năng suất cao", e: "We adopted a more efficient shipping procedure.", ev: "Chúng tôi áp dụng quy trình giao vận hiệu quả hơn." },
+      { w: "Maintenance", p: "noun", ph: "/ˈmeɪn.tən.əns/", m: "bảo trì, bảo dưỡng", e: "Regular maintenance extends equipment lifespan.", ev: "Bảo dưỡng định kỳ giúp kéo dài tuổi thọ thiết bị." },
+      { w: "Revenue", p: "noun", ph: "/ˈrev.ən.juː/", m: "doanh thu", e: "Quarterly revenue rose by 15 percent.", ev: "Doanh thu hàng quý đã tăng 15 phần trăm." },
+      { w: "Incentive", p: "noun", ph: "/ɪnˈsen.tɪv/", m: "động lực, tiền thưởng khuyến khích", e: "Bonuses serve as a strong performance incentive.", ev: "Tiền thưởng là động lực lớn thúc đẩy hiệu suất làm việc." },
+      { w: "Confidential", p: "adj", ph: "/ˌkɒn.fɪˈden.ʃəl/", m: "bảo mật, tuyệt mật", e: "Please keep this financial report confidential.", ev: "Vui lòng giữ bảo mật bản báo cáo tài chính này." },
+      { w: "Inquiry", p: "noun", ph: "/ɪnˈkwaɪə.ri/", m: "yêu cầu thắc mắc, hỏi thông tin", e: "We received multiple customer inquiries today.", ev: "Hôm nay chúng tôi nhận được nhiều câu hỏi từ khách hàng." },
+      { w: "Logistics", p: "noun", ph: "/ləˈdʒɪs.tɪks/", m: "hậu cần, kho vận", e: "Our logistics team handled delivery flawlessly.", ev: "Đội hậu cần đã xử lý việc giao nhận hàng một cách hoàn hảo." },
+      { w: "Compliance", p: "noun", ph: "/kəmˈplaɪ.əns/", m: "sự tuân thủ pháp lý", e: "All operations are in compliance with regulations.", ev: "Mọi hoạt động đều tuân thủ nghiêm ngặt các quy định." },
+      { w: "Defective", p: "adj", ph: "/dɪˈfek.tɪv/", m: "bị lỗi, có khuyết tật", e: "The store promptly replaced the defective item.", ev: "Cửa hàng đã đổi mới ngay món đồ bị lỗi." },
+      { w: "Subsidiary", p: "noun", ph: "/səbˈsɪd.i.ər.i/", m: "công ty con", e: "The company opened a new subsidiary in Tokyo.", ev: "Tập đoàn đã mở thêm một công ty con tại Tokyo." },
+      { w: "Terminate", p: "verb", ph: "/ˈtɜː.mɪ.neɪt/", m: "chấm dứt, kết thúc hợp đồng", e: "They decided to terminate the supplier contract.", ev: "Họ quyết định chấm dứt hợp đồng với nhà cung ứng." },
+      { w: "Substantial", p: "adj", ph: "/səbˈstæn.ʃəl/", m: "đáng kể, to lớn", e: "We observed a substantial increase in online sales.", ev: "Chúng tôi ghi nhận sự tăng trưởng đáng kể ở mảng bán online." },
+      { w: "Acquire", p: "verb", ph: "/əˈkwaɪər/", m: "mua lại, thâu tóm", e: "The firm plans to acquire a local tech startup.", ev: "Công ty dự định mua lại một công ty khởi nghiệp công nghệ." },
+      { w: "Delegation", p: "noun", ph: "/ˌdel.ɪˈɡeɪ.ʃən/", m: "phái đoàn, sự ủy nhiệm", e: "A trade delegation visited our factory yesterday.", ev: "Một phái đoàn thương mại đã đến thăm nhà xưởng hôm qua." },
+      { w: "Comprehensive", p: "adj", ph: "/ˌkɒm.prɪˈhen.sɪv/", m: "toàn diện, bao quát", e: "Employees receive comprehensive healthcare coverage.", ev: "Nhân viên được hưởng gói chăm sóc sức khỏe toàn diện." },
+      { w: "Voucher", p: "noun", ph: "/ˈvaʊ.tʃər/", m: "phiếu giảm giá, phiếu mua hàng", e: "Redeem this voucher for a 20% discount on orders.", ev: "Đổi phiếu này để được giảm giá 20% cho đơn hàng." },
+      { w: "Itinerary", p: "noun", ph: "/aɪˈtɪn.ər.ər.i/", m: "lịch trình chuyến đi", e: "The travel agent provided our business itinerary.", ev: "Đại lý lữ hành đã gửi lịch trình cho chuyến công tác." },
+      { w: "Unanimous", p: "adj", ph: "/juːˈnæn.ɪ.məs/", m: "nhất trí, đồng thuận", e: "The committee reached a unanimous agreement.", ev: "Ủy ban đã đạt được thỏa thuận đồng thuận hoàn toàn." },
+      { w: "Appraisal", p: "noun", ph: "/əˈpreɪ.zəl/", m: "sự đánh giá hiệu suất/giá trị", e: "Annual performance appraisals begin this month.", ev: "Kỳ đánh giá hiệu suất công việc năm bắt đầu vào tháng này." },
+      { w: "Discrepancy", p: "noun", ph: "/dɪˈskrep.ən.si/", m: "sự sai lệch, bất đồng", e: "Auditors uncovered a discrepancy in the accounts.", ev: "Kiểm toán viên đã phát hiện sự sai lệch trong sổ sách." },
+      { w: "Optimize", p: "verb", ph: "/ˈɒp.tɪ.maɪz/", m: "tối ưu hóa", e: "We aim to optimize production workflow efficiency.", ev: "Chúng tôi đặt mục tiêu tối ưu hóa quy trình sản xuất." },
+      { w: "Prospective", p: "adj", ph: "/prəˈspek.tɪv/", m: "tiềm năng, triển vọng", e: "Representatives met with prospective clients today.", ev: "Đại diện công ty đã gặp gỡ các khách hàng tiềm năng hôm nay." },
+      { w: "Reimbursement", p: "noun", ph: "/ˌriː.ɪmˈbɜːs.mənt/", m: "khoản hoàn tiền công tác phí", e: "Submit flight receipts to claim your reimbursement.", ev: "Nộp hóa đơn vé máy bay để nhận khoản hoàn trả chi phí." },
+      { w: "Specialize", p: "verb", ph: "/ˈspeʃ.əl.aɪz/", m: "chuyên về lĩnh vực", e: "Our firm specializes in corporate tax law.", ev: "Công ty chúng tôi chuyên sâu về luật thuế doanh nghiệp." },
+      { w: "Credential", p: "noun", ph: "/krəˈden.ʃəl/", m: "chứng chỉ, bằng cấp chuyên môn", e: "Her academic credentials impressed the interviewers.", ev: "Bằng cấp chuyên môn của cô ấy gây ấn tượng với ban phỏng vấn." },
+      { w: "Remodel", p: "verb", ph: "/ˌriːˈmɒd.əl/", m: "tu sửa, cải tạo mặt bằng", e: "They will remodel the branch office next quarter.", ev: "Họ sẽ tiến hành tu sửa lại văn phòng chi nhánh vào quý tới." }
+    ];
+
     const DEFAULT_VOCABULARY = (function() {
       let fullList = [];
+      let bankPointer = 0;
+
       for (let day = 1; day <= 20; day++) {
-        let dayItems = RAW_DAYS_DATA[day] || [];
+        let dayItems = (RAW_DAYS_DATA[day] ? [...RAW_DAYS_DATA[day]] : []);
         const needed = 50 - dayItems.length;
+
+        // Bổ sung các từ vựng TOEIC thực tế từ kho ngân hàng thay vì sinh text giả lập
         if (needed > 0) {
-          for (let k = 1; k <= needed; k++) {
+          for (let k = 0; k < needed; k++) {
+            const pick = TOEIC_CURATED_BANK[(bankPointer + k) % TOEIC_CURATED_BANK.length];
             dayItems.push({
-              w: `Day${day} Focus Item ${k}`,
-              p: "verb",
-              ph: `/deɪ ${day}/`,
-              m: `từ vựng trọng tâm Day ${day} mục ${k}`,
-              e: `Practice and review this phrase from Day ${day} lesson.`,
-              ev: `Luyện tập và ôn lại từ vựng này trong bài học Day ${day}.`
+              w: pick.w,
+              p: pick.p,
+              ph: pick.ph,
+              m: pick.m,
+              e: pick.e,
+              ev: pick.ev
             });
           }
+          bankPointer = (bankPointer + needed) % TOEIC_CURATED_BANK.length;
         }
         fullList = fullList.concat(buildDayVocabulary(day, dayItems.slice(0, 50)));
       }
@@ -2043,25 +2093,50 @@
     // - Đáp án: Nghĩa tiếng Việt
     // - 4 đáp án lựa chọn: 1 đáp án đúng và 3 đáp án sai lấy từ nghĩa tiếng Việt bất kỳ của các từ còn lại trong 50 từ vựng của chủ đề đó
     function generateQuizQuestionsForTopic(topicId) {
-      const topicWords = vocabulary.filter(v => v.category === topicId);
+      // Lấy toàn bộ từ vựng thuộc chủ đề và loại bỏ triệt để bất kỳ từ placeholder giả lập nào nếu còn sót
+      let topicWords = vocabulary.filter(v => v.category === topicId && !v.word.includes('Focus Item'));
+
+      // Nếu số từ thực tế chưa đủ 50, tự động lấy thêm từ vựng chuẩn từ kho TOEIC thực tế
+      if (topicWords.length < 50) {
+        let addedCount = 0;
+        for (let i = 0; i < TOEIC_CURATED_BANK.length && topicWords.length < 50; i++) {
+          const item = TOEIC_CURATED_BANK[i];
+          if (!topicWords.some(w => w.word.toLowerCase() === item.w.toLowerCase())) {
+            topicWords.push({
+              id: Date.now() + (++addedCount),
+              word: item.w,
+              pos: item.p,
+              phonetic: item.ph,
+              meaning: item.m,
+              example: item.e,
+              exampleVi: item.ev,
+              category: topicId,
+              learned: false
+            });
+          }
+        }
+      }
 
       if (topicWords.length === 0) {
         showToast("Chủ đề này chưa có từ vựng để ôn tập.", "fa-circle-info");
         return;
       }
 
-      // Đảo ngẫu nhiên thứ tự các từ vựng trong Day để làm bài thi phong phú
-      const shuffledTopicWords = [...topicWords].sort(() => 0.5 - Math.random());
+      // Đảo ngẫu nhiên thứ tự 50 từ vựng để làm phong phú bài thi
+      const shuffledTopicWords = [...topicWords].slice(0, 50).sort(() => 0.5 - Math.random());
 
-      // Tạo câu hỏi trắc nghiệm cho toàn bộ 50 từ của Day
+      // Tạo câu hỏi trắc nghiệm cho toàn bộ 50 từ
       quizQuestionList = shuffledTopicWords.map((targetWord) => {
-        // Lọc danh sách các từ còn lại trong cùng chủ đề có nghĩa tiếng Việt khác với từ mục tiêu
-        const otherWordsInTopic = topicWords.filter(w => w.id !== targetWord.id && w.meaning !== targetWord.meaning);
+        // Lọc danh sách các từ còn lại có nghĩa tiếng Việt khác với từ mục tiêu và là nghĩa tiếng Việt thực tế
+        const otherWordsInTopic = topicWords.filter(w => 
+          w.id !== targetWord.id && 
+          w.meaning !== targetWord.meaning &&
+          !w.meaning.includes('từ vựng trọng tâm')
+        );
         
-        // Đảo ngẫu nhiên các từ còn lại để bốc 3 đáp án sai
+        // Đảo ngẫu nhiên để chọn ra 3 đáp án gây nhiễu
         const shuffledOthers = [...otherWordsInTopic].sort(() => 0.5 - Math.random());
 
-        // Chọn ra đúng 3 nghĩa tiếng Việt phân biệt từ 50 từ vựng của chủ đề đó
         const distractors = [];
         for (let i = 0; i < shuffledOthers.length && distractors.length < 3; i++) {
           const meaningText = shuffledOthers[i].meaning;
@@ -2070,11 +2145,21 @@
           }
         }
 
-        // Câu hỏi luôn là tiếng Anh
+        // Bổ sung đáp án sai thực tế từ kho dự phòng nếu danh sách trong chủ đề bị thiếu
+        if (distractors.length < 3) {
+          for (let p = 0; p < TOEIC_CURATED_BANK.length && distractors.length < 3; p++) {
+            const altMeaning = TOEIC_CURATED_BANK[p].m;
+            if (altMeaning !== targetWord.meaning && !distractors.includes(altMeaning)) {
+              distractors.push(altMeaning);
+            }
+          }
+        }
+
+        // Câu hỏi bằng tiếng Anh kèm loại từ chuẩn xác
         const questionText = `Từ "${targetWord.word}" (${targetWord.pos}) có nghĩa tiếng Việt là gì?`;
         const correctOption = targetWord.meaning;
 
-        // Trộn ngẫu nhiên 4 đáp án nghĩa tiếng Việt (1 đúng + 3 sai lấy trong chính chủ đề)
+        // Trộn 4 đáp án nghĩa tiếng Việt hoàn toàn tự nhiên
         const options = [correctOption, ...distractors].sort(() => 0.5 - Math.random());
         const correctIndex = options.indexOf(correctOption);
 
